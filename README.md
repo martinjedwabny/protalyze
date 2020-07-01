@@ -1,4 +1,4 @@
-# exercise_app
+# Surger
 
 A new Flutter project.
 
