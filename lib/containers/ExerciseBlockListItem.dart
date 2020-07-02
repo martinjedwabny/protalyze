@@ -16,9 +16,19 @@ class ExerciseBlockListItem implements ListItem {
   }
 
   Widget buildSubtitle(BuildContext context) {
-    return Text(
-      block.performingTime.inSeconds.toString() + ' seconds',
-      // style: Theme.of(context).textTheme.headline6,
+    List<Widget> children = [];
+    children.add(Text('Duration: ' + block.performingTime.inSeconds.toString() + 's, ' + 'Rest: ' + block.restTime.inSeconds.toString() + 's '));
+    if (block.weight != null)
+      children.add(Text('Weight: ' + block.weight.toString()));
+    if (block.minReps != null && block.maxReps != null)
+      children.add(Text('Reps: ' + block.minReps.toString() + '-' + block.maxReps.toString()));
+    if (block.minReps != null && block.maxReps == null)
+      children.add(Text('Reps: ' + block.minReps.toString() + ' min'));
+    if (block.minReps == null && block.maxReps != null)
+      children.add(Text('Reps: ' + block.maxReps.toString() + ' max'));
+    return Wrap(
+      direction: Axis.vertical,
+      children: children,
     );
   }
 
