@@ -1,4 +1,4 @@
-package com.example.Surger
+package com.example.Protalyze
 
 import io.flutter.embedding.android.FlutterActivity
 

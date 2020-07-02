@@ -1,5 +1,5 @@
-import 'package:Surger/config/Themes.dart';
-import 'package:Surger/pages/WorkoutSelectionPage.dart';
+import 'package:Protalyze/config/Themes.dart';
+import 'package:Protalyze/pages/WorkoutSelectionPage.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
                 Tab(icon: Icon(Icons.event_note, color: Colors.white)),
               ],
             ),
-            title: Text('Surger', style: TextStyle(fontFamily: 'Lobster', color: Colors.white),),
+            title: Text('Protalyze', style: TextStyle(fontFamily: 'Lobster', color: Colors.white),),
             centerTitle: true,
           ),
           body: TabBarView(
