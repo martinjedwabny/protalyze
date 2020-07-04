@@ -3,14 +3,15 @@ import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/ExerciseEditPage.dart';
+import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutDisplayPage extends StatefulWidget {
   final Workout workout;
-  List<ExerciseBlockListItem> items;
-  WorkoutDisplayPage(this.workout) {
+  final List<ExerciseBlockListItem> items;
+  
+  WorkoutDisplayPage(this.workout) :
     this.items = workout.exercises.map((e) => ExerciseBlockListItem(e)).toList();
-  }
 
   @override
   _WorkoutDisplayPageState createState() => _WorkoutDisplayPageState();
@@ -19,44 +20,46 @@ class WorkoutDisplayPage extends StatefulWidget {
 class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text(widget.workout.name),
       ),
-      body: ReorderableListView(
-        children: widget.items.map((item) => Card(
-            key: ValueKey(item),
-            child: ListTile(
-              title: item.buildTitle(context),
-              subtitle: item.buildSubtitle(context),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ExerciseEditPage(item.block)),
-                ).then((value) {
-                  setState(() {
+      body: widget.items.isEmpty ? 
+        SingleMessageScaffold('No exercises added yet.') :
+        ReorderableListView(
+          children: widget.items.map((item) => Card(
+              key: ValueKey(item),
+              child: ListTile(
+                title: item.buildTitle(context),
+                subtitle: item.buildSubtitle(context),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ExerciseEditPage(item.block)),
+                  ).then((value) {
+                    setState(() {
+                    });
                   });
-                });
-              },
-              trailing: Wrap(
-                spacing: 12, // space between two icons
-                children: <Widget>[
-                  IconButton(icon: Icon(Icons.add_circle_outline), onPressed: () {
-                    duplicateExercise(item.block);
-                  },), // icon-1
-                  IconButton(icon: Icon(Icons.remove_circle_outline), onPressed: () {
-                    removeExercise(item.block);
-                  }),// icon-2
-                ],
+                },
+                trailing: Wrap(
+                  spacing: 12, // space between two icons
+                  children: <Widget>[
+                    IconButton(icon: Icon(Icons.add_circle_outline), onPressed: () {
+                      duplicateExercise(item.block);
+                    },), // icon-1
+                    IconButton(icon: Icon(Icons.remove_circle_outline), onPressed: () {
+                      removeExercise(item.block);
+                    }),// icon-2
+                  ],
+                ),
               ),
-            ),
-          )).toList(),
-          onReorder: (oldIndex, newIndex) {
-            setState(() {
-              reorderItems(oldIndex, newIndex);
-            });
-          },
-        ),
+            )).toList(),
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+                reorderItems(oldIndex, newIndex);
+              });
+            },
+          ),
       floatingActionButton: FloatingActionButton(
         onPressed: () { 
           addNewExercise(); 

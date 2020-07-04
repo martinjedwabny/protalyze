@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class ExerciseEditPage extends StatefulWidget {
-  ExerciseBlock block;
+  final ExerciseBlock block;
   ExerciseEditPage(this.block);
 
   @override

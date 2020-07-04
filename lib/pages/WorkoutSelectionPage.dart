@@ -3,6 +3,7 @@ import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
+import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutSelectionPage extends StatefulWidget {
@@ -28,6 +29,8 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
         WorkoutListItem(Workout('Workout 2', exercises)),
         WorkoutListItem(Workout('Workout 3', exercises))];
     }
+    if (this.items.isEmpty)
+      return SingleMessageScaffold('No workouts added yet.');
     return Scaffold(
       body: ListView.builder(
         itemCount: items.length,
