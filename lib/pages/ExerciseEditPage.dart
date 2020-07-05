@@ -1,6 +1,7 @@
 import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Weight.dart';
+import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -65,20 +66,10 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
   }
 
   showAlertDialog(BuildContext context, String title, String message) {
-    AlertDialog alert = AlertDialog(
-      title: Text(title),
-      content: Text(message),
-      actions: [
-        FlatButton(
-          child: Text("Ok"),
-          onPressed: () {Navigator.of(context).pop();},
-        ),
-      ],
-    );
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return alert;
+        return SingleMessageAlertDialog(title, message);
       },
     );
   }

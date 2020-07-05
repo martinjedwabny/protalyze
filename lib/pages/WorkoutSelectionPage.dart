@@ -4,6 +4,7 @@ import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
+import 'package:Protalyze/widgets/TextInputAlertDialog.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutSelectionPage extends StatefulWidget {
@@ -45,6 +46,9 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
                 context,
                 MaterialPageRoute(builder: (context) => WorkoutDisplayPage(item.workout)),
               );
+            },
+            onLongPress: () {
+              openWorkoutNameEditDialog(item);
             },
             trailing: Wrap(
                   spacing: 12, // space between two icons
@@ -90,6 +94,25 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
     setState(() {
       this.items.removeWhere((element) => element.workout == wk);
     });
+  }
+
+  void openWorkoutNameEditDialog(WorkoutListItem item) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return TextInputAlertDialog('Edit workout name', (String text) {
+          setState(() {
+            updateWorkoutName(item, text);
+          });
+        },
+        initialValue: item.workout.name
+        );
+      },
+    );
+  }
+
+  void updateWorkoutName(WorkoutListItem item, String name) {
+    item.workout.name = name;
   }
 }
 
