@@ -3,6 +3,7 @@ import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
+import 'package:Protalyze/persistance/WorkoutData.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:Protalyze/widgets/TextInputAlertDialog.dart';
 import 'package:flutter/material.dart';
@@ -13,27 +14,26 @@ class WorkoutSelectionPage extends StatefulWidget {
 }
 
 class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
-  List<ExerciseBlock> exercises;
+  List<Workout> workouts;
   List<WorkoutListItem> items;
 
   @override
   Widget build(BuildContext context) {
     if (this.items == null) {
-      this.exercises = [
+      List<ExerciseBlock> exercises = [
         ExerciseBlock(Exercise("Bench press"), Duration(seconds: 30), Duration(seconds: 90)),
         ExerciseBlock(Exercise("Bench press"), Duration(seconds: 30), Duration(seconds: 90)),
         ExerciseBlock(Exercise("Pullups"), Duration(seconds: 30), Duration(seconds: 90)),
         ExerciseBlock(Exercise("Pullups"), Duration(seconds: 30), Duration(seconds: 90)),
       ];
-      this.items = [
-        WorkoutListItem(Workout('Workout 1', exercises)),
-        WorkoutListItem(Workout('Workout 2', exercises)),
-        WorkoutListItem(Workout('Workout 3', exercises))];
+      this.workouts = [Workout('Workout 1', exercises)];
+      this.items = this.workouts.map((e) => WorkoutListItem(e)).toList();
     }
-    if (this.items.isEmpty)
-      return SingleMessageScaffold('No workouts added yet.');
-    return Scaffold(
-      body: ListView.builder(
+    Widget body;
+    if (this.items.isEmpty) {
+      body = SingleMessageScaffold('No workouts added yet.');
+    } else {
+      body = ListView.builder(
         itemCount: items.length,
         itemBuilder: (context, index) {
           WorkoutListItem item = items[index];
@@ -64,7 +64,10 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
             ),
           );
         },
-      ),
+      );
+    }
+    return Scaffold(
+      body: body,
       floatingActionButton: FloatingActionButton(
         onPressed: () { 
           addNewWorkout(); 
@@ -78,6 +81,8 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
   addNewWorkout(){
     Workout wk = Workout('New workout', []);
     addWorkout(wk);
+    // TODO rewove
+    WorkoutDataManager.setSavedWorkouts(this.workouts);
   }
 
   addWorkout(Workout wk) {

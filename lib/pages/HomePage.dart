@@ -1,7 +1,19 @@
+import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/WorkoutSelectionPage.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  final String userId;
+  final BaseAuth auth;
+  final VoidCallback logoutCallback;
+
+  HomePage(this.userId, this.auth, this.logoutCallback);
+  
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -16,6 +28,28 @@ class HomePage extends StatelessWidget {
           ),
           title: Text('Protalyze', style: TextStyle(fontFamily: 'Lobster', color: Colors.white),),
           centerTitle: true,
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              icon: Icon(Icons.more_vert, color: Colors.white,),
+              onSelected: (String value){
+                switch (value) {
+                  case 'Logout':
+                    handleLogout();
+                    break;
+                  // case 'Settings':
+                  //   break;
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return {'Logout'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+          ],
         ),
         body: TabBarView(
           children: [
@@ -25,5 +59,9 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void handleLogout() {
+    this.widget.logoutCallback();
   }
 }
