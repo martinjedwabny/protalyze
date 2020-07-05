@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "888722916407",
+    "firebase_url": "https://protalyze.firebaseio.com",
+    "project_id": "protalyze",
+    "storage_bucket": "protalyze.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888722916407:android:596fe8644bc5a5e0062bb2",
+        "android_client_info": {
+          "package_name": "com.nnammad.protalyze"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "888722916407-aj3ndkb0bvl85sjenurkj9qkma61usq1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAF8t5CZs4IlgEU6BU-cIl0X1nCWkA0QM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "888722916407-aj3ndkb0bvl85sjenurkj9qkma61usq1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "888722916407-3n2vb25rm36tv8ug8qdj7i4v72iigoe8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nnammad.protalyze"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
