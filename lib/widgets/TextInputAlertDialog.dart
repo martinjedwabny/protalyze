@@ -15,11 +15,6 @@ class TextInputAlertDialog extends StatelessWidget{
       content: TextField(
         controller: controller,
         decoration: new InputDecoration(
-        border: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        disabledBorder: InputBorder.none,
         hintText: "Enter something",
         ),
       ),
