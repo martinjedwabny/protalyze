@@ -3,30 +3,36 @@ import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
+import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/persistance/UserDataManager.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:Protalyze/widgets/TextInputAlertDialog.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutSelectionPage extends StatefulWidget {
+  final BaseAuth auth;
+  WorkoutSelectionPage({this.auth});
   @override
   _WorkoutSelectionPageState createState() => _WorkoutSelectionPageState();
 }
 
 class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
-  List<Workout> workouts;
-  List<WorkoutListItem> items;
+  List<Workout> workouts = [];
+  List<WorkoutListItem> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    UserDataManager.getSavedWorkouts().then((workouts) {
+      setState(() {
+        this.workouts = workouts;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (this.items == null) {
-      List<ExerciseBlock> exercises = [
-        ExerciseBlock(Exercise("Bench press"), Duration(seconds: 30), Duration(seconds: 90)),
-        ExerciseBlock(Exercise("Bench press"), Duration(seconds: 30), Duration(seconds: 90)),
-        ExerciseBlock(Exercise("Pullups"), Duration(seconds: 30), Duration(seconds: 90)),
-        ExerciseBlock(Exercise("Pullups"), Duration(seconds: 30), Duration(seconds: 90)),
-      ];
-      this.workouts = [Workout('Workout 1', exercises)];
+    if (this.items == null || this.items.isEmpty) {
       this.items = this.workouts.map((e) => WorkoutListItem(e)).toList();
     }
     Widget body;
@@ -83,9 +89,8 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
     wk.exercises = [
         ExerciseBlock(Exercise("New exercise"), Duration(seconds: 30), Duration(seconds: 90)),
       ];
-    UserDataManager.addNewWorkout(wk).then((value) {
-      addWorkout(wk);
-    });
+    UserDataManager.addNewWorkout(wk).then((value) {});
+    addWorkout(wk);
   }
 
   addWorkout(Workout wk) {

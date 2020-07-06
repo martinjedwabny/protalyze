@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,8 +14,12 @@ class UserDataManager {
     CollectionReference workoutsCollection = userDoc.collection(workoutsKey);
     List<Workout> ans;
     await workoutsCollection.getDocuments().then((value) {
-      // ans = jsonDecode(value.);
-      print(value.toString());
+      ans = value.documents.map((e) { 
+        Workout workout = Workout.fromJson(e.data);
+        workout.documentId = e.documentID;
+        return workout;
+      }).toList();
+      ans.forEach((element) {print(element.toJson());});
     });
     return ans;
   }
@@ -29,6 +31,6 @@ class UserDataManager {
     CollectionReference workoutsCollection = userDoc.collection(workoutsKey);
     Map<String, dynamic> workoutJson = workout.toJson();
     workoutJson.remove('id');
-    await workoutsCollection.add(workoutJson).then((doc) => workout.id = doc.documentID);
+    await workoutsCollection.add(workoutJson).then((doc) => workout.documentId = doc.documentID);
   }
 }

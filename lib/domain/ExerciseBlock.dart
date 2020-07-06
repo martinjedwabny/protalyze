@@ -9,7 +9,6 @@ class ExerciseBlock {
   Duration performingTime;
   Duration restTime;
   // Optional
-  String id;
   Weight weight;
   int minReps;
   int maxReps;
@@ -41,7 +40,6 @@ class ExerciseBlock {
     : exercise = Exercise.fromJson(json['exercise']),
       performingTime = Duration(seconds: json['performingTime']),
       restTime = Duration(seconds: json['restTime']),
-      id = json['id'],
       weight = jsonDecode(json['weight']),
       minReps = jsonDecode(json['minReps']),
       maxReps = jsonDecode(json['maxReps']),
@@ -54,7 +52,6 @@ class ExerciseBlock {
       'exercise' : exercise.toJson(),
       'performingTime' : performingTime.inSeconds,
       'restTime' : restTime.inSeconds,
-      'id' : id,
       'weight' : jsonEncode(weight),
       'minReps' : jsonEncode(minReps),
       'maxReps' : jsonEncode(maxReps),

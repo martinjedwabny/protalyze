@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 
 class Workout {
-  String id;
+  String documentId;
   String name;
   List<ExerciseBlock> exercises;
 
@@ -14,13 +14,11 @@ class Workout {
   }
 
   Workout.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
+      : name = json['name'],
         exercises = (jsonDecode(json['exercises']) as List<dynamic>).map((e) => ExerciseBlock.fromJson(e)).toList();
 
   Map<String, dynamic> toJson() =>
     {
-      'id': id,
       'name': name,
       'exercises': jsonEncode(exercises),
     };

@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
         ),
         body: TabBarView(
           children: [
-            WorkoutSelectionPage(),
+            WorkoutSelectionPage(auth: widget.auth,),
             Icon(Icons.event_note),
           ],
         ),
