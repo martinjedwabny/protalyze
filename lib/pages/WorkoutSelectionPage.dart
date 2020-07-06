@@ -3,7 +3,7 @@ import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
-import 'package:Protalyze/persistance/WorkoutData.dart';
+import 'package:Protalyze/persistance/UserDataManager.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:Protalyze/widgets/TextInputAlertDialog.dart';
 import 'package:flutter/material.dart';
@@ -80,9 +80,12 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
 
   addNewWorkout(){
     Workout wk = Workout('New workout', []);
-    addWorkout(wk);
-    // TODO rewove
-    WorkoutDataManager.setSavedWorkouts(this.workouts);
+    wk.exercises = [
+        ExerciseBlock(Exercise("New exercise"), Duration(seconds: 30), Duration(seconds: 90)),
+      ];
+    UserDataManager.addNewWorkout(wk).then((value) {
+      addWorkout(wk);
+    });
   }
 
   addWorkout(Workout wk) {
