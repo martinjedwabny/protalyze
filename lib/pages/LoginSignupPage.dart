@@ -14,10 +14,11 @@ class LoginSignupPage extends StatefulWidget {
 class _LoginSignupPageState extends State<LoginSignupPage>{
   
   bool isLoading = false;
-  bool isLoginForm = false;
+  bool isLoginForm = true;
   String email = '';
   String password = '';
-  String errorMessage = '';
+  String infoMessage = '';
+  bool infoMessageIsError = true;
   final formKey = new GlobalKey<FormState>();
 
   @override
@@ -47,7 +48,7 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
               showPasswordInput(),
               showPrimaryButton(),
               showSecondaryButton(),
-              showErrorMessage(),
+              showInfoMessage(),
             ],
           ),
         ));
@@ -151,18 +152,18 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
 
   void resetForm() {
     formKey.currentState.reset();
-    errorMessage = "";
+    infoMessage = "";
   }
 
 
-Widget showErrorMessage() {
-    if (errorMessage.length > 0 && errorMessage != null) {
+Widget showInfoMessage() {
+    if (infoMessage.length > 0 && infoMessage != null) {
       return new Text(
-        errorMessage,
+        infoMessage,
         textAlign: TextAlign.center,
         style: TextStyle(
             fontSize: 13.0,
-            color: Colors.red,
+            color: infoMessageIsError ? Colors.red : Colors.green,
             height: 1.0,
             fontWeight: FontWeight.w300),
       );
@@ -175,7 +176,7 @@ Widget showErrorMessage() {
 
 void validateAndSubmit() async {
     setState(() {
-      errorMessage = "";
+      infoMessage = "";
       isLoading = true;
     });
     if (validateAndSave()) {
@@ -183,25 +184,30 @@ void validateAndSubmit() async {
       try {
         if (isLoginForm) {
           userId = await widget.auth.signIn(email, password);
+          bool verified = await widget.auth.isEmailVerified();
+          if (userId.length > 0 && userId != null && verified) {
+            widget.loginCallback();
+          } else {
+            infoMessage = 'Waiting for email verification';
+            infoMessageIsError = false;
+          }
           print('Signed in: $userId');
         } else {
           userId = await widget.auth.signUp(email, password);
-          // widget.auth.sendEmailVerification();
-          //showVerifyEmailSentDialog();
+          widget.auth.sendEmailVerification();
+          infoMessage = 'Waiting for email verification';
+          infoMessageIsError = false;
           print('Signed up user: $userId');
         }
         setState(() {
           isLoading = false;
         });
-
-        if (userId.length > 0 && userId != null && isLoginForm) {
-          widget.loginCallback();
-        }
       } catch (e) {
         print('Error: $e');
         setState(() {
           isLoading = false;
-          errorMessage = e.message;
+          infoMessage = e.message;
+          infoMessageIsError = true;
           formKey.currentState.reset();
         });
       }

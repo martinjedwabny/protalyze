@@ -72,9 +72,9 @@ class _RootPageState extends State<RootPage> {
 
   void logoutCallback() {
     setState(() {
+      widget.auth.signOut();
       authStatus = AuthStatus.NOT_LOGGED_IN;
       userId = "";
-      // Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
     });
   }
 }

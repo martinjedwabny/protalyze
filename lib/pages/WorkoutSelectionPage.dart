@@ -4,7 +4,7 @@ import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
-import 'package:Protalyze/persistance/UserDataManager.dart';
+import 'package:Protalyze/persistance/WorkoutDataManager.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:Protalyze/widgets/TextInputAlertDialog.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +16,17 @@ class WorkoutSelectionPage extends StatefulWidget {
   _WorkoutSelectionPageState createState() => _WorkoutSelectionPageState();
 }
 
-class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
+class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with AutomaticKeepAliveClientMixin {
   List<Workout> workouts = [];
   List<WorkoutListItem> items = [];
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
     super.initState();
-    UserDataManager.getSavedWorkouts().then((workouts) {
+    WorkoutDataManager.getSavedWorkouts().then((workouts) {
       setState(() {
         this.workouts = workouts;
       });
@@ -32,6 +35,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (this.items == null || this.items.isEmpty) {
       this.items = this.workouts.map((e) => WorkoutListItem(e)).toList();
     }
@@ -89,7 +93,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
     wk.exercises = [
         ExerciseBlock(Exercise("New exercise"), Duration(seconds: 30), Duration(seconds: 90)),
       ];
-    UserDataManager.addNewWorkout(wk).then((value) {});
+    WorkoutDataManager.addWorkout(wk).then((value) {});
     addWorkout(wk);
   }
 
@@ -100,10 +104,13 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
   }
   
   duplicateWorkout(Workout wk) {
-    addWorkout(Workout.copy(wk));
+    Workout wkCopy = Workout.copy(wk);
+    WorkoutDataManager.addWorkout(wkCopy);
+    addWorkout(wkCopy);
   }
 
   removeWorkout(Workout wk) {
+    WorkoutDataManager.removeWorkout(wk);
     setState(() {
       this.items.removeWhere((element) => element.workout == wk);
     });
@@ -126,6 +133,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> {
 
   void updateWorkoutName(WorkoutListItem item, String name) {
     item.workout.name = name;
+    WorkoutDataManager.updateWorkout(item.workout);
   }
 }
 
