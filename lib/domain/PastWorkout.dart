@@ -12,7 +12,7 @@ class PastWorkout {
 
   Map<String, dynamic> toJson() =>
     {
-      'workout': workout,
+      'workout': workout.toJson(),
       'dateTime': dateTime.toIso8601String(),
     };
 }

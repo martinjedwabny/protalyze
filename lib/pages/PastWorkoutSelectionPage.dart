@@ -1,6 +1,11 @@
+import 'package:Protalyze/config/Palette.dart';
+import 'package:Protalyze/config/Themes.dart';
+import 'package:Protalyze/containers/DateHeaderItem.dart';
+import 'package:Protalyze/containers/ListItem.dart';
 import 'package:Protalyze/containers/PastWorkoutListItem.dart';
 import 'package:Protalyze/domain/PastWorkout.dart';
 import 'package:Protalyze/domain/Workout.dart';
+import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/persistance/PastWorkoutDataManager.dart';
 import 'package:Protalyze/persistance/WorkoutDataManager.dart';
@@ -9,6 +14,7 @@ import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:Protalyze/widgets/SinglePickerAlertDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PastWorkoutSelectionPage extends StatefulWidget {
   final BaseAuth auth;
@@ -20,7 +26,6 @@ class PastWorkoutSelectionPage extends StatefulWidget {
 class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> with AutomaticKeepAliveClientMixin {
   List<Workout> workouts = [];
   List<PastWorkout> pastWorkouts = [];
-  List<PastWorkoutListItem> items = [];
 
   @override
   bool get wantKeepAlive => false;
@@ -41,42 +46,11 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (this.items == null || this.items.isEmpty) {
-      this.items = this.pastWorkouts.map((e) => PastWorkoutListItem(e)).toList();
-    }
     Widget body;
-    if (this.items.isEmpty) {
+    if (this.workouts.isEmpty) {
       body = SingleMessageScaffold('No registered workouts added yet.');
     } else {
-      body = ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          PastWorkoutListItem item = items[index];
-          return Card(
-            child: ListTile(
-            title: item.buildTitle(context),
-            subtitle: item.buildSubtitle(context),
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => PastWorkoutDisplayPage(item.workout)),
-              // );
-            },
-            trailing: Wrap(
-                  spacing: 4, // space between two icons
-                  children: <Widget>[
-                    IconButton(icon: Icon(Icons.edit), tooltip: 'Edit', onPressed: () {
-                      openPastWorkoutEditDialog(item);
-                    },),
-                    IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', onPressed: () {
-                      removePastWorkout(item.pastWorkout);
-                    }),
-                  ],
-                ),
-            ),
-          );
-        },
-      );
+      body = ListView(children: createListItems());
     }
     return Scaffold(
       body: body,
@@ -99,33 +73,33 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
         return SingleMessageAlertDialog('Error', 'Please add a workout before registering them.');
       });
     else
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SinglePickerAlertDialog<Workout>(
-          'Register a workout', 
-          'Select an option:', 
-          Map.fromIterable(this.workouts, key: (w) => w.name, value: (w) => w), 
-          ((Workout w) {
-            print(w.toJson());
-          })
-        );
-      },
-    );
-    // PastWorkout wk =  PastWorkout('New workout', []);
-    // addPastWorkout(wk);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SinglePickerAlertDialog<Workout>(
+            'Register a workout', 
+            'Select an option:', 
+            Map.fromIterable(this.workouts, key: (w) => w.name, value: (w) => w), 
+            ((Workout w) {
+              PastWorkout pastWorkout = PastWorkout(w, DateTime.now());
+              addPastWorkout(pastWorkout);
+            })
+          );
+        },
+      );
   }
 
   addPastWorkout(PastWorkout wk) {
+    PastWorkoutDataManager.addPastWorkout(wk);
     setState(() {
-      this.items.add(PastWorkoutListItem(wk));
+      this.pastWorkouts.add(wk);
     });
   }
 
   removePastWorkout(PastWorkout wk) {
     PastWorkoutDataManager.removePastWorkout(wk);
     setState(() {
-      this.items.removeWhere((element) => element.pastWorkout == wk);
+      this.pastWorkouts.remove(wk);
     });
   }
 
@@ -144,5 +118,47 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
       },
     );
   }
-}
 
+  List<Widget> createListItems() {
+    this.pastWorkouts.sort((a,b) {
+      return a.dateTime.compareTo(b.dateTime);
+    });
+    List<Widget> ans = [];
+    for (int i = 0; i < pastWorkouts.length; i++){
+      DateTime date = pastWorkouts[i].dateTime;
+      String dateF = "${date.day}-${date.month}-${date.year}";
+      DateTime otherDate = i == 0 ? null : pastWorkouts[i-1].dateTime;
+      String otherF = i == 0 ? null : "${otherDate.day}-${otherDate.month}-${otherDate.year}";
+      if (dateF != otherF) {
+        ans.add(DateHeaderItem(date));
+      }
+      PastWorkoutListItem item = PastWorkoutListItem(pastWorkouts[i]);
+      ans.add(Card(
+        child: ListTile(
+        title: item.buildTitle(context),
+        subtitle: item.buildSubtitle(context),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => WorkoutDisplayPage(item.pastWorkout.workout, canEdit: false,)),
+          );
+        },
+        trailing: Wrap(
+              spacing: 4, // space between two icons
+              children: <Widget>[
+                IconButton(icon: Icon(Icons.edit), tooltip: 'Edit', onPressed: () {
+                  openPastWorkoutEditDialog(item);
+                },),
+                IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', onPressed: () {
+                  removePastWorkout(item.pastWorkout);
+                }),
+              ],
+            ),
+        ),
+      )
+      );
+    }
+    return ans;
+  }
+
+}

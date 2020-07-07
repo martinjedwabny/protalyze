@@ -10,8 +10,9 @@ import 'package:flutter/material.dart';
 class WorkoutDisplayPage extends StatefulWidget {
   final Workout workout;
   final List<ExerciseBlockListItem> items;
+  final bool canEdit;
   
-  WorkoutDisplayPage(this.workout) :
+  WorkoutDisplayPage(this.workout, {this.canEdit = true}) :
     this.items = workout.exercises.map((e) => ExerciseBlockListItem(e)).toList();
 
   @override
@@ -27,41 +28,19 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
       ),
       body: widget.items.isEmpty ? 
         SingleMessageScaffold('No exercises added yet.') :
+        widget.canEdit == false ?
+        ListView(
+          children: widget.items.map((item) => createRowCard(item)).toList(),
+        ) :
         ReorderableListView(
-          children: widget.items.map((item) => Card(
-              key: ValueKey(item),
-              child: ListTile(
-                title: item.buildTitle(context),
-                subtitle: item.buildSubtitle(context),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ExerciseEditPage(item.block, updateExercise)),
-                  ).then((value) {
-                    setState(() {
-                    });
-                  });
-                },
-                trailing: Wrap(
-                  spacing: 4, // space between two icons
-                  children: <Widget>[
-                    IconButton(icon: Icon(Icons.add), tooltip: 'Duplicate', onPressed: () {
-                      duplicateExercise(item.block);
-                    },), // icon-1
-                    IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', onPressed: () {
-                      removeExercise(item.block);
-                    }),// icon-2
-                  ],
-                ),
-              ),
-            )).toList(),
+          children: widget.items.map((item) => createRowCard(item)).toList(),
             onReorder: (oldIndex, newIndex) {
               setState(() {
                 reorderItems(oldIndex, newIndex);
               });
             },
           ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: widget.canEdit == false ? null : FloatingActionButton(
         heroTag: 'ExerciseAdd',
         tooltip: 'Add exercise',
         onPressed: () { 
@@ -115,5 +94,35 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   void updateExercise(ExerciseBlock block) {
     WorkoutDataManager.updateWorkout(widget.workout);
     setState(() {});
+  }
+
+  Card createRowCard(ExerciseBlockListItem item) {
+    return Card(
+      key: ValueKey(item),
+      child: ListTile(
+        title: item.buildTitle(context),
+        subtitle: item.buildSubtitle(context),
+        onTap: widget.canEdit == false ? ((){}) : () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ExerciseEditPage(item.block, updateExercise)),
+          ).then((value) {
+            setState(() {
+            });
+          });
+        },
+        trailing: Wrap(
+          spacing: 4, // space between two icons
+          children: widget.canEdit == false ? [] : <Widget>[
+            IconButton(icon: Icon(Icons.add), tooltip: 'Duplicate', onPressed: () {
+              duplicateExercise(item.block);
+            },), // icon-1
+            IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', onPressed: () {
+              removeExercise(item.block);
+            }),// icon-2
+          ],
+        ),
+      ),
+    );
   }
 }

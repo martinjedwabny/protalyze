@@ -29,6 +29,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
     WorkoutDataManager.getSavedWorkouts().then((workouts) {
       setState(() {
         this.workouts = workouts;
+        this.items = this.workouts.map((e) => WorkoutListItem(e)).toList();
       });
     });
   }
@@ -36,9 +37,6 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (this.items == null || this.items.isEmpty) {
-      this.items = this.workouts.map((e) => WorkoutListItem(e)).toList();
-    }
     Widget body;
     if (this.items.isEmpty) {
       body = SingleMessageScaffold('No workouts added yet.');
@@ -101,6 +99,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
 
   addWorkout(Workout wk) {
     setState(() {
+      this.workouts.add(wk);
       this.items.add(WorkoutListItem(wk));
     });
   }
