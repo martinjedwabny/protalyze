@@ -3,15 +3,14 @@ import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/PastWorkout.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/persistance/PastWorkoutDataManager.dart';
-import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';  
 import 'dart:math' as math;
-import 'package:soundpool/soundpool.dart';
+
+import 'package:just_audio/just_audio.dart';
 
 class CountDownPage extends StatefulWidget {
   final Workout workout;
-  CountDownPage(this.workout);
+  CountDownPage(Workout original) : workout = Workout.copy(original);
   @override
   _CountDownPageState createState() => _CountDownPageState();
 }
@@ -24,8 +23,6 @@ enum CountdownStatus {
 }
 
 class _CountDownPageState extends State<CountDownPage> with TickerProviderStateMixin {
-  
-  Soundpool pool = Soundpool(streamType: StreamType.notification);
   int soundId;
   AnimationController controller;
   int remainingSeconds = 10000000;
@@ -33,6 +30,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   ExerciseBlock currentExercise;
   ExerciseBlock nextExercise;
   CountdownStatus status = CountdownStatus.PREPARE;
+  final player = AudioPlayer();
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -140,32 +138,33 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
+    player.setUrl('https://bigsoundbank.com/UPLOAD/mp3/1616.mp3');
     this.exercises = this.widget.workout.exercises;
     this.currentExercise = this.exercises.length > 0 ? this.exercises[0] : null;
     this.nextExercise = this.exercises.length > 1 ? this.exercises[1] : null;
-    rootBundle.load("beep.m4a").then((ByteData soundData) {
-      pool.load(soundData).then((value) {
-        soundId = value;
-      });
-    });
     controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 10),
-      value: 0.0
+      value: 1.0
     );
     controller.addListener(() {
       int secs = (controller.duration * controller.value).inSeconds;
       if (secs != remainingSeconds) {
         remainingSeconds = secs;
-        if (secs <= 2) {
-          this.pool.play(soundId);
+        if (secs == 5 || secs == 0) {
+          playBeepSound();
         }
         if (secs == 0) {
-          print('call');
           updateExerciseList();
         }
       }
     });
+  }
+
+  void playBeepSound(){
+    player.seek(Duration(seconds: 0));
+    player.play();
+    // SystemSound.play(SystemSoundType.click);
   }
 
   @override
@@ -221,14 +220,14 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: <Widget>[
                                       Container(
-                                        padding: EdgeInsets.only(left: 80, right: 80), 
+                                        padding: EdgeInsets.only(left: 70, right: 70), 
                                       child: 
                                       Column(children: exercisesTexts,),
                                       ),
                                       Text(
                                         timerString,
                                         style: TextStyle(
-                                            fontSize: 112.0,
+                                            fontSize: 90.0,
                                             color: Colors.white),
                                       ),
                                     ],
@@ -256,6 +255,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                                             ? 1.0
                                             : controller.value);
                                   }
+                                  setState((){});
                                 },
                                 icon: Icon(controller.isAnimating
                                     ? Icons.pause

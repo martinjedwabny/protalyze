@@ -8,7 +8,7 @@ import 'dart:ui';
 import 'package:cloud_firestore_web/cloud_firestore_web.dart';
 import 'package:firebase_auth_web/firebase_auth_web.dart';
 import 'package:firebase_core_web/firebase_core_web.dart';
-import 'package:soundpool_web/soundpool_web.dart';
+import 'package:just_audio/just_audio_web.dart';
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -17,6 +17,6 @@ void registerPlugins(PluginRegistry registry) {
   FirestoreWeb.registerWith(registry.registrarFor(FirestoreWeb));
   FirebaseAuthWeb.registerWith(registry.registrarFor(FirebaseAuthWeb));
   FirebaseCoreWeb.registerWith(registry.registrarFor(FirebaseCoreWeb));
-  SoundpoolPlugin.registerWith(registry.registrarFor(SoundpoolPlugin));
+  JustAudioPlugin.registerWith(registry.registrarFor(JustAudioPlugin));
   registry.registerMessageHandler();
 }

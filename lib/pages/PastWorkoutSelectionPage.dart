@@ -20,21 +20,17 @@ class PastWorkoutSelectionPage extends StatefulWidget {
 }
 
 class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> with AutomaticKeepAliveClientMixin {
-  List<Workout> workouts = [];
   List<PastWorkout> pastWorkouts = [];
 
   @override
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
     PastWorkoutDataManager.getSavedPastWorkouts().then((pastWorkouts) {
-      WorkoutDataManager.getSavedWorkouts().then((workouts) {
-        setState(() {
-          this.pastWorkouts = pastWorkouts;
-          this.workouts = workouts;
-        });
+      setState(() {
+        this.pastWorkouts = pastWorkouts;
       });
     });
   }
@@ -63,26 +59,28 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
 
 
   addNewPastWorkout(){
-    if (this.workouts.isEmpty)
-      showDialog(context: context,
-      builder: (BuildContext context) {
-        return SingleMessageAlertDialog('Error', 'Please add a workout before registering them.');
-      });
-    else
-      showDialog(
-        context: context,
+    WorkoutDataManager.getSavedWorkouts().then((workouts) {
+      if (workouts.isEmpty)
+        showDialog(context: context,
         builder: (BuildContext context) {
-          return SinglePickerAlertDialog<Workout>(
-            'Register a workout', 
-            'Select an option:', 
-            Map.fromIterable(this.workouts, key: (w) => w.name, value: (w) => w), 
-            ((Workout w) {
-              PastWorkout pastWorkout = PastWorkout(w, DateTime.now());
-              addPastWorkout(pastWorkout);
-            })
-          );
-        },
-      );
+          return SingleMessageAlertDialog('Error', 'Please add a workout before registering them.');
+        });
+      else
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return SinglePickerAlertDialog<Workout>(
+              'Register a workout', 
+              'Select an option:', 
+              Map.fromIterable(workouts, key: (w) => w.name, value: (w) => w), 
+              ((Workout w) {
+                PastWorkout pastWorkout = PastWorkout(w, DateTime.now());
+                addPastWorkout(pastWorkout);
+              })
+            );
+          },
+        );
+    });
   }
 
   addPastWorkout(PastWorkout wk) {
