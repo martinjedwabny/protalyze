@@ -5,6 +5,7 @@ import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/CountdownPage.dart';
 import 'package:Protalyze/pages/ExerciseEditPage.dart';
 import 'package:Protalyze/persistance/WorkoutDataManager.dart';
+import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:flutter/material.dart';
 
@@ -140,9 +141,18 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   }
 
   void goToTimer() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CountDownPage()),
-    );
+    if (this.widget.workout.exercises.isEmpty){
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SingleMessageAlertDialog('Error', 'Please add at least one exercise.');
+        },
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CountDownPage(this.widget.workout)),
+      );
+    }
   }
 }

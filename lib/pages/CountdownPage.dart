@@ -1,34 +1,178 @@
-import 'package:flutter/material.dart';  
+import 'package:Protalyze/config/Palette.dart';
+import 'package:Protalyze/domain/ExerciseBlock.dart';
+import 'package:Protalyze/domain/PastWorkout.dart';
+import 'package:Protalyze/domain/Workout.dart';
+import 'package:Protalyze/persistance/PastWorkoutDataManager.dart';
+import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';  
 import 'dart:math' as math;
+import 'package:soundpool/soundpool.dart';
 
 class CountDownPage extends StatefulWidget {
+  final Workout workout;
+  CountDownPage(this.workout);
   @override
   _CountDownPageState createState() => _CountDownPageState();
 }
 
-class _CountDownPageState extends State<CountDownPage>
-    with TickerProviderStateMixin {
+enum CountdownStatus {
+  PREPARE,
+  REST,
+  WORK,
+  FINISHED
+}
+
+class _CountDownPageState extends State<CountDownPage> with TickerProviderStateMixin {
+  
+  Soundpool pool = Soundpool(streamType: StreamType.notification);
+  int soundId;
   AnimationController controller;
+  int remainingSeconds = 10000000;
+  List<ExerciseBlock> exercises;
+  ExerciseBlock currentExercise;
+  ExerciseBlock nextExercise;
+  CountdownStatus status = CountdownStatus.PREPARE;
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
     return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
   }
 
+  String get statusString {
+    if (this.status == CountdownStatus.PREPARE)
+      return 'PREPARE';
+    if (this.status == CountdownStatus.REST)
+      return 'REST';
+    if (this.status == CountdownStatus.WORK)
+      return 'WORK';
+    return 'FINISHED';
+  }
+
+  String get currentExerciseString {
+    if (this.currentExercise == null)
+      return '';
+    return '${getExerciseString(this.currentExercise)}';
+  }
+
+  List<Text> get exercisesTexts {
+    return [
+      Text(
+        'NOW',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 24.0,
+            color: Colors.white),
+      ),
+      Text(
+        currentExerciseString,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.w300,
+            color: Colors.white),
+      ),
+      Text(
+        'NEXT',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 24.0,
+            color: Colors.white),
+      ),
+      Text(
+        nextExerciseString,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.w300,
+            color: Colors.white),
+      ),
+    ];
+  }
+
+  String getExerciseString(ExerciseBlock block) {
+    String ans = block.exercise.name;
+    if (block.weight != null)
+      ans += ', ' + block.weight.toString();
+    if (block.minReps != null && block.maxReps != null)
+      ans += ', ' + block.minReps.toString() + '-' + block.maxReps.toString() + ' reps';
+    if (block.minReps != null && block.maxReps == null)
+      ans += ', ' +  block.minReps.toString() + ' min reps';
+    if (block.minReps == null && block.maxReps != null)
+      ans += ', ' +  block.maxReps.toString() + ' max reps';
+    return ans;
+  }
+
+  String get nextExerciseString {
+    if (this.nextExercise == null)
+      return '';
+    return '${getExerciseString(this.nextExercise)}';
+  }
+
+  void updateExerciseList(){
+    if (this.status == CountdownStatus.PREPARE) {
+      this.status = CountdownStatus.WORK;
+      this.currentExercise = this.exercises.length > 0 ? this.exercises[0] : null;
+      this.nextExercise = this.exercises.length > 1 ? this.exercises[1] : null;
+      this.controller.duration = this.currentExercise.performingTime;
+      this.controller.reset();
+      this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
+    } else if (this.status == CountdownStatus.WORK) {
+      this.status = CountdownStatus.REST;
+      this.controller.duration = this.currentExercise.restTime;
+      this.controller.reset();
+      this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
+    } else if (this.status == CountdownStatus.REST) {
+      this.exercises.removeAt(0);
+      this.currentExercise = this.exercises.length > 0 ? this.exercises[0] : null;
+      this.nextExercise = this.exercises.length > 1 ? this.exercises[1] : null;
+      if (this.exercises.isEmpty) {
+        this.status = CountdownStatus.FINISHED;
+      } else {
+        this.status = CountdownStatus.WORK;
+        this.controller.duration = this.currentExercise.performingTime;
+        this.controller.reset();
+        this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    this.exercises = this.widget.workout.exercises;
+    this.currentExercise = this.exercises.length > 0 ? this.exercises[0] : null;
+    this.nextExercise = this.exercises.length > 1 ? this.exercises[1] : null;
+    rootBundle.load("beep.m4a").then((ByteData soundData) {
+      pool.load(soundData).then((value) {
+        soundId = value;
+      });
+    });
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 5),
+      duration: Duration(seconds: 10),
+      value: 0.0
     );
+    controller.addListener(() {
+      int secs = (controller.duration * controller.value).inSeconds;
+      if (secs != remainingSeconds) {
+        remainingSeconds = secs;
+        if (secs <= 2) {
+          this.pool.play(soundId);
+        }
+        if (secs == 0) {
+          print('call');
+          updateExerciseList();
+        }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white10,
+      backgroundColor: Palette.darkBlueColor,
       body: AnimatedBuilder(
           animation: controller,
           builder: (context, child) {
@@ -38,11 +182,18 @@ class _CountDownPageState extends State<CountDownPage>
                   alignment: Alignment.bottomCenter,
                   child:
                   Container(
-                    color: Colors.amber,
+                    color: Palette.yellowColor,
                     height:
                     controller.value * MediaQuery.of(context).size.height,
                   ),
                 ),
+                Container(alignment: Alignment.topCenter, child: 
+                  Text(
+                    statusString,
+                    style: TextStyle(
+                        fontSize: 60.0,
+                        color: Colors.white),
+                  ),),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Column(
@@ -59,23 +210,20 @@ class _CountDownPageState extends State<CountDownPage>
                                   child: CustomPaint(
                                       painter: CustomTimerPainter(
                                         animation: controller,
-                                        backgroundColor: Colors.white,
+                                        backgroundColor: Palette.darkBlueColor,
                                         color: themeData.indicatorColor,
                                       )),
                                 ),
                                 Align(
                                   alignment: FractionalOffset.center,
                                   child: Column(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: <Widget>[
-                                      Text(
-                                        "Count Down Timer",
-                                        style: TextStyle(
-                                            fontSize: 20.0,
-                                            color: Colors.white),
+                                      Container(
+                                        padding: EdgeInsets.only(left: 80, right: 80), 
+                                      child: 
+                                      Column(children: exercisesTexts,),
                                       ),
                                       Text(
                                         timerString,
@@ -91,11 +239,15 @@ class _CountDownPageState extends State<CountDownPage>
                           ),
                         ),
                       ),
-                      AnimatedBuilder(
+                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                        AnimatedBuilder(
                           animation: controller,
                           builder: (context, child) {
                             return FloatingActionButton.extended(
+                                heroTag: 'playpausetimer',
                                 onPressed: () {
+                                  if (this.status == CountdownStatus.FINISHED)
+                                    return;
                                   if (controller.isAnimating)
                                     controller.stop();
                                   else {
@@ -111,6 +263,28 @@ class _CountDownPageState extends State<CountDownPage>
                                 label: Text(
                                     controller.isAnimating ? "Pause" : "Play"));
                           }),
+                      FloatingActionButton.extended(
+                        heroTag: 'saveworkouttimer',
+                        onPressed: () {
+                          PastWorkout toSave = PastWorkout(this.widget.workout, DateTime.now());
+                          PastWorkoutDataManager.addPastWorkout(toSave).then((value) {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text('Workout registered!'),
+                            ));
+                          });
+                        },
+                        icon: Icon(Icons.save),
+                        label: Text("Save")
+                      ),
+                      FloatingActionButton.extended(
+                        heroTag: 'exittimer',
+                        onPressed: () {
+                          Navigator.pop(context, () {});
+                        },
+                        icon: Icon(Icons.exit_to_app),
+                        label: Text("Exit")
+                      ),
+                      ],),
                     ],
                   ),
                 ),
