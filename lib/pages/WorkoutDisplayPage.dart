@@ -3,6 +3,7 @@ import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/ExerciseEditPage.dart';
+import 'package:Protalyze/persistance/WorkoutDataManager.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ExerciseEditPage(item.block)),
+                    MaterialPageRoute(builder: (context) => ExerciseEditPage(item.block, updateExercise)),
                   ).then((value) {
                     setState(() {
                     });
@@ -85,24 +86,31 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     ExerciseBlock block = ExerciseBlock(Exercise('New exercise'), Duration(seconds: 30), Duration(seconds: 90));
     addExercise(block);
   }
-
-  addExercise(ExerciseBlock block) {
-    setState(() {
-      widget.workout.exercises.add(block);
-      widget.items.add(ExerciseBlockListItem(block));
-    });
-  }
   
   duplicateExercise(ExerciseBlock block) {
     ExerciseBlock blockCopy = ExerciseBlock(Exercise(block.exercise.name), Duration(seconds: block.performingTime.inSeconds), Duration(seconds: block.restTime.inSeconds), weight: block.weight, minReps: block.minReps, maxReps: block.maxReps, inputReps: block.inputReps, inputDifficulty: block.inputDifficulty);
     addExercise(blockCopy);
   }
 
+  addExercise(ExerciseBlock block) {
+    setState(() {
+      widget.workout.exercises.add(block);
+      widget.items.add(ExerciseBlockListItem(block));
+      WorkoutDataManager.updateWorkout(widget.workout);
+    });
+  }
+
   removeExercise(ExerciseBlock block) {
     setState(() {
       widget.workout.exercises.remove(block);
       widget.items.removeWhere((element) => element.block == block);
+      WorkoutDataManager.updateWorkout(widget.workout);
     });
   }
   
+
+  void updateExercise(ExerciseBlock block) {
+    WorkoutDataManager.updateWorkout(widget.workout);
+    setState(() {});
+  }
 }
