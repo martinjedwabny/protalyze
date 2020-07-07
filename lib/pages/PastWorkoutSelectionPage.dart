@@ -1,7 +1,4 @@
-import 'package:Protalyze/config/Palette.dart';
-import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/containers/DateHeaderItem.dart';
-import 'package:Protalyze/containers/ListItem.dart';
 import 'package:Protalyze/containers/PastWorkoutListItem.dart';
 import 'package:Protalyze/domain/PastWorkout.dart';
 import 'package:Protalyze/domain/Workout.dart';
@@ -14,7 +11,6 @@ import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:Protalyze/widgets/SinglePickerAlertDialog.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class PastWorkoutSelectionPage extends StatefulWidget {
   final BaseAuth auth;
@@ -47,7 +43,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
   Widget build(BuildContext context) {
     super.build(context);
     Widget body;
-    if (this.workouts.isEmpty) {
+    if (this.pastWorkouts.isEmpty) {
       body = SingleMessageScaffold('No registered workouts added yet.');
     } else {
       body = ListView(children: createListItems());
@@ -108,10 +104,11 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
       context: context,
       builder: (BuildContext context) {
         return PastWorkoutEditDialog('Edit workout name', item.pastWorkout.workout.name, (String text, DateTime selectedDate) {
-          // setState(() {
-          //   item.pastWorkout.workout.name = text;
-          //   PastWorkoutDataManager.updatePastWorkout(item.pastWorkout);
-          // });
+          setState(() {
+            item.pastWorkout.workout.name = text;
+            item.pastWorkout.dateTime = selectedDate;
+            PastWorkoutDataManager.updatePastWorkout(item.pastWorkout);
+          });
         },
         item.pastWorkout.dateTime
         );
@@ -121,7 +118,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
 
   List<Widget> createListItems() {
     this.pastWorkouts.sort((a,b) {
-      return a.dateTime.compareTo(b.dateTime);
+      return 1 - a.dateTime.compareTo(b.dateTime);
     });
     List<Widget> ans = [];
     for (int i = 0; i < pastWorkouts.length; i++){

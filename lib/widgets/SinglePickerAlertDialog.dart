@@ -1,4 +1,3 @@
-import 'package:Protalyze/domain/Workout.dart';
 import 'package:flutter/material.dart';
 
 class SinglePickerAlertDialog<T> extends StatefulWidget {

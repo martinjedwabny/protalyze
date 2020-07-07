@@ -1,5 +1,6 @@
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class PastWorkoutEditDialog extends StatefulWidget {
   final String title;
@@ -33,7 +34,7 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
     this.controller.text = this.widget.initialName;
     return AlertDialog(
       title: Text(widget.title),
-      content: Column(children: [
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(
           controller: controller,
           decoration: new InputDecoration(
@@ -44,7 +45,7 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
           Text("Date: ${widget.selectedDate.toLocal()}".split(' ')[0]),
           FlatButton(
             onPressed: () => selectDate(context),
-            child: Text('Select date'),
+            child: Text(DateFormat("MMM d").format(widget.selectedDate)),
           ),
         ]),
       ]),
@@ -56,7 +57,7 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return SingleMessageAlertDialog('Error', 'Enter at least one character.');
+                  return SingleMessageAlertDialog('Error', 'Enter at least one character for the name.');
                 },
               );
             } else {

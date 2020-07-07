@@ -2,7 +2,7 @@ import 'package:Protalyze/domain/Workout.dart';
 
 class PastWorkout {
   final Workout workout;
-  final DateTime dateTime;
+  DateTime dateTime;
   String documentId;
   PastWorkout(this.workout, this.dateTime);
 
