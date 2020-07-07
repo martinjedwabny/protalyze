@@ -2,6 +2,7 @@ import 'package:Protalyze/containers/ExerciseBlockListItem.dart';
 import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
+import 'package:Protalyze/pages/CountdownPage.dart';
 import 'package:Protalyze/pages/ExerciseEditPage.dart';
 import 'package:Protalyze/persistance/WorkoutDataManager.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
@@ -22,6 +23,22 @@ class WorkoutDisplayPage extends StatefulWidget {
 class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   @override
   Widget build(BuildContext context) {
+    Widget addExerciseButton = FloatingActionButton(
+      heroTag: 'ExerciseAdd',
+      tooltip: 'Add exercise',
+      onPressed: () { 
+        addNewExercise(); 
+      },
+      child: Icon(Icons.add, color: Colors.white,),
+    );
+    Widget playButton = FloatingActionButton(
+      heroTag: 'play',
+      tooltip: 'Start workout',
+      onPressed: () { 
+        goToTimer();
+      },
+      child: Icon(Icons.play_arrow, color: Colors.white,),
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.workout.name),
@@ -40,14 +57,10 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
               });
             },
           ),
-      floatingActionButton: widget.canEdit == false ? null : FloatingActionButton(
-        heroTag: 'ExerciseAdd',
-        tooltip: 'Add exercise',
-        onPressed: () { 
-          addNewExercise(); 
-        },
-        child: Icon(Icons.add, color: Colors.white,),
-      ),
+      floatingActionButton: widget.canEdit == false ? playButton : Wrap(spacing: 10.0, children: [
+        playButton,
+        addExerciseButton,
+      ] ,),
     );
   }
 
@@ -123,6 +136,13 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void goToTimer() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CountDownPage()),
     );
   }
 }
