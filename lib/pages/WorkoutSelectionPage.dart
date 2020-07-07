@@ -57,18 +57,18 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
                 MaterialPageRoute(builder: (context) => WorkoutDisplayPage(item.workout)),
               );
             },
-            onLongPress: () {
-              openWorkoutNameEditDialog(item);
-            },
             trailing: Wrap(
-                  spacing: 12, // space between two icons
+                  spacing: 4, // space between two icons
                   children: <Widget>[
-                    IconButton(icon: Icon(Icons.add_circle_outline), onPressed: () {
+                    IconButton(icon: Icon(Icons.add), tooltip: 'Duplicate', onPressed: () {
                       duplicateWorkout(item.workout);
-                    },), // icon-1
-                    IconButton(icon: Icon(Icons.remove_circle_outline), onPressed: () {
+                    },),
+                    IconButton(icon: Icon(Icons.edit), tooltip: 'Edit', onPressed: () {
+                      openWorkoutNameEditDialog(item);
+                    },),
+                    IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', onPressed: () {
                       removeWorkout(item.workout);
-                    }),// icon-2
+                    }),
                   ],
                 ),
             ),
@@ -79,6 +79,8 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
     return Scaffold(
       body: body,
       floatingActionButton: FloatingActionButton(
+        heroTag: 'WorkoutAdd',
+        tooltip: 'Add workout',
         onPressed: () { 
           addNewWorkout(); 
         },
@@ -112,6 +114,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
   removeWorkout(Workout wk) {
     WorkoutDataManager.removeWorkout(wk);
     setState(() {
+      this.workouts.remove(wk);
       this.items.removeWhere((element) => element.workout == wk);
     });
   }

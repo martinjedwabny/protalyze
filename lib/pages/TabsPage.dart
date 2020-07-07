@@ -1,3 +1,4 @@
+import 'package:Protalyze/pages/PastWorkoutSelectionPage.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/WorkoutSelectionPage.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class _TabsPageState extends State<TabsPage> {
         appBar: AppBar(
           bottom: TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.directions_run, color: Colors.white,)),
+              Tab(icon: Icon(Icons.fitness_center, color: Colors.white,)),
               Tab(icon: Icon(Icons.event_note, color: Colors.white)),
             ],
           ),
@@ -54,7 +55,7 @@ class _TabsPageState extends State<TabsPage> {
         body: TabBarView(
           children: [
             WorkoutSelectionPage(auth: widget.auth,),
-            Icon(Icons.event_note),
+            PastWorkoutSelectionPage(),
           ],
         ),
       ),

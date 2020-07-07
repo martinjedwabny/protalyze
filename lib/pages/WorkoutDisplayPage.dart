@@ -43,12 +43,12 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
                   });
                 },
                 trailing: Wrap(
-                  spacing: 12, // space between two icons
+                  spacing: 4, // space between two icons
                   children: <Widget>[
-                    IconButton(icon: Icon(Icons.add_circle_outline), onPressed: () {
+                    IconButton(icon: Icon(Icons.add), tooltip: 'Duplicate', onPressed: () {
                       duplicateExercise(item.block);
                     },), // icon-1
-                    IconButton(icon: Icon(Icons.remove_circle_outline), onPressed: () {
+                    IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', onPressed: () {
                       removeExercise(item.block);
                     }),// icon-2
                   ],
@@ -62,6 +62,8 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
             },
           ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'ExerciseAdd',
+        tooltip: 'Add exercise',
         onPressed: () { 
           addNewExercise(); 
         },
@@ -79,6 +81,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
       List<ExerciseBlock> exercises = widget.workout.exercises;
       ExerciseBlock block = exercises.removeAt(oldIndex);
       exercises.insert(newIndex, block);
+      updateExercise(block);
     }
   }
 
