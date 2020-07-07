@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/LoginSignupPage.dart';
-import 'package:Protalyze/pages/HomePage.dart';
+import 'package:Protalyze/pages/TabsPage.dart';
 
 class RootPage extends StatefulWidget {
   final BaseAuth auth;
@@ -41,7 +41,7 @@ class _RootPageState extends State<RootPage> {
         break;
       case AuthStatus.LOGGED_IN:
         if (userId.length > 0 && userId != null) {
-          return HomePage(userId, widget.auth, logoutCallback);
+          return TabsPage(userId, widget.auth, logoutCallback);
         } else
           return buildWaitingScreen();
         break;

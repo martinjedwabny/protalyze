@@ -2,18 +2,18 @@ import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/WorkoutSelectionPage.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
+class TabsPage extends StatefulWidget {
   final String userId;
   final BaseAuth auth;
   final VoidCallback logoutCallback;
 
-  HomePage(this.userId, this.auth, this.logoutCallback);
+  TabsPage(this.userId, this.auth, this.logoutCallback);
   
   @override
-  _HomePageState createState() => _HomePageState();
+  _TabsPageState createState() => _TabsPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _TabsPageState extends State<TabsPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
