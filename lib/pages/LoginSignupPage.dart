@@ -25,7 +25,8 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text('Sign up / Login'),
+          title: new Text('Login or create an account'),
+          centerTitle: true,
         ),
         body: Stack(
           children: <Widget>[
@@ -68,7 +69,7 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
     return new Hero(
       tag: 'hero',
       child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
+        padding: EdgeInsets.fromLTRB(0.0, 50.0, 0.0, 0.0),
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
           radius: 48.0,
@@ -80,7 +81,7 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
 
   Widget showEmailInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 80.0, 0.0, 0.0),
       child: new TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
@@ -162,7 +163,7 @@ Widget showInfoMessage() {
         infoMessage,
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: 13.0,
+            fontSize: 16.0,
             color: infoMessageIsError ? Colors.red : Colors.green,
             height: 1.0,
             fontWeight: FontWeight.w300),
@@ -188,6 +189,7 @@ void validateAndSubmit() async {
           if (userId.length > 0 && userId != null && verified) {
             widget.loginCallback();
           } else {
+            widget.auth.sendEmailVerification();
             infoMessage = 'Waiting for email verification';
             infoMessageIsError = false;
           }
@@ -195,6 +197,7 @@ void validateAndSubmit() async {
         } else {
           userId = await widget.auth.signUp(email, password);
           widget.auth.sendEmailVerification();
+          isLoginForm = true;
           infoMessage = 'Waiting for email verification';
           infoMessageIsError = false;
           print('Signed up user: $userId');
