@@ -46,8 +46,8 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
         cardTextInputNumericRow('Weight (kg)', weightControl),
         cardTextInputNumericRow('Min reps', minRepsControl),
         cardTextInputNumericRow('Max reps', maxRepsControl),
-        cardCheckboxInputRow('Input reps', 'reps'),
-        cardCheckboxInputRow('Input difficulty', 'diff'),
+        // cardCheckboxInputRow('Input reps', 'reps'),
+        // cardCheckboxInputRow('Input difficulty', 'diff'),
         Center(child: ButtonBar(
           mainAxisSize: MainAxisSize.min, // this will take space as minimum as posible(to center)
           children: <Widget>[
@@ -97,9 +97,8 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     block.maxReps = maxRepsControl.text.length == 0 ? null : int.parse(maxRepsControl.text);
     block.inputReps = this.checkboxInputs['reps'];
     block.inputDifficulty = this.checkboxInputs['diff'];
-    Navigator.pop(context, () {
-      widget.okayCallback(block);
-    });
+    widget.okayCallback(block);
+    Navigator.pop(context, () {});
   }
 
   cancelPress(){
