@@ -28,6 +28,7 @@ dependencies:
   firebase_auth: ^0.16.1
   cloud_firestore: ^0.13.7
   audioplayers: ^0.15.1
+  google_fonts: ^1.1.0
 
 
 

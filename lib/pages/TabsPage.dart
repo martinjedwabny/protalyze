@@ -1,3 +1,4 @@
+import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/pages/PastWorkoutSelectionPage.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/WorkoutSelectionPage.dart';
@@ -27,7 +28,7 @@ class _TabsPageState extends State<TabsPage> {
               Tab(icon: Icon(Icons.event_note, color: Colors.white)),
             ],
           ),
-          title: Text('Protalyze', style: TextStyle(fontFamily: 'Lobster', color: Colors.white),),
+          title: Text('Protalyze', style: Themes.normal.appBarTheme.textTheme.headline6,),
           centerTitle: true,
           actions: <Widget>[
             PopupMenuButton<String>(
