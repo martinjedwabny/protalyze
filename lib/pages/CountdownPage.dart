@@ -5,8 +5,8 @@ import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/persistance/PastWorkoutDataManager.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-
-import 'package:just_audio/just_audio.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class CountDownPage extends StatefulWidget {
   final Workout workout;
@@ -23,148 +23,44 @@ enum CountdownStatus {
 }
 
 class _CountDownPageState extends State<CountDownPage> with TickerProviderStateMixin {
-  int soundId;
   AnimationController controller;
-  int remainingSeconds = 10000000;
-  List<ExerciseBlock> exercises;
+  int remainingTime = 10000000;
+  Iterator<ExerciseBlock> exerciseIterator;
   ExerciseBlock currentExercise;
   ExerciseBlock nextExercise;
   CountdownStatus status = CountdownStatus.PREPARE;
-  final player = AudioPlayer();
+  bool isActive = false;
 
-  String get timerString {
-    Duration duration = controller.duration * controller.value;
-    return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
-  }
-
-  String get statusString {
-    if (this.status == CountdownStatus.PREPARE)
-      return 'PREPARE';
-    if (this.status == CountdownStatus.REST)
-      return 'REST';
-    if (this.status == CountdownStatus.WORK)
-      return 'WORK';
-    return 'FINISHED';
-  }
-
-  String get currentExerciseString {
-    if (this.currentExercise == null)
-      return '';
-    return '${getExerciseString(this.currentExercise)}';
-  }
-
-  List<Text> get exercisesTexts {
-    return [
-      Text(
-        'NOW',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 24.0,
-            color: Colors.white),
-      ),
-      Text(
-        currentExerciseString,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.w300,
-            color: Colors.white),
-      ),
-      Text(
-        'NEXT',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 24.0,
-            color: Colors.white),
-      ),
-      Text(
-        nextExerciseString,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.w300,
-            color: Colors.white),
-      ),
-    ];
-  }
-
-  String getExerciseString(ExerciseBlock block) {
-    String ans = block.exercise.name;
-    if (block.weight != null)
-      ans += ', ' + block.weight.toString();
-    if (block.minReps != null && block.maxReps != null)
-      ans += ', ' + block.minReps.toString() + '-' + block.maxReps.toString() + ' reps';
-    if (block.minReps != null && block.maxReps == null)
-      ans += ', ' +  block.minReps.toString() + ' min reps';
-    if (block.minReps == null && block.maxReps != null)
-      ans += ', ' +  block.maxReps.toString() + ' max reps';
-    return ans;
-  }
-
-  String get nextExerciseString {
-    if (this.nextExercise == null)
-      return '';
-    return '${getExerciseString(this.nextExercise)}';
-  }
-
-  void updateExerciseList(){
-    if (this.status == CountdownStatus.PREPARE) {
-      this.status = CountdownStatus.WORK;
-      this.currentExercise = this.exercises.length > 0 ? this.exercises[0] : null;
-      this.nextExercise = this.exercises.length > 1 ? this.exercises[1] : null;
-      this.controller.duration = this.currentExercise.performingTime;
-      this.controller.reset();
-      this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
-    } else if (this.status == CountdownStatus.WORK) {
-      this.status = CountdownStatus.REST;
-      this.controller.duration = this.currentExercise.restTime;
-      this.controller.reset();
-      this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
-    } else if (this.status == CountdownStatus.REST) {
-      this.exercises.removeAt(0);
-      this.currentExercise = this.exercises.length > 0 ? this.exercises[0] : null;
-      this.nextExercise = this.exercises.length > 1 ? this.exercises[1] : null;
-      if (this.exercises.isEmpty) {
-        this.status = CountdownStatus.FINISHED;
-      } else {
-        this.status = CountdownStatus.WORK;
-        this.controller.duration = this.currentExercise.performingTime;
-        this.controller.reset();
-        this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
-      }
-    }
+  Future<AudioPlayer> playBeepSound() async{
+    AudioCache cache = new AudioCache();
+    return await cache.play("beep.mp3");
   }
 
   @override
   void initState() {
     super.initState();
-    player.setUrl('https://bigsoundbank.com/UPLOAD/mp3/1616.mp3');
-    this.exercises = this.widget.workout.exercises;
-    this.currentExercise = this.exercises.length > 0 ? this.exercises[0] : null;
-    this.nextExercise = this.exercises.length > 1 ? this.exercises[1] : null;
+    this.exerciseIterator = this.widget.workout.exercises.iterator;
+    this.exerciseIterator.moveNext();
+    this.currentExercise = this.exerciseIterator.current;
+    this.exerciseIterator.moveNext();
+    this.nextExercise = this.exerciseIterator.current;
     controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 10),
       value: 1.0
     );
     controller.addListener(() {
-      int secs = (controller.duration * controller.value).inSeconds;
-      if (secs != remainingSeconds) {
-        remainingSeconds = secs;
-        if (secs == 5 || secs == 0) {
+      int time = (controller.duration * controller.value).inSeconds;
+      if (time != remainingTime && isActive) {
+        remainingTime = time;
+        if (time == 5 || time == 0) {
           playBeepSound();
         }
-        if (secs == 0) {
+        if (time == 0) {
           updateExerciseList();
         }
       }
     });
-  }
-
-  void playBeepSound(){
-    player.seek(Duration(seconds: 0));
-    player.play();
-    // SystemSound.play(SystemSoundType.click);
   }
 
   @override
@@ -255,7 +151,9 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                                             ? 1.0
                                             : controller.value);
                                   }
-                                  setState((){});
+                                  setState((){
+                                    isActive = !isActive;
+                                  });
                                 },
                                 icon: Icon(controller.isAnimating
                                     ? Icons.pause
@@ -292,6 +190,108 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             );
           }),
     );
+  }
+
+
+  String get timerString {
+    Duration duration = controller.duration * controller.value;
+    return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+  }
+
+  String get statusString {
+    if (this.status == CountdownStatus.PREPARE)
+      return 'PREPARE';
+    if (this.status == CountdownStatus.REST)
+      return 'REST';
+    if (this.status == CountdownStatus.WORK)
+      return 'WORK';
+    return 'FINISHED';
+  }
+
+  String get currentExerciseString {
+    if (this.currentExercise == null)
+      return '';
+    return '${getExerciseString(this.currentExercise)}';
+  }
+
+  List<Text> get exercisesTexts {
+    return [
+      Text(
+        'NOW',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 24.0,
+            color: Colors.white),
+      ),
+      Text(
+        currentExerciseString,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.w300,
+            color: Colors.white),
+      ),
+      Text(
+        'NEXT',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 24.0,
+            color: Colors.white),
+      ),
+      Text(
+        nextExerciseString,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.w300,
+            color: Colors.white),
+      ),
+    ];
+  }
+
+  String getExerciseString(ExerciseBlock block) {
+    String ans = block.exercise.name;
+    if (block.weight != null)
+      ans += ', ' + block.weight.toString();
+    if (block.minReps != null && block.maxReps != null)
+      ans += ', ' + block.minReps.toString() + '-' + block.maxReps.toString() + ' reps';
+    if (block.minReps != null && block.maxReps == null)
+      ans += ', ' +  block.minReps.toString() + ' min reps';
+    if (block.minReps == null && block.maxReps != null)
+      ans += ', ' +  block.maxReps.toString() + ' max reps';
+    return ans;
+  }
+
+  String get nextExerciseString {
+    if (this.nextExercise == null)
+      return '';
+    return '${getExerciseString(this.nextExercise)}';
+  }
+
+  void updateExerciseList(){
+    if (this.status == CountdownStatus.PREPARE) {
+      this.status = CountdownStatus.WORK;
+      this.controller.duration = this.currentExercise.performingTime;
+      this.controller.reset();
+      this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
+    } else if (this.status == CountdownStatus.WORK) {
+      this.status = CountdownStatus.REST;
+      this.controller.duration = this.currentExercise.restTime;
+      this.controller.reset();
+      this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
+    } else if (this.status == CountdownStatus.REST) {  
+      this.currentExercise = this.exerciseIterator.current;
+      this.exerciseIterator.moveNext();
+      this.nextExercise = this.exerciseIterator.current;
+      if (this.currentExercise == null && this.nextExercise == null) {
+        this.status = CountdownStatus.FINISHED;
+      } else {
+        this.status = CountdownStatus.WORK;
+        this.controller.duration = this.currentExercise.performingTime;
+        this.controller.reset();
+        this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
+      }
+    }
   }
 }
 
