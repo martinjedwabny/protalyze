@@ -23,9 +23,11 @@ class _TabsPageState extends State<TabsPage> {
       child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(
+            indicatorColor: Color.fromRGBO(255, 255, 255, 0.6),
+            indicatorPadding: EdgeInsets.only(left:40.0, right:40.0),
             tabs: [
-              Tab(icon: Icon(Icons.fitness_center, color: Colors.white,)),
-              Tab(icon: Icon(Icons.event_note, color: Colors.white)),
+              Tab(text: 'WORKOUT',),
+              Tab(text: 'LOG',),
             ],
           ),
           title: Text('Protalyze', style: Themes.normal.appBarTheme.textTheme.headline6,),

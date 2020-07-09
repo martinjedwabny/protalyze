@@ -82,7 +82,10 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                     controller.value * MediaQuery.of(context).size.height,
                   ),
                 ),
-                Container(alignment: Alignment.topCenter, child: 
+                Container(
+                  alignment: Alignment.topCenter, 
+                  padding: EdgeInsets.only(top: 10.0),
+                  child: 
                   Text(
                     statusString,
                     style: TextStyle(
