@@ -7,6 +7,7 @@ import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/RootPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     setupFirestore();
+    setupVerticalHorientation();
     return MaterialApp(
       title: 'Protalyze',
       home: RootPage(auth: new Auth(),),
@@ -32,5 +34,12 @@ class MyApp extends StatelessWidget {
     } catch(e) {
       print('Non critical error trying to setup Firestore persistance.');
     }
+  }
+
+  void setupVerticalHorientation(){
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
   }
 }
