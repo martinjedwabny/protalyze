@@ -1,4 +1,5 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
+import 'package:Protalyze/bloc/TimerNotifier.dart';
 import 'package:Protalyze/config/Palette.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/PastWorkout.dart';
@@ -9,7 +10,6 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
-import 'dart:io' show Platform;
 
 class CountDownPage extends StatefulWidget {
   final Workout workout;
@@ -18,23 +18,20 @@ class CountDownPage extends StatefulWidget {
   _CountDownPageState createState() => _CountDownPageState();
 }
 
-enum CountdownStatus {
-  PREPARE,
-  REST,
-  WORK,
-  FINISHED
-}
+enum CountdownStatus { PREPARE, REST, WORK, FINISHED }
 
-class _CountDownPageState extends State<CountDownPage> with TickerProviderStateMixin {
+class _CountDownPageState extends State<CountDownPage>
+    with TickerProviderStateMixin {
   AnimationController controller;
-  int remainingTime = 10000000;
   Iterator<ExerciseBlock> exerciseIterator;
   ExerciseBlock currentExercise;
   ExerciseBlock nextExercise;
   CountdownStatus status = CountdownStatus.PREPARE;
-  bool isActive = false;
+  TimerNotifier blockTimer;
+  Duration blockRemainingTime;
+  Duration totalRemainingTime;
 
-  Future<AudioPlayer> playBeepSound() async{
+  Future<AudioPlayer> playBeepSound() async {
     AudioCache cache = new AudioCache();
     return await cache.play("beep.mp3");
   }
@@ -42,36 +39,57 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   @override
   void dispose() {
     controller.dispose();
-    try {Wakelock.disable();} catch (e){}
+    try {
+      Wakelock.disable();
+    } catch (e) {}
     super.dispose();
+  }
+
+  void initializeTimer(Workout workout) {
+    this.blockRemainingTime = Duration(seconds: 10);
+    int totalRemainingSeconds = 10;
+    for (ExerciseBlock block in this.widget.workout.exercises)
+      totalRemainingSeconds +=
+          block.performingTime.inSeconds + block.restTime.inSeconds;
+    this.totalRemainingTime = Duration(seconds: totalRemainingSeconds);
+    blockTimer = TimerNotifier(Duration(seconds: 10));
+    blockTimer.addListener(() {
+      this.blockRemainingTime -= Duration(seconds: 1);
+      this.totalRemainingTime -= Duration(seconds: 1);
+      int time = blockRemainingTime.inSeconds;
+      if (time == 5 || time == 0) {
+        playBeepSound();
+      }
+      if (time == 0) {
+        updateExerciseList();
+      }
+    });
+  }
+
+  void startTimer() {
+    this.controller.reverse(from: controller.value == 0.0 ? 1.0 : controller.value);
+    this.blockTimer.start();
+  }
+
+  void stopTimer() {
+    this.controller.stop();
+    this.blockTimer.pause();
   }
 
   @override
   void initState() {
     super.initState();
-    try {Wakelock.enable();} catch (e){}
+    try {
+      Wakelock.enable();
+    } catch (e) {}
     this.exerciseIterator = this.widget.workout.exercises.iterator;
     this.exerciseIterator.moveNext();
     this.currentExercise = this.exerciseIterator.current;
     this.exerciseIterator.moveNext();
     this.nextExercise = this.exerciseIterator.current;
     controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 10),
-      value: 1.0
-    );
-    controller.addListener(() {
-      int time = (controller.duration * controller.value).inSeconds;
-      if (time != remainingTime && isActive) {
-        remainingTime = time;
-        if (time == 5 || time == 0) {
-          playBeepSound();
-        }
-        if (time == 0) {
-          updateExerciseList();
-        }
-      }
-    });
+        vsync: this, duration: Duration(seconds: 10), value: 1.0);
+    initializeTimer(this.widget.workout);
   }
 
   @override
@@ -86,23 +104,20 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
               children: <Widget>[
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child:
-                  Container(
+                  child: Container(
                     color: Palette.yellowColor,
                     height:
-                    controller.value * MediaQuery.of(context).size.height,
+                        controller.value * MediaQuery.of(context).size.height,
                   ),
                 ),
                 Container(
-                  alignment: Alignment.topCenter, 
+                  alignment: Alignment.topCenter,
                   padding: EdgeInsets.only(top: 10.0),
-                  child: 
-                  Text(
+                  child: Text(
                     statusString,
-                    style: TextStyle(
-                        fontSize: 60.0,
-                        color: Colors.white),
-                  ),),
+                    style: TextStyle(fontSize: 60.0, color: Colors.white),
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Column(
@@ -118,24 +133,28 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                                 Positioned.fill(
                                   child: CustomPaint(
                                       painter: CustomTimerPainter(
-                                        animation: controller,
-                                        backgroundColor: Palette.darkBlueColor,
-                                        color: themeData.indicatorColor,
-                                      )),
+                                    animation: controller,
+                                    backgroundColor: Palette.darkBlueColor,
+                                    color: themeData.indicatorColor,
+                                  )),
                                 ),
                                 Align(
                                   alignment: FractionalOffset.center,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: <Widget>[
                                       Container(
-                                        padding: EdgeInsets.only(left: 70, right: 70), 
-                                      child: 
-                                      Column(children: exercisesTexts,),
+                                        padding: EdgeInsets.only(
+                                            left: 70, right: 70),
+                                        child: Column(
+                                          children: exercisesTexts,
+                                        ),
                                       ),
                                       Text(
-                                        timerString,
+                                        blockRemainingTimeString,
                                         style: TextStyle(
                                             fontSize: 90.0,
                                             color: Colors.white),
@@ -148,56 +167,66 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                           ),
                         ),
                       ),
-                      Center(child: Text(getTotalRemainingTime, style: TextStyle(fontSize: 24.0,color: Colors.white70,),),),
-                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                        AnimatedBuilder(
-                          animation: controller,
-                          builder: (context, child) {
-                            return FloatingActionButton.extended(
-                                heroTag: 'playpausetimer',
-                                onPressed: () {
-                                  if (this.status == CountdownStatus.FINISHED)
-                                    return;
-                                  if (controller.isAnimating)
-                                    controller.stop();
-                                  else {
-                                    controller.reverse(
-                                        from: controller.value == 0.0
-                                            ? 1.0
-                                            : controller.value);
-                                  }
-                                  setState((){
-                                    isActive = !isActive;
-                                  });
-                                },
-                                icon: Icon(controller.isAnimating
-                                    ? Icons.pause
-                                    : Icons.play_arrow),
-                                label: Text(
-                                    controller.isAnimating ? "Pause" : "Play"));
-                          }),
-                      FloatingActionButton.extended(
-                        heroTag: 'saveworkouttimer',
-                        onPressed: () {
-                          PastWorkout toSave = PastWorkout(this.widget.workout, DateTime.now());
-                          Provider.of<PastWorkoutNotifier>(context, listen: false).addPastWorkout(toSave).then((v) {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text('Workout registered!'),
-                            ));
-                          });
-                        },
-                        icon: Icon(Icons.save),
-                        label: Text("Save")
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Remaining time: ' + totalRemainingTimeString,
+                            style: TextStyle(
+                              fontSize: 24.0,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ),
                       ),
-                      FloatingActionButton.extended(
-                        heroTag: 'exittimer',
-                        onPressed: () {
-                          Navigator.pop(context, () {});
-                        },
-                        icon: Icon(Icons.exit_to_app),
-                        label: Text("Exit")
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          AnimatedBuilder(
+                              animation: controller,
+                              builder: (context, child) {
+                                return FloatingActionButton.extended(
+                                    heroTag: 'playpausetimer',
+                                    onPressed: () {
+                                      if (this.status ==
+                                          CountdownStatus.FINISHED) return;
+                                      if (controller.isAnimating)
+                                        stopTimer();
+                                      else
+                                        startTimer();
+                                    },
+                                    icon: Icon(controller.isAnimating
+                                        ? Icons.pause
+                                        : Icons.play_arrow),
+                                    label: Text(controller.isAnimating
+                                        ? "Pause"
+                                        : "Play"));
+                              }),
+                          FloatingActionButton.extended(
+                              heroTag: 'saveworkouttimer',
+                              onPressed: () {
+                                PastWorkout toSave = PastWorkout(
+                                    this.widget.workout, DateTime.now());
+                                Provider.of<PastWorkoutNotifier>(context,
+                                        listen: false)
+                                    .addPastWorkout(toSave)
+                                    .then((v) {
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text('Workout registered!'),
+                                  ));
+                                });
+                              },
+                              icon: Icon(Icons.save),
+                              label: Text("Save")),
+                          FloatingActionButton.extended(
+                              heroTag: 'exittimer',
+                              onPressed: () {
+                                Navigator.pop(context, () {});
+                              },
+                              icon: Icon(Icons.exit_to_app),
+                              label: Text("Exit")),
+                        ],
                       ),
-                      ],),
                     ],
                   ),
                 ),
@@ -207,58 +236,63 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     );
   }
 
-
-  String get timerString {
-    Duration duration = controller.duration * controller.value;
+  String get blockRemainingTimeString {
+    Duration duration = this.blockRemainingTime;
+    if (duration.inHours > 0)
+      return '${duration.inHours}:${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
     return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
   }
 
-  String get statusString {
-    if (this.status == CountdownStatus.PREPARE)
-      return 'PREPARE';
-    if (this.status == CountdownStatus.REST)
-      return 'REST';
-    if (this.status == CountdownStatus.WORK)
-      return 'WORK';
-    return 'FINISHED';
+  String get totalRemainingTimeString {
+    Duration duration = this.totalRemainingTime;
+    if (duration.inHours > 0)
+      return '${duration.inHours}:${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+    return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+  }
+
+  String get nextExerciseString {
+    if (this.nextExercise == null) return '';
+    return '${getExerciseString(this.nextExercise)}';
   }
 
   String get currentExerciseString {
-    if (this.currentExercise == null)
-      return '';
+    if (this.currentExercise == null) return '';
     return '${getExerciseString(this.currentExercise)}';
+  }
+
+  String get statusString {
+    if (this.status == CountdownStatus.PREPARE) return 'PREPARE';
+    if (this.status == CountdownStatus.REST) return 'REST';
+    if (this.status == CountdownStatus.WORK) return 'WORK';
+    return 'FINISHED';
   }
 
   List<Text> get exercisesTexts {
     List<Text> texts = new List<Text>();
     if (this.currentExerciseString.length > 0) {
-      texts.add(Text('NOW',
+      texts.add(Text(
+        'NOW',
         textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 20.0,
-            color: Colors.white),
+        style: TextStyle(fontSize: 20.0, color: Colors.white),
       ));
-      texts.add(Text(currentExerciseString,
+      texts.add(Text(
+        currentExerciseString,
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.w300,
-            color: Colors.white),
+            fontSize: 20.0, fontWeight: FontWeight.w300, color: Colors.white),
       ));
     }
     if (this.nextExerciseString.length > 0) {
-      texts.add(Text('AFTER',
+      texts.add(Text(
+        'AFTER',
         textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 20.0,
-            color: Colors.white70),
+        style: TextStyle(fontSize: 20.0, color: Colors.white70),
       ));
-      texts.add(Text(nextExerciseString,
+      texts.add(Text(
+        nextExerciseString,
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.w300,
-            color: Colors.white70),
+            fontSize: 20.0, fontWeight: FontWeight.w300, color: Colors.white70),
       ));
     }
     return texts;
@@ -266,31 +300,28 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   String getExerciseString(ExerciseBlock block) {
     String ans = block.exercise.name;
-    if (block.weight != null)
-      ans += ', ' + block.weight.toString();
+    if (block.weight != null) ans += ', ' + block.weight.toString();
     if (block.minReps != null && block.maxReps != null)
-      ans += ', ' + block.minReps.toString() + '-' + block.maxReps.toString() + ' reps';
+      ans += ', ' +
+          block.minReps.toString() +
+          '-' +
+          block.maxReps.toString() +
+          ' reps';
     if (block.minReps != null && block.maxReps == null)
-      ans += ', ' +  block.minReps.toString() + ' min reps';
+      ans += ', ' + block.minReps.toString() + ' min reps';
     if (block.minReps == null && block.maxReps != null)
-      ans += ', ' +  block.maxReps.toString() + ' max reps';
+      ans += ', ' + block.maxReps.toString() + ' max reps';
     return ans;
   }
 
-  String get nextExerciseString {
-    if (this.nextExercise == null)
-      return '';
-    return '${getExerciseString(this.nextExercise)}';
-  }
-
-  String get getTotalRemainingTime => 'Remaining time:';
-
-  void updateExerciseList(){
+  void updateExerciseList() {
     if (this.status == CountdownStatus.PREPARE) {
       this.status = CountdownStatus.WORK;
       this.controller.duration = this.currentExercise.performingTime;
       this.controller.reset();
-      this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
+      this
+          .controller
+          .reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
     } else if (this.status == CountdownStatus.WORK) {
       this.status = CountdownStatus.REST;
       this.controller.duration = this.currentExercise.restTime;
@@ -298,16 +329,26 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
       this.exerciseIterator.moveNext();
       this.nextExercise = this.exerciseIterator.current;
       this.controller.reset();
-      this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
-    } else if (this.status == CountdownStatus.REST) {  
+      this
+          .controller
+          .reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
+    } else if (this.status == CountdownStatus.REST) {
       if (this.currentExercise == null && this.nextExercise == null) {
         this.status = CountdownStatus.FINISHED;
       } else {
         this.status = CountdownStatus.WORK;
         this.controller.duration = this.currentExercise.performingTime;
         this.controller.reset();
-        this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
+        this
+            .controller
+            .reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
       }
+    }
+    if (this.status == CountdownStatus.FINISHED) {
+      this.blockTimer.dispose();
+    } else {
+      this.blockTimer = TimerNotifier(this.controller.duration);
+      this.blockRemainingTime = this.controller.duration;
     }
   }
 }
