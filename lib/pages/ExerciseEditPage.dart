@@ -16,6 +16,7 @@ class ExerciseEditPage extends StatefulWidget {
 
 class _ExerciseEditPageState extends State<ExerciseEditPage> {
   final nameControl = TextEditingController();
+  final setsControl = TextEditingController();
   final performTimeControl = TextEditingController();
   final restTimeControl = TextEditingController();
   final weightControl = TextEditingController();
@@ -26,6 +27,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
   @override
   Widget build(BuildContext context) {
     nameControl.text = widget.block.exercise.name;
+    setsControl.text = widget.block.sets != null ? widget.block.sets.toString() : 1;
     performTimeControl.text = widget.block.performingTime.inSeconds.toString();
     restTimeControl.text = widget.block.restTime.inSeconds.toString();
     weightControl.text = widget.block.weight == null ? null : widget.block.weight.amount.toString();
@@ -41,6 +43,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
       ),
       body: ListView(children: [
         cardTextInputRow('Name', nameControl),
+        cardTextInputNumericRow('Sets', setsControl),
         cardTextInputNumericRow('Performing duration (seconds)', performTimeControl),
         cardTextInputNumericRow('Rest duration (seconds)', restTimeControl),
         cardTextInputNumericRow('Weight (kg)', weightControl),
@@ -92,6 +95,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     } else {
       return showAlertDialog(context, "Error", "Rest time should not be empty.");
     }
+    block.sets = setsControl.text.length == 0 ? 1 : int.parse(setsControl.text);
     block.weight = weightControl.text.length == 0 ? null : Weight(int.parse(weightControl.text), WeightType.kilos);
     block.minReps = minRepsControl.text.length == 0 ? null : int.parse(minRepsControl.text); 
     block.maxReps = maxRepsControl.text.length == 0 ? null : int.parse(maxRepsControl.text);

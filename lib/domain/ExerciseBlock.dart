@@ -14,6 +14,7 @@ class ExerciseBlock {
   int maxReps;
   bool inputReps;
   bool inputDifficulty;
+  int sets;
   // Constructors
   ExerciseBlock(
     this.exercise, 
@@ -22,6 +23,7 @@ class ExerciseBlock {
       this.weight, 
       this.minReps, 
       this.maxReps, 
+      this.sets,
       this.inputReps = true, 
       this.inputDifficulty = true});
 
@@ -32,6 +34,7 @@ class ExerciseBlock {
     this.weight = other.weight;
     this.minReps = other.minReps;
     this.maxReps = other.maxReps;
+    this.sets = other.sets;
     this.inputReps = other.inputReps;
     this.inputDifficulty = other.inputDifficulty;
   }
@@ -43,6 +46,7 @@ class ExerciseBlock {
       weight = json['weight'] == null || json['weight'] == "null" ? null : Weight.fromJson(json['weight']),
       minReps = jsonDecode(json['minReps']),
       maxReps = jsonDecode(json['maxReps']),
+      sets = json['sets'] == null ? 1 : jsonDecode(json['sets']),
       inputReps = jsonDecode(json['inputReps']),
       inputDifficulty = jsonDecode(json['inputDifficulty'])
     ;
@@ -55,6 +59,7 @@ class ExerciseBlock {
       'weight' : weight == null ? null : weight.toJson(),
       'minReps' : jsonEncode(minReps),
       'maxReps' : jsonEncode(maxReps),
+      'sets' : sets == null ? 1 : jsonEncode(sets),
       'inputReps' : jsonEncode(inputReps),
       'inputDifficulty' : jsonEncode(inputDifficulty),
     };

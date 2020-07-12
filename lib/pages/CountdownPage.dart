@@ -13,7 +13,16 @@ import 'package:wakelock/wakelock.dart';
 
 class CountDownPage extends StatefulWidget {
   final Workout workout;
-  CountDownPage(Workout original) : workout = Workout.copy(original);
+  List<ExerciseBlock> exerciseBlocks;
+  CountDownPage(Workout workout) : this.workout = workout {
+    this.exerciseBlocks = [];
+    for (ExerciseBlock block in workout.exercises) {
+      if (block.sets == null)
+        this.exerciseBlocks.add(block);
+      for (int i = 1; i <= block.sets; i++)
+        this.exerciseBlocks.add(block);
+    }
+  }
   @override
   _CountDownPageState createState() => _CountDownPageState();
 }
@@ -45,10 +54,10 @@ class _CountDownPageState extends State<CountDownPage>
     super.dispose();
   }
 
-  void initializeTimer(Workout workout) {
+  void initializeTimer() {
     this.blockRemainingTime = Duration(seconds: 10);
     int totalRemainingSeconds = 10;
-    for (ExerciseBlock block in this.widget.workout.exercises)
+    for (ExerciseBlock block in this.widget.exerciseBlocks)
       totalRemainingSeconds +=
           block.performingTime.inSeconds + block.restTime.inSeconds;
     this.totalRemainingTime = Duration(seconds: totalRemainingSeconds);
@@ -82,14 +91,14 @@ class _CountDownPageState extends State<CountDownPage>
     try {
       Wakelock.enable();
     } catch (e) {}
-    this.exerciseIterator = this.widget.workout.exercises.iterator;
+    this.exerciseIterator = this.widget.exerciseBlocks.iterator;
     this.exerciseIterator.moveNext();
     this.currentExercise = this.exerciseIterator.current;
     this.exerciseIterator.moveNext();
     this.nextExercise = this.exerciseIterator.current;
     controller = AnimationController(
         vsync: this, duration: Duration(seconds: 10), value: 1.0);
-    initializeTimer(this.widget.workout);
+    initializeTimer();
   }
 
   @override
