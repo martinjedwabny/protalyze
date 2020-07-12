@@ -1,12 +1,15 @@
+import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/config/Palette.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/PastWorkout.dart';
 import 'package:Protalyze/domain/Workout.dart';
-import 'package:Protalyze/persistance/PastWorkoutDataManager.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:provider/provider.dart';
+import 'package:wakelock/wakelock.dart';
+import 'dart:io' show Platform;
 
 class CountDownPage extends StatefulWidget {
   final Workout workout;
@@ -37,8 +40,16 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    try {Wakelock.disable();} catch (e){}
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
+    try {Wakelock.enable();} catch (e){}
     this.exerciseIterator = this.widget.workout.exercises.iterator;
     this.exerciseIterator.moveNext();
     this.currentExercise = this.exerciseIterator.current;
@@ -137,6 +148,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                           ),
                         ),
                       ),
+                      Center(child: Text(getTotalRemainingTime, style: TextStyle(fontSize: 24.0,color: Colors.white70,),),),
                       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                         AnimatedBuilder(
                           animation: controller,
@@ -168,7 +180,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                         heroTag: 'saveworkouttimer',
                         onPressed: () {
                           PastWorkout toSave = PastWorkout(this.widget.workout, DateTime.now());
-                          PastWorkoutDataManager.addPastWorkout(toSave).then((value) {
+                          Provider.of<PastWorkoutNotifier>(context, listen: false).addPastWorkout(toSave).then((v) {
                             Scaffold.of(context).showSnackBar(SnackBar(
                               content: Text('Workout registered!'),
                             ));
@@ -218,38 +230,38 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   List<Text> get exercisesTexts {
-    return [
-      Text(
-        'NOW',
+    List<Text> texts = new List<Text>();
+    if (this.currentExerciseString.length > 0) {
+      texts.add(Text('NOW',
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: 24.0,
+            fontSize: 20.0,
             color: Colors.white),
-      ),
-      Text(
-        currentExerciseString,
+      ));
+      texts.add(Text(currentExerciseString,
         textAlign: TextAlign.center,
         style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.w300,
             color: Colors.white),
-      ),
-      Text(
-        'NEXT',
+      ));
+    }
+    if (this.nextExerciseString.length > 0) {
+      texts.add(Text('AFTER',
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: 24.0,
-            color: Colors.white),
-      ),
-      Text(
-        nextExerciseString,
+            fontSize: 20.0,
+            color: Colors.white70),
+      ));
+      texts.add(Text(nextExerciseString,
         textAlign: TextAlign.center,
         style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.w300,
-            color: Colors.white),
-      ),
-    ];
+            color: Colors.white70),
+      ));
+    }
+    return texts;
   }
 
   String getExerciseString(ExerciseBlock block) {
@@ -271,6 +283,8 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     return '${getExerciseString(this.nextExercise)}';
   }
 
+  String get getTotalRemainingTime => 'Remaining time:';
+
   void updateExerciseList(){
     if (this.status == CountdownStatus.PREPARE) {
       this.status = CountdownStatus.WORK;
@@ -280,12 +294,12 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     } else if (this.status == CountdownStatus.WORK) {
       this.status = CountdownStatus.REST;
       this.controller.duration = this.currentExercise.restTime;
-      this.controller.reset();
-      this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
-    } else if (this.status == CountdownStatus.REST) {  
       this.currentExercise = this.exerciseIterator.current;
       this.exerciseIterator.moveNext();
       this.nextExercise = this.exerciseIterator.current;
+      this.controller.reset();
+      this.controller.reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
+    } else if (this.status == CountdownStatus.REST) {  
       if (this.currentExercise == null && this.nextExercise == null) {
         this.status = CountdownStatus.FINISHED;
       } else {

@@ -1,13 +1,15 @@
+import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
+import 'package:Protalyze/bloc/WorkoutNotifier.dart';
 import 'package:Protalyze/containers/ExerciseBlockListItem.dart';
 import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/CountdownPage.dart';
 import 'package:Protalyze/pages/ExerciseEditPage.dart';
-import 'package:Protalyze/persistance/WorkoutDataManager.dart';
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class WorkoutDisplayPage extends StatefulWidget {
   final Workout workout;
@@ -92,7 +94,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     setState(() {
       widget.workout.exercises.add(block);
       widget.items.add(ExerciseBlockListItem(block));
-      WorkoutDataManager.updateWorkout(widget.workout);
+      Provider.of<WorkoutNotifier>(context, listen: false).updateWorkout(widget.workout);
     });
   }
 
@@ -100,13 +102,13 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     setState(() {
       widget.workout.exercises.remove(block);
       widget.items.removeWhere((element) => element.block == block);
-      WorkoutDataManager.updateWorkout(widget.workout);
+      Provider.of<WorkoutNotifier>(context, listen: false).updateWorkout(widget.workout);
     });
   }
   
 
   void updateExercise(ExerciseBlock block) {
-    WorkoutDataManager.updateWorkout(widget.workout);
+    Provider.of<WorkoutNotifier>(context, listen: false).updateWorkout(widget.workout);
     setState(() {});
   }
 
@@ -151,7 +153,10 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => CountDownPage(this.widget.workout)),
+        MaterialPageRoute(builder: (context) => ChangeNotifierProvider<PastWorkoutNotifier>.value(
+          value: Provider.of<PastWorkoutNotifier>(this.context), 
+          child: CountDownPage(this.widget.workout)
+        ),),
       );
     }
   }

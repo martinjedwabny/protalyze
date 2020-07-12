@@ -17,6 +17,7 @@ class _RootPageState extends State<RootPage> {
   @override
   void initState() {
     super.initState();
+
     widget.auth.getCurrentUser().then((user) {
       setState(() {
         if (user != null) {
@@ -41,7 +42,7 @@ class _RootPageState extends State<RootPage> {
         break;
       case AuthStatus.LOGGED_IN:
         if (userId.length > 0 && userId != null) {
-          return TabsPage(userId, widget.auth, logoutCallback);
+          return TabsPage(widget.auth, logoutCallback);
         } else
           return buildWaitingScreen();
         break;

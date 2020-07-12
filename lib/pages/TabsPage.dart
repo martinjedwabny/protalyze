@@ -1,15 +1,17 @@
+import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
+import 'package:Protalyze/bloc/WorkoutNotifier.dart';
 import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/pages/PastWorkoutSelectionPage.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/WorkoutSelectionPage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TabsPage extends StatefulWidget {
-  final String userId;
   final BaseAuth auth;
   final VoidCallback logoutCallback;
 
-  TabsPage(this.userId, this.auth, this.logoutCallback);
+  TabsPage(this.auth, this.logoutCallback);
   
   @override
   _TabsPageState createState() => _TabsPageState();
@@ -18,6 +20,10 @@ class TabsPage extends StatefulWidget {
 class _TabsPageState extends State<TabsPage> {
   @override
   Widget build(BuildContext context) {
+    WorkoutNotifier workoutNotifier = WorkoutNotifier();
+    workoutNotifier.getWorkoutsFromStore();
+    PastWorkoutNotifier pastWorkoutNotifier = PastWorkoutNotifier();
+    pastWorkoutNotifier.getPastWorkoutsFromStore();
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -57,8 +63,20 @@ class _TabsPageState extends State<TabsPage> {
         ),
         body: TabBarView(
           children: [
-            WorkoutSelectionPage(auth: widget.auth,),
-            PastWorkoutSelectionPage(),
+            MultiProvider(
+              providers: [
+              ChangeNotifierProvider.value(value: workoutNotifier),
+              ChangeNotifierProvider.value(value: pastWorkoutNotifier),
+              ],
+              child: WorkoutSelectionPage(),
+            ),
+            MultiProvider(
+              providers: [
+              ChangeNotifierProvider.value(value: workoutNotifier),
+              ChangeNotifierProvider.value(value: pastWorkoutNotifier),
+              ],
+              child: PastWorkoutSelectionPage(),
+            ),
           ],
         ),
       ),

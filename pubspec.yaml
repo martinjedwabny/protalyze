@@ -29,6 +29,8 @@ dependencies:
   cloud_firestore: ^0.13.7
   audioplayers: ^0.15.1
   google_fonts: ^1.1.0
+  provider: ^4.3.1
+  wakelock: ^0.1.4+2
 
 
 
