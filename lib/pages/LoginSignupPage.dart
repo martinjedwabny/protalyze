@@ -144,7 +144,6 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
   }
 
   void toggleFormMode() {
-    resetForm();
     setState(() {
       isLoginForm = !isLoginForm;
     });
@@ -210,9 +209,12 @@ void validateAndSubmit() async {
           isLoading = false;
           infoMessage = e.message;
           infoMessageIsError = true;
-          formKey.currentState.reset();
         });
       }
+    } else {
+      isLoading = false;
+      infoMessage = 'There was a problem, please retry.';
+      infoMessageIsError = true;
     }
   }
 
