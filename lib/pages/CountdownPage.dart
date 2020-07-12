@@ -76,13 +76,15 @@ class _CountDownPageState extends State<CountDownPage>
   }
 
   void startTimer() {
-    this.controller.reverse(from: controller.value == 0.0 ? 1.0 : controller.value);
     this.blockTimer.start();
+    this.controller.reverse(from: controller.value);
   }
 
   void stopTimer() {
-    this.controller.stop();
     this.blockTimer.pause();
+    this.totalRemainingTime -= this.blockRemainingTime - this.blockTimer.remainingTime;
+    this.blockRemainingTime = this.blockTimer.remainingTime;
+    this.controller.stop();
   }
 
   @override
@@ -96,8 +98,7 @@ class _CountDownPageState extends State<CountDownPage>
     this.currentExercise = this.exerciseIterator.current;
     this.exerciseIterator.moveNext();
     this.nextExercise = this.exerciseIterator.current;
-    controller = AnimationController(
-        vsync: this, duration: Duration(seconds: 10), value: 1.0);
+    controller = AnimationController(vsync: this, duration: Duration(seconds: 10), value: 1.0);
     initializeTimer();
   }
 
@@ -201,15 +202,18 @@ class _CountDownPageState extends State<CountDownPage>
                                       onPressed: () {
                                         if (this.status ==
                                             CountdownStatus.FINISHED) return;
-                                        if (controller.isAnimating)
+                                        if (this.controller.isAnimating)
                                           stopTimer();
                                         else
                                           startTimer();
+                                        setState(() {
+                                          
+                                        });
                                       },
-                                      icon: Icon(controller.isAnimating
+                                      icon: Icon(this.controller.isAnimating
                                           ? Icons.pause
                                           : Icons.play_arrow),
-                                      label: Text(controller.isAnimating
+                                      label: Text(this.controller.isAnimating
                                           ? "Pause"
                                           : "Play"));
                                 }),

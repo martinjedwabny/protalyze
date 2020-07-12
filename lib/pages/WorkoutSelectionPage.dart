@@ -3,7 +3,6 @@ import 'package:Protalyze/bloc/WorkoutNotifier.dart';
 import 'package:Protalyze/containers/WorkoutListItem.dart';
 import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
-import 'package:Protalyze/domain/PastWorkout.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
