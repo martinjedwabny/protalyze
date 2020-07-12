@@ -121,14 +121,14 @@ class _CountDownPageState extends State<CountDownPage>
                 ),
                 Container(
                   alignment: Alignment.topCenter,
-                  padding: EdgeInsets.only(top: 10.0),
+                  padding: EdgeInsets.only(top: 20.0),
                   child: Text(
                     statusString,
                     style: TextStyle(fontSize: 60.0, color: Colors.white),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 80.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -178,7 +178,7 @@ class _CountDownPageState extends State<CountDownPage>
                       ),
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(bottom: 16.0),
                           child: Text(
                             'Remaining time: ' + totalRemainingTimeString,
                             style: TextStyle(
@@ -188,53 +188,56 @@ class _CountDownPageState extends State<CountDownPage>
                           ),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          AnimatedBuilder(
-                              animation: controller,
-                              builder: (context, child) {
-                                return FloatingActionButton.extended(
-                                    heroTag: 'playpausetimer',
-                                    onPressed: () {
-                                      if (this.status ==
-                                          CountdownStatus.FINISHED) return;
-                                      if (controller.isAnimating)
-                                        stopTimer();
-                                      else
-                                        startTimer();
-                                    },
-                                    icon: Icon(controller.isAnimating
-                                        ? Icons.pause
-                                        : Icons.play_arrow),
-                                    label: Text(controller.isAnimating
-                                        ? "Pause"
-                                        : "Play"));
-                              }),
-                          FloatingActionButton.extended(
-                              heroTag: 'saveworkouttimer',
-                              onPressed: () {
-                                PastWorkout toSave = PastWorkout(
-                                    this.widget.workout, DateTime.now());
-                                Provider.of<PastWorkoutNotifier>(context,
-                                        listen: false)
-                                    .addPastWorkout(toSave)
-                                    .then((v) {
-                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text('Workout registered!'),
-                                  ));
-                                });
-                              },
-                              icon: Icon(Icons.save),
-                              label: Text("Save")),
-                          FloatingActionButton.extended(
-                              heroTag: 'exittimer',
-                              onPressed: () {
-                                Navigator.pop(context, () {});
-                              },
-                              icon: Icon(Icons.exit_to_app),
-                              label: Text("Exit")),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            AnimatedBuilder(
+                                animation: controller,
+                                builder: (context, child) {
+                                  return FloatingActionButton.extended(
+                                      heroTag: 'playpausetimer',
+                                      onPressed: () {
+                                        if (this.status ==
+                                            CountdownStatus.FINISHED) return;
+                                        if (controller.isAnimating)
+                                          stopTimer();
+                                        else
+                                          startTimer();
+                                      },
+                                      icon: Icon(controller.isAnimating
+                                          ? Icons.pause
+                                          : Icons.play_arrow),
+                                      label: Text(controller.isAnimating
+                                          ? "Pause"
+                                          : "Play"));
+                                }),
+                            FloatingActionButton.extended(
+                                heroTag: 'saveworkouttimer',
+                                onPressed: () {
+                                  PastWorkout toSave = PastWorkout(
+                                      this.widget.workout, DateTime.now());
+                                  Provider.of<PastWorkoutNotifier>(context,
+                                          listen: false)
+                                      .addPastWorkout(toSave)
+                                      .then((v) {
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      content: Text('Workout registered!'),
+                                    ));
+                                  });
+                                },
+                                icon: Icon(Icons.save),
+                                label: Text("Save")),
+                            FloatingActionButton.extended(
+                                heroTag: 'exittimer',
+                                onPressed: () {
+                                  Navigator.pop(context, () {});
+                                },
+                                icon: Icon(Icons.exit_to_app),
+                                label: Text("Exit")),
+                          ],
+                        ),
                       ),
                     ],
                   ),
