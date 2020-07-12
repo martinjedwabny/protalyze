@@ -86,7 +86,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   }
   
   duplicateExercise(ExerciseBlock block) {
-    ExerciseBlock blockCopy = ExerciseBlock(Exercise(block.exercise.name), Duration(seconds: block.performingTime.inSeconds), Duration(seconds: block.restTime.inSeconds), weight: block.weight, minReps: block.minReps, maxReps: block.maxReps, inputReps: block.inputReps, inputDifficulty: block.inputDifficulty);
+    ExerciseBlock blockCopy = ExerciseBlock.copy(block);
     addExercise(blockCopy);
   }
 

@@ -46,7 +46,7 @@ class ExerciseBlock {
       weight = json['weight'] == null || json['weight'] == "null" ? null : Weight.fromJson(json['weight']),
       minReps = jsonDecode(json['minReps']),
       maxReps = jsonDecode(json['maxReps']),
-      sets = json['sets'] == null ? 1 : jsonDecode(json['sets']),
+      sets = json['sets'] == null ? 1 : json['sets'],
       inputReps = jsonDecode(json['inputReps']),
       inputDifficulty = jsonDecode(json['inputDifficulty'])
     ;
@@ -59,7 +59,7 @@ class ExerciseBlock {
       'weight' : weight == null ? null : weight.toJson(),
       'minReps' : jsonEncode(minReps),
       'maxReps' : jsonEncode(maxReps),
-      'sets' : sets == null ? 1 : jsonEncode(sets),
+      'sets' : sets == null ? 1 : sets,
       'inputReps' : jsonEncode(inputReps),
       'inputDifficulty' : jsonEncode(inputDifficulty),
     };

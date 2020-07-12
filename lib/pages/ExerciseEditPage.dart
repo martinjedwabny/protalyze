@@ -27,7 +27,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
   @override
   Widget build(BuildContext context) {
     nameControl.text = widget.block.exercise.name;
-    setsControl.text = widget.block.sets != null ? widget.block.sets.toString() : 1;
+    setsControl.text = widget.block.sets != null ? widget.block.sets.toString() : '1';
     performTimeControl.text = widget.block.performingTime.inSeconds.toString();
     restTimeControl.text = widget.block.restTime.inSeconds.toString();
     weightControl.text = widget.block.weight == null ? null : widget.block.weight.amount.toString();
