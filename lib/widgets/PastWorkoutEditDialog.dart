@@ -3,49 +3,51 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class PastWorkoutEditDialog extends StatefulWidget {
-  final String title;
-  final String initialName;
-  final void Function(String text, DateTime dateTime) callback;
-  DateTime selectedDate;
+  final String _title;
+  final String _initialName;
+  final void Function(String text, DateTime dateTime) _callback;
+  final DateTime _initialDate;
 
-  PastWorkoutEditDialog(this.title, this.initialName, this.callback, this.selectedDate);
+  PastWorkoutEditDialog(this._title, this._initialName, this._callback, this._initialDate);
 
   @override
   _PastWorkoutEditDialogState createState() => _PastWorkoutEditDialogState();
 }
 
 class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
-  final controller = TextEditingController();
+  final _controller = TextEditingController();
+  DateTime _selectedDate;
 
   Future<Null> selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: widget.selectedDate,
+        initialDate: widget._initialDate,
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
-    if (picked != null && picked != widget.selectedDate)
+    if (picked != null && picked != widget._initialDate)
       setState(() {
-        widget.selectedDate = picked;
+        this._selectedDate = picked;
       });
   }
 
   @override
   Widget build(BuildContext context) {
-    this.controller.text = this.widget.initialName;
+    this._controller.text = this.widget._initialName;
+    this._selectedDate = widget._initialDate;
     return AlertDialog(
-      title: Text(widget.title),
+      title: Text(widget._title),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(
-          controller: controller,
+          controller: _controller,
           decoration: new InputDecoration(
           hintText: "Enter something",
           ),
         ),
         Row(children:[
-          Text("Date: ${widget.selectedDate.toLocal()}".split(' ')[0]),
+          Text("Date: ${this._selectedDate.toLocal()}".split(' ')[0]),
           FlatButton(
             onPressed: () => selectDate(context),
-            child: Text(DateFormat("MMM d").format(widget.selectedDate)),
+            child: Text(DateFormat("MMM d").format(this._selectedDate)),
           ),
         ]),
       ]),
@@ -53,7 +55,7 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
         FlatButton(
           child: Text("Ok"),
           onPressed: () {
-            if (controller.text.isEmpty) {
+            if (_controller.text.isEmpty) {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -61,7 +63,7 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
                 },
               );
             } else {
-              widget.callback(controller.text, widget.selectedDate);
+              widget._callback(_controller.text, this._selectedDate);
               Navigator.of(context).pop();
             }
           },

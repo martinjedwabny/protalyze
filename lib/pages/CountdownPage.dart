@@ -12,17 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
 class CountDownPage extends StatefulWidget {
-  final Workout workout;
-  List<ExerciseBlock> exerciseBlocks;
-  CountDownPage(Workout workout) : this.workout = workout {
-    this.exerciseBlocks = [];
-    for (ExerciseBlock block in workout.exercises) {
-      if (block.sets == null)
-        this.exerciseBlocks.add(block);
-      for (int i = 1; i <= block.sets; i++)
-        this.exerciseBlocks.add(block);
-    }
-  }
+  final Workout _workout;
+  CountDownPage(this._workout);
   @override
   _CountDownPageState createState() => _CountDownPageState();
 }
@@ -39,6 +30,7 @@ class _CountDownPageState extends State<CountDownPage>
   TimerNotifier blockTimer;
   Duration blockRemainingTime;
   Duration totalRemainingTime;
+  List<ExerciseBlock> exerciseBlocks;
 
   Future<AudioPlayer> playBeepSound() async {
     AudioCache cache = new AudioCache();
@@ -47,7 +39,8 @@ class _CountDownPageState extends State<CountDownPage>
 
   @override
   void dispose() {
-    controller.dispose();
+    this.controller.dispose();
+    this.blockTimer.dispose();
     try {
       Wakelock.disable();
     } catch (e) {}
@@ -57,7 +50,7 @@ class _CountDownPageState extends State<CountDownPage>
   void initializeTimer() {
     this.blockRemainingTime = Duration(seconds: 10);
     int totalRemainingSeconds = 10;
-    for (ExerciseBlock block in this.widget.exerciseBlocks)
+    for (ExerciseBlock block in this.exerciseBlocks)
       totalRemainingSeconds +=
           block.performingTime.inSeconds + block.restTime.inSeconds;
     this.totalRemainingTime = Duration(seconds: totalRemainingSeconds);
@@ -82,18 +75,23 @@ class _CountDownPageState extends State<CountDownPage>
 
   void stopTimer() {
     this.blockTimer.pause();
-    this.totalRemainingTime -= this.blockRemainingTime - this.blockTimer.remainingTime;
-    this.blockRemainingTime = this.blockTimer.remainingTime;
     this.controller.stop();
   }
 
   @override
   void initState() {
     super.initState();
+    this.exerciseBlocks = [];
+    for (ExerciseBlock block in this.widget._workout.exercises) {
+      if (block.sets == null)
+        this.exerciseBlocks.add(block);
+      for (int i = 1; i <= block.sets; i++)
+        this.exerciseBlocks.add(block);
+    }
     try {
       Wakelock.enable();
     } catch (e) {}
-    this.exerciseIterator = this.widget.exerciseBlocks.iterator;
+    this.exerciseIterator = this.exerciseBlocks.iterator;
     this.exerciseIterator.moveNext();
     this.currentExercise = this.exerciseIterator.current;
     this.exerciseIterator.moveNext();
@@ -221,7 +219,7 @@ class _CountDownPageState extends State<CountDownPage>
                                 heroTag: 'saveworkouttimer',
                                 onPressed: () {
                                   PastWorkout toSave = PastWorkout(
-                                      this.widget.workout, DateTime.now());
+                                      this.widget._workout, DateTime.now());
                                   Provider.of<PastWorkoutNotifier>(context,
                                           listen: false)
                                       .addPastWorkout(toSave)

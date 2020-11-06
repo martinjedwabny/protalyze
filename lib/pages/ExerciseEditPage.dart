@@ -132,7 +132,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
         subtitle: TextField(
                 controller: controller,
                 keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[WhitelistingTextInputFormatter.digitsOnly],
+                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                 decoration: new InputDecoration(
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
