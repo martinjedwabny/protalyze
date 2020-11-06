@@ -5,6 +5,7 @@ import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
+import 'package:Protalyze/widgets/SingleMessageConfirmationDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:Protalyze/widgets/TextInputAlertDialog.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
         if (notifier.workouts.isEmpty)
           return SingleMessageScaffold('No workouts added yet.');
         return ListView.builder(
+          padding: EdgeInsets.only(bottom: 80.0),
           itemCount: notifier.workouts.length,
           itemBuilder: (context, index) {
             WorkoutListItem item = WorkoutListItem(notifier.workouts[index]);
@@ -121,7 +123,14 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
   }
 
   void removeWorkout(Workout wk) {
-    Provider.of<WorkoutNotifier>(context, listen: false).removeWorkout(wk);
+    showDialog(
+      context: context,
+      builder: (_) {
+        return SingleMessageConfirmationDialog("Please confirm", "Do you really want to delete this workout?", 
+        (){Provider.of<WorkoutNotifier>(context, listen: false).removeWorkout(wk);}, 
+        (){});
+      },
+    );
   }
 
   void updateWorkoutName(Workout wk, String name) {

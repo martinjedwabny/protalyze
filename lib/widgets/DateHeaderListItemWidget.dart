@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DateHeaderItem extends StatelessWidget {
+class DateHeaderListItemWidget extends StatelessWidget {
   final DateTime date;
-  DateHeaderItem(this.date);
+  DateHeaderListItemWidget(this.date);
   @override
   Widget build(BuildContext context) {
     return Container(

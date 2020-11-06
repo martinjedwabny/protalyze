@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SingleMessageAlertDialog extends StatelessWidget{
-  final String title, message;
-  SingleMessageAlertDialog(this.title, this.message);
+  final String _title, _message;
+  SingleMessageAlertDialog(this._title, this._message);
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
-      content: Text(message),
+      title: Text(_title),
+      content: Text(_message),
       actions: [
         FlatButton(
           child: Text("Ok"),
