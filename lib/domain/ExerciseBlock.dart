@@ -63,4 +63,20 @@ class ExerciseBlock {
       'inputReps' : jsonEncode(inputReps),
       'inputDifficulty' : jsonEncode(inputDifficulty),
     };
+
+  String toString(){
+    String ans = this.exercise.name;
+    if (this.weight != null) ans += ', ' + this.weight.toString();
+    if (this.minReps != null && this.maxReps != null)
+      ans += ', ' +
+          this.minReps.toString() +
+          '-' +
+          this.maxReps.toString() +
+          ' reps';
+    if (this.minReps != null && this.maxReps == null)
+      ans += ', ' + this.minReps.toString() + ' min reps';
+    if (this.minReps == null && this.maxReps != null)
+      ans += ', ' + this.maxReps.toString() + ' max reps';
+    return ans;
+  }
 }

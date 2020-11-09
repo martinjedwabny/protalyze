@@ -1,15 +1,17 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
-import 'package:Protalyze/bloc/TimerNotifier.dart';
 import 'package:Protalyze/config/Palette.dart';
+import 'package:Protalyze/domain/CountdownElement.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/PastWorkout.dart';
 import 'package:Protalyze/domain/Workout.dart';
+import 'package:Protalyze/misc/DurationFormatter.dart';
+import 'package:Protalyze/misc/ScreenPersist.dart';
+import 'package:Protalyze/widgets/SingleMessageConfirmationDialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
-import 'package:wakelock/wakelock.dart';
 
 class CountDownPage extends StatefulWidget {
   final Workout _workout;
@@ -18,267 +20,264 @@ class CountDownPage extends StatefulWidget {
   _CountDownPageState createState() => _CountDownPageState();
 }
 
-enum CountdownStatus { PREPARE, REST, WORK, FINISHED }
+class _CountDownPageState extends State<CountDownPage> with TickerProviderStateMixin {
+  AnimationController _controller;
+  bool _isPause = true;
+  Duration _totalTime;
+  List<CountdownElement> _countdownElements;
+  final int _prepareTime = 3;
+  final Color _buttonsColor = Palette.orangeColor, _circleColor = Palette.orangeColor;
 
-class _CountDownPageState extends State<CountDownPage>
-    with TickerProviderStateMixin {
-  AnimationController controller;
-  Iterator<ExerciseBlock> exerciseIterator;
-  ExerciseBlock currentExercise;
-  ExerciseBlock nextExercise;
-  CountdownStatus status = CountdownStatus.PREPARE;
-  TimerNotifier blockTimer;
-  Duration blockRemainingTime;
-  Duration totalRemainingTime;
-  List<ExerciseBlock> exerciseBlocks;
-
-  Future<AudioPlayer> playBeepSound() async {
-    AudioCache cache = new AudioCache();
-    return await cache.play("beep.mp3");
-  }
+  Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3");
 
   @override
   void dispose() {
-    this.controller.dispose();
-    this.blockTimer.dispose();
-    try {
-      Wakelock.disable();
-    } catch (e) {}
+    ScreenPersist.disable();
     super.dispose();
-  }
-
-  void initializeTimer() {
-    this.blockRemainingTime = Duration(seconds: 10);
-    int totalRemainingSeconds = 10;
-    for (ExerciseBlock block in this.exerciseBlocks)
-      totalRemainingSeconds +=
-          block.performingTime.inSeconds + block.restTime.inSeconds;
-    this.totalRemainingTime = Duration(seconds: totalRemainingSeconds);
-    blockTimer = TimerNotifier(Duration(seconds: 10));
-    blockTimer.addListener(() {
-      this.blockRemainingTime -= Duration(seconds: 1);
-      this.totalRemainingTime -= Duration(seconds: 1);
-      int time = blockRemainingTime.inSeconds;
-      if (time == 5 || time == 0) {
-        playBeepSound();
-      }
-      if (time == 0) {
-        updateExerciseList();
-      }
-    });
-  }
-
-  void startTimer() {
-    this.blockTimer.start();
-    this.controller.reverse(from: controller.value);
-  }
-
-  void stopTimer() {
-    this.blockTimer.pause();
-    this.controller.stop();
   }
 
   @override
   void initState() {
     super.initState();
-    this.exerciseBlocks = [];
-    for (ExerciseBlock block in this.widget._workout.exercises) {
-      if (block.sets == null)
-        this.exerciseBlocks.add(block);
-      for (int i = 1; i <= block.sets; i++)
-        this.exerciseBlocks.add(block);
+    ScreenPersist.enable();
+    this._controller = AnimationController(vsync: this, value: 1.0);
+    this._controller.addStatusListener((status) => animationStatusChanged(status));
+    initializeCountdownElements();
+  }
+
+  void animationStatusChanged(AnimationStatus status) {
+    if (status == AnimationStatus.dismissed) {
+      playBeepSound();
+      stepToNextExercise();
     }
-    try {
-      Wakelock.enable();
-    } catch (e) {}
-    this.exerciseIterator = this.exerciseBlocks.iterator;
-    this.exerciseIterator.moveNext();
-    this.currentExercise = this.exerciseIterator.current;
-    this.exerciseIterator.moveNext();
-    this.nextExercise = this.exerciseIterator.current;
-    controller = AnimationController(vsync: this, duration: Duration(seconds: 10), value: 1.0);
-    initializeTimer();
+  }
+
+  void stepToNextExercise() {
+    if (this._countdownElements.isEmpty) return;
+    this._totalTime -= this._countdownElements[0].totalTime;
+    this._countdownElements.removeAt(0);
+    if (this._countdownElements.isEmpty) return;
+    this._controller.duration = this._countdownElements[0].totalTime;
+    this._controller.value = 1.0;
+    this._controller.reverse();
+  }
+
+  void initializeCountdownElements(){
+    // Set initial duration / prepare time to this._prepareTime seconds
+    this._controller.duration = Duration(seconds: this._prepareTime);
+    this._countdownElements = [new CountdownElement('Prepare', new Duration(seconds: this._prepareTime))];
+    this._totalTime = Duration(seconds: this._prepareTime);
+    // Add perform and rest times for each block
+    for (ExerciseBlock block in this.widget._workout.exercises) {
+      int sets = block.sets == null ? 1 : block.sets;
+      for (int i = 0; i < sets; i++){
+        if (block.performingTime != null && block.performingTime.inSeconds > 0) {
+          this._countdownElements.add(new CountdownElement(block.toString(), block.performingTime));
+          this._totalTime += block.performingTime;
+        }
+        if (block == this.widget._workout.exercises.last && i == (sets - 1))
+          continue;
+        if (block.restTime != null && block.restTime.inSeconds > 0) {
+          this._countdownElements.add(new CountdownElement('Rest', block.restTime));
+          this._totalTime += block.restTime;
+        }
+      }
+    }
+  }
+
+  bool countdownFinished(){
+    return this._totalTime.inSeconds == 0;
+  }
+
+  void togglePlayPause(){
+    if (this.countdownFinished()) return;
+    if (this._isPause) {
+      this._controller.reverse(); //play in reverse mode
+    } else {
+      this._controller.stop();
+    }
+    this._isPause = !this._isPause;
+  }
+
+  Widget buildCurrentTimeWidget() {
+    var currentTimeFontSize = 80.0;
+    return Container(
+      alignment: Alignment.topCenter,
+      padding: EdgeInsets.only(top: 20.0),
+      child: Text(
+        blockRemainingTimeString,
+        style: TextStyle(fontSize: currentTimeFontSize, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget buildExercisesWidget(){
+    return Align(alignment: FractionalOffset.center,
+      child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(left: 70, right: 70),
+          child: Container(
+            height: 140.0,
+            child: Column( children: exercisesTexts, ),
+            )
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildProgressCircle(){
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.all(64.0),
+        child: Align(
+          alignment: FractionalOffset.center,
+          child: AspectRatio(
+            aspectRatio: 1.0,
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: CustomPaint(
+                      painter: CustomTimerPainter(
+                        animation: _controller,
+                        color: this._circleColor,
+                    )
+                  ),
+                ),
+                Center(child: 
+                  AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      return FlatButton(
+                          onPressed: () {
+                            togglePlayPause();
+                            setState(() {});
+                          },
+                          child: Text(this.countdownFinished()? 'Done' : !this._isPause ? "Pause" : "Play", 
+                            style: TextStyle(fontSize: 36.0, color: this._buttonsColor),)
+                          );
+                    }),
+                )
+              ],
+            ),
+          ),
+        ),
+      )
+    );
+  }
+
+  Widget buildBottomButtons(){
+    return Container(
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            FlatButton(
+              onPressed: () {
+                PastWorkout toSave = PastWorkout(
+                    this.widget._workout, DateTime.now());
+                Provider.of<PastWorkoutNotifier>(context,
+                        listen: false)
+                    .addPastWorkout(toSave)
+                    .then((v) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text('Workout registered!'),
+                  ));
+                });
+              },
+              child: Text("Save", style: TextStyle(fontSize: 24.0, color: this._buttonsColor))
+            ),
+            Column(
+              children: [
+                SizedBox(
+                  height: 36.0,
+                  child: 
+                    Text(totalRemainingTimeString,
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      color: Colors.white70,
+                    ),
+                  ),
+                ),
+                Text('Total',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.white70,
+                  ),
+                ),
+              ]
+            ),
+            FlatButton(
+              onPressed: () {
+                handleExitButton();
+              },
+              child: Text("Exit", style: TextStyle(fontSize: 24.0, color: this._buttonsColor))
+            ),
+          ],
+        ),
+      )
+    );
+  }
+
+  void handleExitButton(){
+    if (this.countdownFinished())
+      Navigator.pop(context, () {});
+    else
+      showDialog(
+        context: context,
+        builder: (_) {
+          return SingleMessageConfirmationDialog("Workout not finished", "Do you really want to exit?", 
+          (){Navigator.pop(context, () {});}, 
+          (){});
+        },
+      );
   }
 
   @override
   Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Text(this.widget._workout.name),
+      ),
       backgroundColor: Palette.darkBlueColor,
       body: AnimatedBuilder(
-          animation: controller,
+          animation: _controller,
           builder: (context, child) {
-            return Stack(
+            return Column(
               children: <Widget>[
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    color: Palette.yellowColor,
-                    height:
-                        controller.value * MediaQuery.of(context).size.height,
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.topCenter,
-                  padding: EdgeInsets.only(top: 20.0),
-                  child: Text(
-                    statusString,
-                    style: TextStyle(fontSize: 60.0, color: Colors.white),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 80.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(
-                        child: Align(
-                          alignment: FractionalOffset.center,
-                          child: AspectRatio(
-                            aspectRatio: 1.0,
-                            child: Stack(
-                              children: <Widget>[
-                                Positioned.fill(
-                                  child: CustomPaint(
-                                      painter: CustomTimerPainter(
-                                    animation: controller,
-                                    backgroundColor: Palette.darkBlueColor,
-                                    color: themeData.indicatorColor,
-                                  )),
-                                ),
-                                Align(
-                                  alignment: FractionalOffset.center,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Container(
-                                        padding: EdgeInsets.only(
-                                            left: 70, right: 70),
-                                        child: Column(
-                                          children: exercisesTexts,
-                                        ),
-                                      ),
-                                      Text(
-                                        blockRemainingTimeString,
-                                        style: TextStyle(
-                                            fontSize: 90.0,
-                                            color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: Text(
-                            'Remaining time: ' + totalRemainingTimeString,
-                            style: TextStyle(
-                              fontSize: 24.0,
-                              color: Colors.white70,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            AnimatedBuilder(
-                                animation: controller,
-                                builder: (context, child) {
-                                  return FloatingActionButton.extended(
-                                      heroTag: 'playpausetimer',
-                                      onPressed: () {
-                                        if (this.status ==
-                                            CountdownStatus.FINISHED) return;
-                                        if (this.controller.isAnimating)
-                                          stopTimer();
-                                        else
-                                          startTimer();
-                                        setState(() {
-                                          
-                                        });
-                                      },
-                                      icon: Icon(this.controller.isAnimating
-                                          ? Icons.pause
-                                          : Icons.play_arrow),
-                                      label: Text(this.controller.isAnimating
-                                          ? "Pause"
-                                          : "Play"));
-                                }),
-                            FloatingActionButton.extended(
-                                heroTag: 'saveworkouttimer',
-                                onPressed: () {
-                                  PastWorkout toSave = PastWorkout(
-                                      this.widget._workout, DateTime.now());
-                                  Provider.of<PastWorkoutNotifier>(context,
-                                          listen: false)
-                                      .addPastWorkout(toSave)
-                                      .then((v) {
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                      content: Text('Workout registered!'),
-                                    ));
-                                  });
-                                },
-                                icon: Icon(Icons.save),
-                                label: Text("Save")),
-                            FloatingActionButton.extended(
-                                heroTag: 'exittimer',
-                                onPressed: () {
-                                  Navigator.pop(context, () {});
-                                },
-                                icon: Icon(Icons.exit_to_app),
-                                label: Text("Exit")),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                buildCurrentTimeWidget(),
+                buildExercisesWidget(),
+                buildProgressCircle(),
+                buildBottomButtons(),
               ],
             );
-          }),
+          }
+      )
     );
   }
 
   String get blockRemainingTimeString {
-    Duration duration = this.blockRemainingTime;
-    if (duration.inHours > 0)
-      return '${duration.inHours}:${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
-    return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+    return DurationFormatter.format(_controller.duration * _controller.value);
   }
 
   String get totalRemainingTimeString {
-    Duration duration = this.totalRemainingTime;
-    if (duration.inHours > 0)
-      return '${duration.inHours}:${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
-    return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+    if (this._countdownElements.isEmpty)
+      return DurationFormatter.format(this._totalTime);
+    return DurationFormatter.format(this._totalTime - _controller.duration * (1.0 - _controller.value));
   }
 
   String get nextExerciseString {
-    if (this.nextExercise == null) return '';
-    return '${getExerciseString(this.nextExercise)}';
+    if (this._countdownElements.length < 2) return '';
+    return this._countdownElements[1].name;
   }
 
   String get currentExerciseString {
-    if (this.currentExercise == null) return '';
-    return '${getExerciseString(this.currentExercise)}';
-  }
-
-  String get statusString {
-    if (this.status == CountdownStatus.PREPARE) return 'PREPARE';
-    if (this.status == CountdownStatus.REST) return 'REST';
-    if (this.status == CountdownStatus.WORK) return 'WORK';
-    return 'FINISHED';
+    if (this._countdownElements.length == 0) return '';
+    return this._countdownElements[0].name;
   }
 
   List<Text> get exercisesTexts {
@@ -294,6 +293,12 @@ class _CountDownPageState extends State<CountDownPage>
         textAlign: TextAlign.center,
         style: TextStyle(
             fontSize: 20.0, fontWeight: FontWeight.w300, color: Colors.white),
+      ));
+    } else {
+      texts.add(Text(
+        'FINISHED',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 20.0, color: Colors.white),
       ));
     }
     if (this.nextExerciseString.length > 0) {
@@ -311,82 +316,27 @@ class _CountDownPageState extends State<CountDownPage>
     }
     return texts;
   }
-
-  String getExerciseString(ExerciseBlock block) {
-    String ans = block.exercise.name;
-    if (block.weight != null) ans += ', ' + block.weight.toString();
-    if (block.minReps != null && block.maxReps != null)
-      ans += ', ' +
-          block.minReps.toString() +
-          '-' +
-          block.maxReps.toString() +
-          ' reps';
-    if (block.minReps != null && block.maxReps == null)
-      ans += ', ' + block.minReps.toString() + ' min reps';
-    if (block.minReps == null && block.maxReps != null)
-      ans += ', ' + block.maxReps.toString() + ' max reps';
-    return ans;
-  }
-
-  void updateExerciseList() {
-    if (this.status == CountdownStatus.PREPARE) {
-      this.status = CountdownStatus.WORK;
-      this.controller.duration = this.currentExercise.performingTime;
-      this.controller.reset();
-      this
-          .controller
-          .reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
-    } else if (this.status == CountdownStatus.WORK) {
-      this.status = CountdownStatus.REST;
-      this.controller.duration = this.currentExercise.restTime;
-      this.currentExercise = this.exerciseIterator.current;
-      this.exerciseIterator.moveNext();
-      this.nextExercise = this.exerciseIterator.current;
-      this.controller.reset();
-      this
-          .controller
-          .reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
-    } else if (this.status == CountdownStatus.REST) {
-      if (this.currentExercise == null && this.nextExercise == null) {
-        this.status = CountdownStatus.FINISHED;
-      } else {
-        this.status = CountdownStatus.WORK;
-        this.controller.duration = this.currentExercise.performingTime;
-        this.controller.reset();
-        this
-            .controller
-            .reverse(from: controller.value == 0 ? 1.0 : this.controller.value);
-      }
-    }
-    if (this.status == CountdownStatus.FINISHED) {
-      this.blockTimer.dispose();
-    } else {
-      this.blockTimer = TimerNotifier(this.controller.duration);
-      this.blockRemainingTime = this.controller.duration;
-    }
-  }
 }
 
 class CustomTimerPainter extends CustomPainter {
   CustomTimerPainter({
     this.animation,
-    this.backgroundColor,
     this.color,
   }) : super(repaint: animation);
 
   final Animation<double> animation;
-  final Color backgroundColor, color;
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..color = backgroundColor
+      ..color = color
       ..strokeWidth = 10.0
       ..strokeCap = StrokeCap.butt
       ..style = PaintingStyle.stroke;
 
     canvas.drawCircle(size.center(Offset.zero), size.width / 2.0, paint);
-    paint.color = color;
+    paint.color = Color.fromRGBO(108, 86, 52, 1.0);
     double progress = (1.0 - animation.value) * 2 * math.pi;
     canvas.drawArc(Offset.zero & size, math.pi * 1.5, -progress, false, paint);
   }
@@ -394,7 +344,6 @@ class CustomTimerPainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomTimerPainter old) {
     return animation.value != old.animation.value ||
-        color != old.color ||
-        backgroundColor != old.backgroundColor;
+        color != old.color;
   }
 }
