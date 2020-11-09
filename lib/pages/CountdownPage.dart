@@ -9,10 +9,10 @@ import 'package:Protalyze/misc/ScreenPersist.dart';
 import 'package:Protalyze/widgets/SingleMessageConfirmationDialog.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class CountDownPage extends StatefulWidget {
   final Workout _workout;
@@ -26,7 +26,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   bool _isPause = true;
   Duration _totalTime;
   List<CountdownElement> _countdownElements;
-  final int _prepareTime = 3;
+  final int _prepareTime = 10;
   final Color _buttonsColor = Palette.orangeColor, _circleColor = Palette.orangeColor;
 
   Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3");
@@ -50,6 +50,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     if (status == AnimationStatus.dismissed) {
       playBeepSound();
       stepToNextExercise();
+      setState(() { });
     }
   }
 
@@ -102,12 +103,13 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   Widget buildCurrentTimeWidget() {
     var currentTimeFontSize = 120.0;
-    return Container(
+    return SizedBox(height: 140, child: Container(
       alignment: Alignment.topCenter,
       child: Text(
         blockRemainingTimeString,
         style: TextStyle(fontSize: currentTimeFontSize, color: Colors.white,),
       ),
+    )
     );
   }
 
@@ -117,10 +119,11 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
+        SizedBox(height: 10),
         Container(
           padding: EdgeInsets.only(left: 70, right: 70),
           child: Container(
-            height: 170.0,
+            height: 160.0,
             child: exercisesTexts,
             )
           ),
@@ -132,7 +135,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Widget buildProgressCircle(){
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.all(32.0),
+        padding: EdgeInsets.all(16.0),
         child: Align(
           alignment: FractionalOffset.center,
           child: AspectRatio(
@@ -140,12 +143,23 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
-                  child: CustomPaint(
-                      painter: CustomTimerPainter(
-                        animation: _controller,
-                        color: this._circleColor,
-                    )
-                  ),
+                  child: SleekCircularSlider(
+                    appearance: CircularSliderAppearance(
+                      customColors: CustomSliderColors(
+                      dotColor: Color(0xFFFFB1B2),
+                      trackColor: Color(0xFFE9585A),
+                      progressBarColors: [Color(0xFFFB9967), Color(0xFFE9585A)],
+                      shadowColor: Color(0xFFFFB1B2),
+                      shadowMaxOpacity: 0.05),
+                      counterClockwise: true,
+                      startAngle: 30,
+                      infoProperties: InfoProperties(
+                        mainLabelStyle: TextStyle(fontSize: 0)),
+                      customWidths: CustomSliderWidths(trackWidth: 4, progressBarWidth: 20, shadowWidth: 0)),
+                    min: 0.0,
+                    max: 1.0,
+                    initialValue: this._controller.value,
+                  )
                 ),
                 Center(child: 
                   AnimatedBuilder(
@@ -157,8 +171,8 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                             setState(() {});
                           },
                           // child: Icon(
-                          //   this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause : Icons.play_arrow,
-                          //   size: 48,
+                          //   this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause_rounded : Icons.play_arrow_outlined,
+                          //   size: 64,
                           //   color: this._buttonsColor,
                           // )
                           child: Text(this.countdownFinished()? 'Done' : !this._isPause ? "Pause" : "Play", 
@@ -332,35 +346,5 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         )]
       );
     }
-  }
-}
-
-class CustomTimerPainter extends CustomPainter {
-  CustomTimerPainter({
-    this.animation,
-    this.color,
-  }) : super(repaint: animation);
-
-  final Animation<double> animation;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = color
-      ..strokeWidth = 8.0
-      ..strokeCap = StrokeCap.butt
-      ..style = PaintingStyle.stroke;
-
-    canvas.drawCircle(size.center(Offset.zero), size.width / 2.0, paint);
-    paint.color = Color.fromRGBO(108, 86, 52, 1.0);
-    double progress = (1.0 - animation.value) * 2 * math.pi;
-    canvas.drawArc(Offset.zero & size, math.pi * 1.5, -progress, false, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomTimerPainter old) {
-    return animation.value != old.animation.value ||
-        color != old.color;
   }
 }
