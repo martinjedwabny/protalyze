@@ -7,6 +7,7 @@ import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/misc/DurationFormatter.dart';
 import 'package:Protalyze/misc/ScreenPersist.dart';
 import 'package:Protalyze/widgets/SingleMessageConfirmationDialog.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:audioplayers/audio_cache.dart';
@@ -100,13 +101,12 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   Widget buildCurrentTimeWidget() {
-    var currentTimeFontSize = 80.0;
+    var currentTimeFontSize = 120.0;
     return Container(
       alignment: Alignment.topCenter,
-      padding: EdgeInsets.only(top: 20.0),
       child: Text(
         blockRemainingTimeString,
-        style: TextStyle(fontSize: currentTimeFontSize, color: Colors.white),
+        style: TextStyle(fontSize: currentTimeFontSize, color: Colors.white,),
       ),
     );
   }
@@ -120,8 +120,8 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         Container(
           padding: EdgeInsets.only(left: 70, right: 70),
           child: Container(
-            height: 140.0,
-            child: Column( children: exercisesTexts, ),
+            height: 170.0,
+            child: exercisesTexts,
             )
           ),
         ],
@@ -132,7 +132,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Widget buildProgressCircle(){
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.all(64.0),
+        padding: EdgeInsets.all(32.0),
         child: Align(
           alignment: FractionalOffset.center,
           child: AspectRatio(
@@ -156,8 +156,14 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                             togglePlayPause();
                             setState(() {});
                           },
+                          // child: Icon(
+                          //   this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause : Icons.play_arrow,
+                          //   size: 48,
+                          //   color: this._buttonsColor,
+                          // )
                           child: Text(this.countdownFinished()? 'Done' : !this._isPause ? "Pause" : "Play", 
                             style: TextStyle(fontSize: 36.0, color: this._buttonsColor),)
+                          
                           );
                     }),
                 )
@@ -169,7 +175,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     );
   }
 
-  Widget buildBottomButtons(){
+  Widget buildBottomButtons(BuildContext context){
     return Container(
       child: Padding(
         padding: EdgeInsets.all(8.0),
@@ -178,27 +184,18 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
           children: [
             FlatButton(
               onPressed: () {
-                PastWorkout toSave = PastWorkout(
-                    this.widget._workout, DateTime.now());
-                Provider.of<PastWorkoutNotifier>(context,
-                        listen: false)
-                    .addPastWorkout(toSave)
-                    .then((v) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('Workout registered!'),
-                  ));
-                });
+                handleSaveWorkoutButton(context);
               },
               child: Text("Save", style: TextStyle(fontSize: 24.0, color: this._buttonsColor))
             ),
             Column(
               children: [
                 SizedBox(
-                  height: 36.0,
+                  height: 44.0,
                   child: 
                     Text(totalRemainingTimeString,
                     style: TextStyle(
-                      fontSize: 30.0,
+                      fontSize: 36.0,
                       color: Colors.white70,
                     ),
                   ),
@@ -223,6 +220,15 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     );
   }
 
+  void handleSaveWorkoutButton(BuildContext context){
+    PastWorkout toSave = PastWorkout(this.widget._workout, DateTime.now());
+    Provider.of<PastWorkoutNotifier>(context, listen: false).addPastWorkout(toSave).then((v) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Workout registered!'),
+      ));
+    });
+  }
+
   void handleExitButton(){
     if (this.countdownFinished())
       Navigator.pop(context, () {});
@@ -240,9 +246,9 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(this.widget._workout.name),
-      ),
+      // appBar: AppBar(
+      //   title: Text(this.widget._workout.name),
+      // ),
       backgroundColor: Palette.darkBlueColor,
       body: AnimatedBuilder(
           animation: _controller,
@@ -252,7 +258,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                 buildCurrentTimeWidget(),
                 buildExercisesWidget(),
                 buildProgressCircle(),
-                buildBottomButtons(),
+                buildBottomButtons(context),
               ],
             );
           }
@@ -280,41 +286,52 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     return this._countdownElements[0].name;
   }
 
-  List<Text> get exercisesTexts {
-    List<Text> texts = new List<Text>();
-    if (this.currentExerciseString.length > 0) {
-      texts.add(Text(
-        'NOW',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 20.0, color: Colors.white),
-      ));
-      texts.add(Text(
-        currentExerciseString,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 20.0, fontWeight: FontWeight.w300, color: Colors.white),
-      ));
-    } else {
-      texts.add(Text(
+  Widget get exercisesTexts {
+    if (this._countdownElements.isEmpty) {
+      return Container(child: Text(
         'FINISHED',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 20.0, color: Colors.white),
+        style: TextStyle(fontSize: 40.0, color: Colors.white),
       ));
-    }
-    if (this.nextExerciseString.length > 0) {
-      texts.add(Text(
-        'AFTER',
+    } else if (this._countdownElements.length == 1) {
+      return AutoSizeText(
+        currentExerciseString,
+        maxLines: 2,
+        minFontSize: 10,
+        overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 20.0, color: Colors.white70),
-      ));
-      texts.add(Text(
-        nextExerciseString,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 20.0, fontWeight: FontWeight.w300, color: Colors.white70),
-      ));
+        style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300, color: Colors.white),
+      );
+    } else {
+      return Column(children: [
+        Expanded(child:
+          AutoSizeText(
+            currentExerciseString,
+            maxLines: 2,
+            minFontSize: 10,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300, color: Colors.white),
+          ),
+        ),
+        Text(
+          'AFTER',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18.0, color: Colors.white70),
+        ),
+        Expanded(child:
+          AutoSizeText(
+            nextExerciseString,
+            maxLines: 1,
+            minFontSize: 10,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 18.0, fontWeight: FontWeight.w300, color: Colors.white70),
+          )
+        )]
+      );
     }
-    return texts;
   }
 }
 
@@ -331,7 +348,7 @@ class CustomTimerPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
       ..color = color
-      ..strokeWidth = 10.0
+      ..strokeWidth = 8.0
       ..strokeCap = StrokeCap.butt
       ..style = PaintingStyle.stroke;
 
