@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:Protalyze/config/Palette.dart';
 import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/RootPage.dart';
@@ -10,7 +11,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
+  setupStatusAndNavBarColors();
   runApp(MyApp());
+}
+
+void setupStatusAndNavBarColors(){
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Palette.darkBlueColor,
+    systemNavigationBarIconBrightness: Brightness.light,
+    statusBarColor: Palette.darkBlueColor,
+    statusBarBrightness: Brightness.light
+  ));
 }
 
 class MyApp extends StatelessWidget {
