@@ -11,7 +11,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
@@ -28,7 +27,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Duration _totalTime;
   List<CountdownElement> _countdownElements;
   final int _prepareTime = 10;
-  final Color _buttonsColor = Palette.orangeColor, _circleColor = Palette.orangeColor;
+  final Color _buttonsColor = Palette.orangeColor;
 
   Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3");
 
