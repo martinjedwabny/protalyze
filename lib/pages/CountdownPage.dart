@@ -11,6 +11,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
@@ -34,6 +35,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   @override
   void dispose() {
     ScreenPersist.disable();
+    this._controller.dispose();
     super.dispose();
   }
 
@@ -50,7 +52,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     if (status == AnimationStatus.dismissed) {
       playBeepSound();
       stepToNextExercise();
-      setState(() { });
     }
   }
 
@@ -135,7 +136,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Widget buildProgressCircle(){
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(4.0),
         child: Align(
           alignment: FractionalOffset.center,
           child: AspectRatio(
@@ -175,7 +176,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                           //   size: 64,
                           //   color: this._buttonsColor,
                           // )
-                          child: Text(this.countdownFinished()? 'Done' : !this._isPause ? "Pause" : "Play", 
+                          child: Text(this.countdownFinished()? 'Done' : !this._isPause ? "Pause" : "Start", 
                             style: TextStyle(fontSize: 36.0, color: this._buttonsColor),)
                           
                           );
@@ -192,7 +193,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Widget buildBottomButtons(BuildContext context){
     return Container(
       child: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.only(left:8.0,right:8.0,bottom:8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -260,9 +261,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(this.widget._workout.name),
-      // ),
       backgroundColor: Palette.darkBlueColor,
       body: AnimatedBuilder(
           animation: _controller,
