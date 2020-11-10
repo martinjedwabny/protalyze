@@ -1,7 +1,6 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/bloc/WorkoutNotifier.dart';
 import 'package:Protalyze/containers/ExerciseBlockListItem.dart';
-import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/CountdownPage.dart';
@@ -81,7 +80,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   }
 
   addNewExercise(){
-    ExerciseBlock block = ExerciseBlock(Exercise('New exercise'), Duration(seconds: 30), Duration(seconds: 90));
+    ExerciseBlock block = ExerciseBlock('New exercise', 1, Duration(seconds: 30), Duration(seconds: 90));
     addExercise(block);
   }
   

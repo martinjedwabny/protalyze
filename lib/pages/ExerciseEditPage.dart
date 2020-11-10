@@ -1,4 +1,3 @@
-import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Weight.dart';
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
@@ -26,7 +25,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    nameControl.text = widget.block.exercise.name;
+    nameControl.text = widget.block.name;
     setsControl.text = widget.block.sets != null ? widget.block.sets.toString() : '1';
     performTimeControl.text = widget.block.performingTime.inSeconds.toString();
     restTimeControl.text = widget.block.restTime.inSeconds.toString();
@@ -81,7 +80,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
   okayPress(){
     ExerciseBlock block = widget.block;
     if (nameControl.text != null && nameControl.text.length > 0){
-      block.exercise = Exercise(nameControl.text);
+      block.name = nameControl.text;
     } else {
       return showAlertDialog(context, "Error", "Name should not be empty.");
     }

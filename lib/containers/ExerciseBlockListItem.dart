@@ -10,7 +10,7 @@ class ExerciseBlockListItem implements ListItem {
 
   Widget buildTitle(BuildContext context) {
     return Text(
-      block.exercise.name,
+      block.name,
       style: Theme.of(context).textTheme.headline6,
     );
   }

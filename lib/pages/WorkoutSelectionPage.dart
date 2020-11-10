@@ -1,7 +1,6 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/bloc/WorkoutNotifier.dart';
 import 'package:Protalyze/containers/WorkoutListItem.dart';
-import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
@@ -111,8 +110,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
       builder: (_) {
         return TextInputAlertDialog('Enter workout name', (String text) {
           Workout wk = Workout(text, [
-            ExerciseBlock(Exercise("New exercise"), Duration(seconds: 30),
-                Duration(seconds: 90)),
+            ExerciseBlock("New exercise", 1, Duration(seconds: 30), Duration(seconds: 90)),
           ]);
           Provider.of<WorkoutNotifier>(context, listen: false).addWorkout(wk);
         }, initialValue: 'New workout');

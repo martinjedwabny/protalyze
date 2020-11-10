@@ -148,9 +148,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                       customColors: CustomSliderColors(
                       dotColor: Color(0xFFFFB1B2),
                       trackColor: Color(0xFFE9585A),
-                      progressBarColors: [Color(0xFFFB9967), Color(0xFFE9585A)],
-                      shadowColor: Color(0xFFFFB1B2),
-                      shadowMaxOpacity: 0.05),
+                      progressBarColors: [Color(0xFFFB9967), Color(0xFFE9585A)]),
                       counterClockwise: true,
                       startAngle: 30,
                       infoProperties: InfoProperties(

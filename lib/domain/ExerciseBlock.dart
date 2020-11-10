@@ -1,11 +1,9 @@
 import 'dart:convert';
-
-import 'package:Protalyze/domain/Exercise.dart';
 import 'package:Protalyze/domain/Weight.dart';
+import 'Block.dart';
 
-class ExerciseBlock {
+class ExerciseBlock extends Block {
   // Necessary
-  Exercise exercise;
   Duration performingTime;
   Duration restTime;
   // Optional
@@ -14,46 +12,45 @@ class ExerciseBlock {
   int maxReps;
   bool inputReps;
   bool inputDifficulty;
-  int sets;
   // Constructors
   ExerciseBlock(
-    this.exercise, 
+    String name,  
+    int sets,
     this.performingTime, 
     this.restTime, {
       this.weight, 
       this.minReps, 
-      this.maxReps, 
-      this.sets,
+      this.maxReps,
       this.inputReps = true, 
-      this.inputDifficulty = true});
+      this.inputDifficulty = true}) : super(name, sets);
 
-   ExerciseBlock.copy(ExerciseBlock other) {
-    this.exercise = other.exercise; 
+   ExerciseBlock.copy(ExerciseBlock other) : super(other.name, other.sets) {
     this.performingTime = other.performingTime;
     this.restTime = other.restTime;
     this.weight = other.weight;
     this.minReps = other.minReps;
     this.maxReps = other.maxReps;
-    this.sets = other.sets;
     this.inputReps = other.inputReps;
     this.inputDifficulty = other.inputDifficulty;
   }
 
   ExerciseBlock.fromJson(Map<String, dynamic> json)
-    : exercise = Exercise.fromJson(json['exercise']),
-      performingTime = Duration(seconds: json['performingTime']),
-      restTime = Duration(seconds: json['restTime']),
-      weight = json['weight'] == null || json['weight'] == "null" ? null : Weight.fromJson(json['weight']),
-      minReps = jsonDecode(json['minReps']),
-      maxReps = jsonDecode(json['maxReps']),
-      sets = json['sets'] == null ? 1 : json['sets'],
-      inputReps = jsonDecode(json['inputReps']),
-      inputDifficulty = jsonDecode(json['inputDifficulty'])
-    ;
+    : super(
+      json['name'], 
+      json['sets'] == null ? 1 : json['sets']) {
+      this.performingTime = Duration(seconds: json['performingTime']);
+      this.restTime = Duration(seconds: json['restTime']);
+      this.weight = json['weight'] == null || json['weight'] == "null" ? null : Weight.fromJson(json['weight']);
+      this.minReps = jsonDecode(json['minReps']);
+      this.maxReps = jsonDecode(json['maxReps']);
+      this.inputReps = jsonDecode(json['inputReps']);
+      this.inputDifficulty = jsonDecode(json['inputDifficulty']);
+    }
 
   Map<String, dynamic> toJson() =>
     {
-      'exercise' : exercise.toJson(),
+      'type': 'exercise',
+      'name' : name,
       'performingTime' : performingTime.inSeconds,
       'restTime' : restTime.inSeconds,
       'weight' : weight == null ? null : weight.toJson(),
@@ -65,7 +62,7 @@ class ExerciseBlock {
     };
 
   String toString(){
-    String ans = this.exercise.name;
+    String ans = this.name;
     if (this.weight != null) ans += ', ' + this.weight.toString();
     if (this.minReps != null && this.maxReps != null)
       ans += ', ' +
