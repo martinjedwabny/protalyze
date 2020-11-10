@@ -106,11 +106,18 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
   }
 
   void addNewWorkout() {
-    Workout wk = Workout('New workout', [
-      ExerciseBlock(Exercise("New exercise"), Duration(seconds: 30),
-          Duration(seconds: 90)),
-    ]);
-    Provider.of<WorkoutNotifier>(context, listen: false).addWorkout(wk);
+    showDialog(
+      context: context,
+      builder: (_) {
+        return TextInputAlertDialog('Enter workout name', (String text) {
+          Workout wk = Workout(text, [
+            ExerciseBlock(Exercise("New exercise"), Duration(seconds: 30),
+                Duration(seconds: 90)),
+          ]);
+          Provider.of<WorkoutNotifier>(context, listen: false).addWorkout(wk);
+        }, initialValue: 'New workout');
+      },
+    );
   }
 
   void addWorkout(Workout wk) {
