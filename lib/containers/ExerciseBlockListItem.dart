@@ -1,9 +1,10 @@
+import 'package:Protalyze/containers/BlockListItem.dart';
 import 'package:Protalyze/containers/ListItem.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:flutter/material.dart';
 
 /// A ListItem that contains data to display a heading.
-class ExerciseBlockListItem implements ListItem {
+class ExerciseBlockListItem extends BlockListItem implements ListItem {
   final ExerciseBlock block;
 
   ExerciseBlockListItem(this.block);

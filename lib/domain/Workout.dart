@@ -1,25 +1,28 @@
 import 'dart:convert';
 
+import 'package:Protalyze/domain/Block.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
+import 'package:Protalyze/domain/GroupBlock.dart';
 
 class Workout {
   String documentId;
   String name;
-  List<ExerciseBlock> exercises;
+  List<Block> blocks;
 
-  Workout(this.name, this.exercises);
+  Workout(this.name, this.blocks);
   Workout.copy(Workout other){
     this.name = other.name;
-    this.exercises = other.exercises.map((e) => ExerciseBlock.copy(e)).toList();
+    this.blocks = other.blocks.map((e) => e.copy()).toList();
   }
 
   Workout.fromJson(Map<String, dynamic> json)
       : name = json['name'],
-        exercises = (jsonDecode(json['exercises']) as List<dynamic>).map((e) => ExerciseBlock.fromJson(e)).toList();
+        blocks = (jsonDecode(json['exercises']) as List<dynamic>).map((e) => 
+          e['type'] == 'group' ? GroupBlock.fromJson(e) : ExerciseBlock.fromJson(e)).toList();
 
   Map<String, dynamic> toJson() =>
     {
       'name': name,
-      'exercises': jsonEncode(exercises),
+      'exercises': jsonEncode(blocks),
     };
 }

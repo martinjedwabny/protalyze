@@ -1,11 +1,11 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/config/Palette.dart';
 import 'package:Protalyze/domain/CountdownElement.dart';
-import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/PastWorkout.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/misc/DurationFormatter.dart';
 import 'package:Protalyze/misc/ScreenPersist.dart';
+import 'package:Protalyze/misc/WorkoutToCountdownAdapter.dart';
 import 'package:Protalyze/widgets/SingleMessageConfirmationDialog.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -70,20 +70,9 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     this._countdownElements = [new CountdownElement('Prepare', new Duration(seconds: this._prepareTime))];
     this._totalTime = Duration(seconds: this._prepareTime);
     // Add perform and rest times for each block
-    for (ExerciseBlock block in this.widget._workout.exercises) {
-      int sets = block.sets == null ? 1 : block.sets;
-      for (int i = 0; i < sets; i++){
-        if (block.performingTime != null && block.performingTime.inSeconds > 0) {
-          this._countdownElements.add(new CountdownElement(block.toString(), block.performingTime));
-          this._totalTime += block.performingTime;
-        }
-        if (block == this.widget._workout.exercises.last && i == (sets - 1))
-          continue;
-        if (block.restTime != null && block.restTime.inSeconds > 0) {
-          this._countdownElements.add(new CountdownElement('Rest', block.restTime));
-          this._totalTime += block.restTime;
-        }
-      }
+    this._countdownElements = WorkoutToCountdownAdapter.getCountdownElements(this.widget._workout);
+    for (CountdownElement element in this._countdownElements){
+      this._totalTime += element.totalTime;
     }
   }
 

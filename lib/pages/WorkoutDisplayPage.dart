@@ -1,8 +1,10 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/bloc/WorkoutNotifier.dart';
 import 'package:Protalyze/containers/ExerciseBlockListItem.dart';
+import 'package:Protalyze/domain/Block.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
+import 'package:Protalyze/misc/WorkoutToBlockListItemAdapter.dart';
 import 'package:Protalyze/pages/CountdownPage.dart';
 import 'package:Protalyze/pages/ExerciseEditPage.dart';
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
@@ -16,7 +18,7 @@ class WorkoutDisplayPage extends StatefulWidget {
   final bool canEdit;
   
   WorkoutDisplayPage(this.workout, {this.canEdit = true}) :
-    this.items = workout.exercises.map((e) => ExerciseBlockListItem(e)).toList();
+    this.items = WorkoutToBlockListItemAdapter.getBlockListItems(workout).cast<ExerciseBlockListItem>();
 
   @override
   _WorkoutDisplayPageState createState() => _WorkoutDisplayPageState();
@@ -72,7 +74,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
         newIndex -= 1;
       ExerciseBlockListItem item = widget.items.removeAt(oldIndex);
       widget.items.insert(newIndex, item);
-      List<ExerciseBlock> exercises = widget.workout.exercises;
+      List<Block> exercises = widget.workout.blocks;
       ExerciseBlock block = exercises.removeAt(oldIndex);
       exercises.insert(newIndex, block);
       updateExercise(block);
@@ -91,7 +93,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
 
   addExercise(ExerciseBlock block) {
     setState(() {
-      widget.workout.exercises.add(block);
+      widget.workout.blocks.add(block);
       widget.items.add(ExerciseBlockListItem(block));
       Provider.of<WorkoutNotifier>(context, listen: false).updateWorkout(widget.workout);
     });
@@ -99,7 +101,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
 
   removeExercise(ExerciseBlock block) {
     setState(() {
-      widget.workout.exercises.remove(block);
+      widget.workout.blocks.remove(block);
       widget.items.removeWhere((element) => element.block == block);
       Provider.of<WorkoutNotifier>(context, listen: false).updateWorkout(widget.workout);
     });
@@ -142,7 +144,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   }
 
   void goToTimer() {
-    if (this.widget.workout.exercises.isEmpty){
+    if (this.widget.workout.blocks.isEmpty){
       showDialog(
         context: context,
         builder: (BuildContext context) {

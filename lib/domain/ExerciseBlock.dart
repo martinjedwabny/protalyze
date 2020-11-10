@@ -34,6 +34,10 @@ class ExerciseBlock extends Block {
     this.inputDifficulty = other.inputDifficulty;
   }
 
+  ExerciseBlock copy(){
+    return new ExerciseBlock.copy(this);
+  }
+
   ExerciseBlock.fromJson(Map<String, dynamic> json)
     : super(
       json['name'], 
