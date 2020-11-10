@@ -39,9 +39,7 @@ class MyApp extends StatelessWidget {
 
   void setupFirestore() async {
     try {
-      await Firestore.instance.settings(
-        persistenceEnabled: true,
-      );
+      await FirebaseFirestore.instance.enablePersistence();
     } catch(e) {
       print('Non critical error trying to setup Firestore persistance.');
     }

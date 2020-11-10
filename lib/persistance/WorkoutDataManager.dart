@@ -9,18 +9,18 @@ class WorkoutDataManager {
 
   static Future<List<Workout>> getSavedWorkouts() async {
     CollectionReference workoutsCollection = await getWorkoutCollection();
-    QuerySnapshot query = await workoutsCollection.getDocuments();
-    return query.documents.map((e) { 
-      Workout workout = Workout.fromJson(e.data);
-      workout.documentId = e.documentID;
+    QuerySnapshot query = await workoutsCollection.get();
+    return query.docs.map((e) { 
+      Workout workout = Workout.fromJson(e.data());
+      workout.documentId = e.id;
       return workout;
     }).toList();
   }
 
   static Future<CollectionReference> getWorkoutCollection() async{
     final FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseUser user = await auth.currentUser();
-    DocumentReference userDoc = Firestore.instance.collection(usersKey).document(user.uid);
+    User user = auth.currentUser;
+    DocumentReference userDoc = FirebaseFirestore.instance.collection(usersKey).doc(user.uid);
     CollectionReference workoutsCollection = userDoc.collection(workoutsKey);
     return workoutsCollection;
   }
@@ -29,7 +29,7 @@ class WorkoutDataManager {
     CollectionReference workoutsCollection = await getWorkoutCollection();
     Map<String, dynamic> workoutJson = workout.toJson();
     DocumentReference doc = await workoutsCollection.add(workoutJson);
-    workout.documentId = doc.documentID;
+    workout.documentId = doc.id;
   }
 
   static Future<void> updateWorkout(Workout workout) async {
@@ -37,15 +37,15 @@ class WorkoutDataManager {
       return;
     CollectionReference workoutsCollection = await getWorkoutCollection();
     Map<String, dynamic> workoutJson = workout.toJson();
-    DocumentReference doc = workoutsCollection.document(workout.documentId);
-    doc.updateData(workoutJson);
+    DocumentReference doc = workoutsCollection.doc(workout.documentId);
+    doc.update(workoutJson);
   }
 
   static Future<void> removeWorkout(Workout workout) async {
     if (workout.documentId == null)
       return;
     CollectionReference workoutsCollection = await getWorkoutCollection();
-    DocumentReference doc = workoutsCollection.document(workout.documentId);
+    DocumentReference doc = workoutsCollection.doc(workout.documentId);
     await doc.delete();
   }
 }

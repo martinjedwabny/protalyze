@@ -183,7 +183,7 @@ void validateAndSubmit() async {
       try {
         if (isLoginForm) {
           userId = await widget.auth.signIn(email, password);
-          bool verified = await widget.auth.isEmailVerified();
+          bool verified = widget.auth.emailVerified();
           if (userId.length > 0 && userId != null && verified) {
             widget.loginCallback();
           } else {

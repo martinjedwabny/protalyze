@@ -15,7 +15,7 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 // ignore: public_member_api_docs
 void registerPlugins(PluginRegistry registry) {
   AudioplayersPlugin.registerWith(registry.registrarFor(AudioplayersPlugin));
-  FirestoreWeb.registerWith(registry.registrarFor(FirestoreWeb));
+  FirebaseFirestoreWeb.registerWith(registry.registrarFor(FirebaseFirestoreWeb));
   FirebaseAuthWeb.registerWith(registry.registrarFor(FirebaseAuthWeb));
   FirebaseCoreWeb.registerWith(registry.registrarFor(FirebaseCoreWeb));
   registry.registerMessageHandler();

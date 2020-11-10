@@ -9,18 +9,18 @@ class PastWorkoutDataManager {
 
   static Future<List<PastWorkout>> getSavedPastWorkouts() async {
     CollectionReference collection = await getPastWorkoutCollection();
-    QuerySnapshot query = await collection.getDocuments();
-    return query.documents.map((e) { 
-      PastWorkout item = PastWorkout.fromJson(e.data);
-      item.documentId = e.documentID;
+    QuerySnapshot query = await collection.get();
+    return query.docs.map((QueryDocumentSnapshot e) { 
+      PastWorkout item = PastWorkout.fromJson(e.data());
+      item.documentId = e.id;
       return item;
     }).toList();
   }
 
   static Future<CollectionReference> getPastWorkoutCollection() async{
     final FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseUser user = await auth.currentUser();
-    DocumentReference userDoc = Firestore.instance.collection(usersKey).document(user.uid);
+    User user = auth.currentUser;
+    DocumentReference userDoc = FirebaseFirestore.instance.collection(usersKey).doc(user.uid);
     CollectionReference collection = userDoc.collection(pastWorkoutsKey);
     return collection;
   }
@@ -29,7 +29,7 @@ class PastWorkoutDataManager {
     CollectionReference collection = await getPastWorkoutCollection();
     Map<String, dynamic> itemJson = item.toJson();
     DocumentReference doc = await collection.add(itemJson);
-    item.documentId = doc.documentID;
+    item.documentId = doc.id;
   }
 
   static Future<void> updatePastWorkout(PastWorkout item) async {
@@ -37,15 +37,15 @@ class PastWorkoutDataManager {
       return;
     CollectionReference collection = await getPastWorkoutCollection();
     Map<String, dynamic> itemJson = item.toJson();
-    DocumentReference doc = collection.document(item.documentId);
-    doc.updateData(itemJson);
+    DocumentReference doc = collection.doc(item.documentId);
+    doc.update(itemJson);
   }
 
   static Future<void> removePastWorkout(PastWorkout item) async {
     if (item.documentId == null)
       return;
     CollectionReference collection = await getPastWorkoutCollection();
-    DocumentReference doc = collection.document(item.documentId);
+    DocumentReference doc = collection.doc(item.documentId);
     await doc.delete();
   }
 }

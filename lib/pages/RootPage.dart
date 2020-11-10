@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/LoginSignupPage.dart';
@@ -17,16 +18,14 @@ class _RootPageState extends State<RootPage> {
   @override
   void initState() {
     super.initState();
-
-    widget.auth.getCurrentUser().then((user) {
+      User user = widget.auth.getCurrentUser();
       setState(() {
         if (user != null) {
           userId = user?.uid;
         }
         authStatus = user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
-      });
-    });
-  }
+        });
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +60,9 @@ class _RootPageState extends State<RootPage> {
   }
 
   void loginCallback() {
-    widget.auth.getCurrentUser().then((user) {
-      setState(() {
-        userId = user.uid.toString();
-      });
-    });
+    User user = widget.auth.getCurrentUser();
     setState(() {
+      userId = user.uid.toString();
       authStatus = AuthStatus.LOGGED_IN;
     });
   }
