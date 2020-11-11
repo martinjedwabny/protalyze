@@ -160,7 +160,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
               );
             },
             trailing: Wrap(
-              spacing: 4, // space between two icons
+              spacing: 0.0, // space between two icons
               children: widget.canEdit == false ? [] : <Widget>[
                 IconButton(icon: Icon(Icons.add), tooltip: 'Add exercise', onPressed: () {
                   handleAddExercise();
@@ -207,7 +207,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
           });
         },
         trailing: Wrap(
-          spacing: 4, // space between two icons
+          spacing: 0.0, // space between two icons
           children: widget.canEdit == false ? [] : <Widget>[
             IconButton(icon: Icon(Icons.arrow_upward), tooltip: 'Up', onPressed: () {
               handleUp();

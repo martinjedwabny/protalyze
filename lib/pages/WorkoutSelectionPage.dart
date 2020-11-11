@@ -50,7 +50,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
                   );
                 },
                 trailing: Wrap(
-                  spacing: 4, // space between two icons
+                  spacing: 0.0, // space between two icons
                   children: <Widget>[
                     IconButton(
                       icon: Icon(Icons.add),

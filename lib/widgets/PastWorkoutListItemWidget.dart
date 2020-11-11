@@ -13,7 +13,7 @@ class PastWorkoutListItemWidget extends StatelessWidget {
           subtitle: _item.buildContent(context),
           onTap: this._onTap,
           trailing: Wrap(
-            spacing: 4, // space between two icons
+            spacing: 0.0, // space between two icons
             children: <Widget>[
               IconButton(
                 icon: Icon(Icons.edit),

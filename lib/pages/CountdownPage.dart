@@ -124,7 +124,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Widget buildProgressCircle(){
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.all(4.0),
+        padding: EdgeInsets.all(0.0),
         child: Align(
           alignment: FractionalOffset.center,
           child: AspectRatio(
