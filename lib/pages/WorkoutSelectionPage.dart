@@ -60,13 +60,6 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.edit),
-                      tooltip: 'Edit',
-                      onPressed: () {
-                        openWorkoutNameEditDialog(item);
-                      },
-                    ),
-                    IconButton(
                         icon: Icon(Icons.delete_outline),
                         tooltip: 'Remove',
                         onPressed: () {
@@ -90,17 +83,6 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
           color: Colors.white,
         ),
       ),
-    );
-  }
-
-  void openWorkoutNameEditDialog(WorkoutListItem item) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return TextInputAlertDialog('Edit workout name', (String text) {
-          updateWorkoutName(item.workout, text);
-        }, initialValue: item.workout.name);
-      },
     );
   }
 

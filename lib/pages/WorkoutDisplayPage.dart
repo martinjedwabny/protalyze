@@ -46,6 +46,23 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.workout.name),
+        actions: <Widget>[
+          FlatButton(
+            textColor: Colors.white,
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return TextInputAlertDialog('Edit workout name', (String name) {
+                    this.widget.workout.name = name;
+                    updateWorkout();
+                  }, initialValue: this.widget.workout.name,);
+                },
+              );
+            },
+            child: Icon(Icons.edit, color: Colors.white,),
+          ),
+        ],
       ),
       body: getListViewFromWorkout(this.widget.workout),
       floatingActionButton: widget.canEdit == false ? null : 
@@ -80,21 +97,28 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   Widget getListViewFromWorkout(Workout workout){
     if (workout.blocks.isEmpty)
       return SingleMessageScaffold('No exercises added yet.');
-    // TODO reordering
-    // if (widget.canEdit)
-    //   return ReorderableListView(
-    //     children: workout.map((item) => createRowCard(item)).toList(),
-    //     onReorder: (oldIndex, newIndex) {
-    //       setState(() {
-    //         reorderItems(oldIndex, newIndex);
-    //       });
-    //     });
     return ListView(
       children: workout.blocks.map((item) => getWidgetFromBlock(null, item)).toList(),
     );
   }
 
   Widget getWidgetFromBlock(GroupBlock parent, Block block) {
+    var handleUp = (){
+      List<Block> blocks = parent == null ? this.widget.workout.blocks : parent.subBlocks;
+      int index = blocks.indexOf(block);
+      if (index == 0) return;
+      blocks.removeAt(index);
+      blocks.insert(index-1, block);
+      updateWorkout();
+    };
+    var handleDown = (){
+      List<Block> blocks = parent == null ? this.widget.workout.blocks : parent.subBlocks;
+      int index = blocks.indexOf(block);
+      if (index == blocks.length - 1) return;
+      blocks.removeAt(index);
+      blocks.insert(index+1, block);
+      updateWorkout();
+    };
     var handleAddExercise = (){
       addNewExercise(block as GroupBlock);
     };
@@ -107,11 +131,10 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
         Provider.of<WorkoutNotifier>(context, listen: false).updateWorkout(widget.workout);
       });
     };
-    return Container(
-      child: block is GroupBlock ? getWidgetFromGroupBlock(block, handleAddExercise, handleRemove) : getWidgetFromExerciseBlock(block, handleRemove));
+    return block is GroupBlock ? getWidgetFromGroupBlock(block, handleAddExercise, handleRemove, handleUp, handleDown) : getWidgetFromExerciseBlock(block, handleRemove, handleUp, handleDown);
   }
 
-  Widget getWidgetFromGroupBlock(GroupBlock block, VoidCallback handleAddExercise, VoidCallback handleRemove) {
+  Widget getWidgetFromGroupBlock(GroupBlock block, VoidCallback handleAddExercise, VoidCallback handleRemove, VoidCallback handleUp, VoidCallback handleDown) {
     GroupBlockListItem item = new GroupBlockListItem(block);
     return Card(
       color: Colors.grey[200],
@@ -141,10 +164,16 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
               children: widget.canEdit == false ? [] : <Widget>[
                 IconButton(icon: Icon(Icons.add), tooltip: 'Add exercise', onPressed: () {
                   handleAddExercise();
-                },), // icon-1
+                },),
+                IconButton(icon: Icon(Icons.arrow_upward), tooltip: 'Up', onPressed: () {
+                  handleUp();
+                }),
+                IconButton(icon: Icon(Icons.arrow_downward), tooltip: 'Down', onPressed: () {
+                  handleDown();
+                }),
                 IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', onPressed: () {
                   handleRemove();
-                }),// icon-2
+                }),
               ],
             ),
           ),
@@ -161,7 +190,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   }
 
 
-  Widget getWidgetFromExerciseBlock(ExerciseBlock block, VoidCallback handleRemove) {
+  Widget getWidgetFromExerciseBlock(ExerciseBlock block, VoidCallback handleRemove, VoidCallback handleUp, VoidCallback handleDown) {
     ExerciseBlockListItem item = new ExerciseBlockListItem(block);
     return Card(
       key: ValueKey(item),
@@ -180,9 +209,15 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
         trailing: Wrap(
           spacing: 4, // space between two icons
           children: widget.canEdit == false ? [] : <Widget>[
+            IconButton(icon: Icon(Icons.arrow_upward), tooltip: 'Up', onPressed: () {
+              handleUp();
+            }),
+            IconButton(icon: Icon(Icons.arrow_downward), tooltip: 'Down', onPressed: () {
+              handleDown();
+            }),
             IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', onPressed: () {
               handleRemove();
-            }),// icon-2
+            }),
           ],
         ),
       ),
@@ -193,20 +228,12 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   //   if (newIndex != oldIndex) {
   //     if (oldIndex < newIndex)
   //       newIndex -= 1;
-  //     ExerciseBlockListItem item = widget.items.removeAt(oldIndex);
-  //     widget.items.insert(newIndex, item);
-  //     List<Block> exercises = widget.workout.blocks;
-  //     ExerciseBlock block = exercises.removeAt(oldIndex);
-  //     exercises.insert(newIndex, block);
-  //     updateExercise(block);
+  //     Block item = widget.workout.blocks.removeAt(oldIndex);
+  //     widget.workout.blocks.insert(newIndex, item);
+  //     updateWorkout();
   //   }
   // }
   
-  // duplicateExercise(ExerciseBlock block) {
-  //   ExerciseBlock blockCopy = ExerciseBlock.copy(block);
-  //   addExercise(blockCopy);
-  // }
-
   void addNewExercise(GroupBlock parent){
     ExerciseBlock block = ExerciseBlock('New exercise', 1, Duration(seconds: 30), Duration(seconds: 90));
     addBlock(parent, block);
