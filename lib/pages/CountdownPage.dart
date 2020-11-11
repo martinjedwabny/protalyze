@@ -68,9 +68,9 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     // Set initial duration / prepare time to this._prepareTime seconds
     this._controller.duration = Duration(seconds: this._prepareTime);
     this._countdownElements = [new CountdownElement('Prepare', new Duration(seconds: this._prepareTime))];
-    this._totalTime = Duration(seconds: this._prepareTime);
+    this._totalTime = Duration(seconds: 0);
     // Add perform and rest times for each block
-    this._countdownElements = WorkoutToCountdownAdapter.getCountdownElements(this.widget._workout);
+    this._countdownElements += WorkoutToCountdownAdapter.getCountdownElements(this.widget._workout);
     for (CountdownElement element in this._countdownElements){
       this._totalTime += element.totalTime;
     }

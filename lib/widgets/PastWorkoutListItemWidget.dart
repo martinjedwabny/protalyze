@@ -10,7 +10,7 @@ class PastWorkoutListItemWidget extends StatelessWidget {
     return Card(
         child: ListTile(
           title: _item.buildTitle(context),
-          subtitle: _item.buildSubtitle(context),
+          subtitle: _item.buildContent(context),
           onTap: this._onTap,
           trailing: Wrap(
             spacing: 4, // space between two icons

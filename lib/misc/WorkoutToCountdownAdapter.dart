@@ -19,12 +19,10 @@ class WorkoutToCountdownAdapter{
 
   static List<CountdownElement> getCountdownElementsFromGroupBlock(GroupBlock block) {
     List<CountdownElement> ans = [];
-    for (Block block in block.subBlocks) {
       int sets = block.sets == null ? 1 : block.sets;
-      for (int i = 0; i < sets; i++){
-        ans += getCountdownElementsFromBlock(block);
-      }
-    }
+      for (int i = 0; i < sets; i++)
+        for (Block block in block.subBlocks)
+          ans += getCountdownElementsFromBlock(block);
     return ans;
   }
 

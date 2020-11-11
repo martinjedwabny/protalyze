@@ -15,7 +15,5 @@ class WorkoutListItem implements ListItem {
     );
   }
 
-  Widget buildSubtitle(BuildContext context) => null;
-
-  Widget buildInputFields(BuildContext context) => null;
+  Widget buildContent(BuildContext context) => null;
 }

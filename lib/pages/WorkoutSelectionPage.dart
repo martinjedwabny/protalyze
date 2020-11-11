@@ -34,7 +34,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
             return Card(
               child: ListTile(
                 title: item.buildTitle(context),
-                subtitle: item.buildSubtitle(context),
+                subtitle: item.buildContent(context),
                 onTap: () {
                   Navigator.push(
                     context,

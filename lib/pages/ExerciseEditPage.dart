@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 
 class ExerciseEditPage extends StatefulWidget {
   final ExerciseBlock block;
-  final void Function(ExerciseBlock) okayCallback;
+  final VoidCallback okayCallback;
   ExerciseEditPage(this.block, this.okayCallback);
 
   @override
@@ -100,7 +100,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     block.maxReps = maxRepsControl.text.length == 0 ? null : int.parse(maxRepsControl.text);
     block.inputReps = this.checkboxInputs['reps'];
     block.inputDifficulty = this.checkboxInputs['diff'];
-    widget.okayCallback(block);
+    widget.okayCallback();
     Navigator.pop(context, () {});
   }
 
