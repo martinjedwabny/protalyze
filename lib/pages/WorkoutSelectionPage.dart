@@ -72,6 +72,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
           },
         );
       }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         heroTag: 'WorkoutAdd',
         tooltip: 'Add workout',

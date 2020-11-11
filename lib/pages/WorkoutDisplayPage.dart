@@ -65,6 +65,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
         ],
       ),
       body: getListViewFromWorkout(this.widget.workout),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: widget.canEdit == false ? null : 
         Wrap(spacing: 10.0, children: [ playButton, addBlockButton, ],
       ),

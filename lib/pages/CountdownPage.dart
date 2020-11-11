@@ -222,7 +222,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   void handleSaveWorkoutButton(BuildContext context){
-    PastWorkout toSave = PastWorkout(this.widget._workout, DateTime.now());
+    PastWorkout toSave = PastWorkout(Workout.copy(this.widget._workout), DateTime.now());
     Provider.of<PastWorkoutNotifier>(context, listen: false).addPastWorkout(toSave).then((v) {
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('Workout registered!'),

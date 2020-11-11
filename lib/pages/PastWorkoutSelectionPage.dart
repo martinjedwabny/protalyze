@@ -35,6 +35,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
           children: createListItems(notifier.pastWorkouts), 
           padding: EdgeInsets.only(bottom: 80.0));
       }),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         heroTag: 'PastWorkoutAdd',
         tooltip: 'Register workout',
@@ -50,22 +51,21 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
   }
 
   void addNewPastWorkout() {
+    List<Workout> workouts = Provider.of<WorkoutNotifier>(context, listen: false).workouts;
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Consumer<WorkoutNotifier>(builder: (context, notifier, child) {
-            if (notifier.workouts.isEmpty)
-              return SingleMessageAlertDialog(
-                  'Error', 'Please add a workout before registering them.');
-            return SinglePickerAlertDialog<Workout>(
-                'Register a workout',
-                'Select an option:',
-                Map.fromIterable(notifier.workouts, key: (w) => w.name, value: (w) => w),
-                ((Workout w) {
-              PastWorkout pastWorkout = PastWorkout(w, DateTime.now());
-              addPastWorkout(pastWorkout);
-            }));
-          });
+          if (workouts.isEmpty)
+            return SingleMessageAlertDialog(
+                'Error', 'Please add a workout before registering them.');
+          return SinglePickerAlertDialog<Workout>(
+              'Register a workout',
+              'Select an option:',
+              Map.fromIterable(workouts, key: (w) => w.name, value: (w) => w),
+              ((Workout w) {
+            PastWorkout pastWorkout = PastWorkout(w, DateTime.now());
+            addPastWorkout(pastWorkout);
+          }));
         });
   }
 
