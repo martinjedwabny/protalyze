@@ -43,8 +43,8 @@ class _SinglePickerAlertDialogState<T> extends State<SinglePickerAlertDialog<T>>
         FlatButton(
           child: Text("Ok"),
           onPressed: () {
-            widget.callback(this.selectedOption);
             Navigator.of(context).pop();
+            widget.callback(this.selectedOption);
           },
         ),
         FlatButton(

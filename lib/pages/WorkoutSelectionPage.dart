@@ -3,9 +3,12 @@ import 'package:Protalyze/bloc/WorkoutNotifier.dart';
 import 'package:Protalyze/containers/WorkoutListItem.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
+import 'package:Protalyze/pages/CountdownPage.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
+import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageConfirmationDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
+import 'package:Protalyze/widgets/SinglePickerAlertDialog.dart';
 import 'package:Protalyze/widgets/TextInputAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +25,28 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    Widget playButton = FloatingActionButton(
+      heroTag: 'WorkoutPlay',
+      tooltip: 'Play',
+      onPressed: () {
+        playWorkout();
+      },
+      child: Icon(
+        Icons.play_arrow,
+        color: Colors.white,
+      )
+    );
+    Widget addButton = FloatingActionButton(
+      heroTag: 'WorkoutAdd',
+      tooltip: 'Add workout',
+      onPressed: () {
+        addNewWorkout();
+      },
+      child: Icon(
+        Icons.add,
+        color: Colors.white,
+      )
+    );
     return Scaffold(
       body: Consumer<WorkoutNotifier>(builder: (context, notifier, child) {
         if (notifier.workouts.isEmpty)
@@ -73,18 +98,46 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
         );
       }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'WorkoutAdd',
-        tooltip: 'Add workout',
-        onPressed: () {
-          addNewWorkout();
-        },
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+      floatingActionButton: Wrap(spacing: 10.0, children: [ playButton, addButton, ],
       ),
     );
+  }
+
+  void playWorkout(){
+    List<Workout> workouts = Provider.of<WorkoutNotifier>(context, listen: false).workouts;
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (BuildContext context) {
+        if (workouts.isEmpty)
+          return SingleMessageAlertDialog(
+              'Error', 'Please add a workout to start one.');
+        return SinglePickerAlertDialog<Workout>(
+            'Start a workout',
+            'Select an option:',
+            Map.fromIterable(workouts, key: (w) => w.name, value: (w) => w),
+            ((Workout w) {
+          goToTimer(w, context);
+        }));
+      });
+  }
+
+  void goToTimer(Workout workout, BuildContext dialogContext) {
+    if (workout.blocks.isEmpty){
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SingleMessageAlertDialog('Error', 'Please add at least one exercise.');
+        },
+      );
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => ChangeNotifierProvider<PastWorkoutNotifier>.value(
+          value: Provider.of<PastWorkoutNotifier>(this.context), 
+          child: CountDownPage(workout)
+        ),),
+      );
+    }
   }
 
   void addNewWorkout() {
