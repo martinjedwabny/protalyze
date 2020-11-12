@@ -99,6 +99,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     if (workout.blocks.isEmpty)
       return SingleMessageScaffold('No exercises added yet.');
     return ListView(
+      padding: EdgeInsets.only(bottom: 80.0),
       children: workout.blocks.map((item) => getWidgetFromBlock(null, item)).toList(),
     );
   }
