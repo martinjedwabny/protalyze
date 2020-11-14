@@ -12,6 +12,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
@@ -34,6 +35,12 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   @override
   void dispose() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: Themes.normal.scaffoldBackgroundColor,
+      statusBarColor: Palette.darkGray,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light
+    ));
     ScreenPersist.disable();
     this._controller.dispose();
     super.dispose();
@@ -41,6 +48,12 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   @override
   void initState() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: Palette.darkGray,
+      statusBarColor: Palette.darkGray,
+      systemNavigationBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.light
+    ));
     super.initState();
     ScreenPersist.enable();
     this._controller = AnimationController(vsync: this, value: 1.0);
