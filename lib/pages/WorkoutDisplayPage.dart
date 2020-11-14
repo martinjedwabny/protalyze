@@ -1,5 +1,6 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/bloc/WorkoutNotifier.dart';
+import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/containers/BlockListItem.dart';
 import 'package:Protalyze/domain/Block.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
@@ -7,6 +8,7 @@ import 'package:Protalyze/domain/GroupBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/CountdownPage.dart';
 import 'package:Protalyze/pages/ExerciseEditPage.dart';
+import 'package:Protalyze/widgets/FloatingScaffold.dart';
 import 'package:Protalyze/widgets/GroupBlockEditDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
@@ -27,14 +29,6 @@ class WorkoutDisplayPage extends StatefulWidget {
 class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   @override
   Widget build(BuildContext context) {
-    Widget addBlockButton = FloatingActionButton(
-      heroTag: 'ExerciseAdd',
-      tooltip: 'Add block',
-      onPressed: () { 
-        showAddNewBlockDialog(); 
-      },
-      child: Icon(Icons.add, color: Colors.white,),
-    );
     Widget playButton = FloatingActionButton(
       heroTag: 'play',
       tooltip: 'Start workout',
@@ -43,32 +37,33 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
       },
       child: Icon(Icons.play_arrow, color: Colors.white,),
     );
-    return Scaffold(
+    Widget editButton = IconButton(icon: Icon(Icons.edit, color: Themes.normal.primaryColor,), onPressed: () {
+        showEditWorkoutNameDialog();
+      },
+    );
+    Widget addBlockButton = IconButton(icon: Icon(Icons.add, color: Themes.normal.primaryColor,), onPressed: () {
+        showAddNewBlockDialog();
+      },
+    );
+    return FloatingScaffold(
       appBar: AppBar(
         title: Text(widget.workout.name),
-        actions: <Widget>[
-          FlatButton(
-            textColor: Colors.white,
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return TextInputAlertDialog('Edit workout name', (String name) {
-                    this.widget.workout.name = name;
-                    updateWorkout();
-                  }, initialValue: this.widget.workout.name,);
-                },
-              );
-            },
-            child: Icon(Icons.edit, color: Colors.white,),
-          ),
-        ],
+        actions: this.widget.canEdit ? [editButton, addBlockButton] : null,
       ),
       body: getListViewFromWorkout(this.widget.workout),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: widget.canEdit == false ? null : 
-        Wrap(spacing: 10.0, children: [ playButton, addBlockButton, ],
-      ),
+      floatingActionButton: widget.canEdit == false ? null : playButton,
+    );
+  }
+
+  void showEditWorkoutNameDialog(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return TextInputAlertDialog('Edit workout name', (String name) {
+          this.widget.workout.name = name;
+          updateWorkout();
+        }, initialValue: this.widget.workout.name,);
+      },
     );
   }
 
@@ -92,8 +87,6 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
       },
     );
   }
-
-
 
   Widget getListViewFromWorkout(Workout workout){
     if (workout.blocks.isEmpty)

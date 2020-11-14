@@ -1,10 +1,12 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/bloc/WorkoutNotifier.dart';
+import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/containers/WorkoutListItem.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/CountdownPage.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
+import 'package:Protalyze/widgets/FloatingScaffold.dart';
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageConfirmationDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
@@ -14,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutSelectionPage extends StatefulWidget {
+  final VoidCallback logoutCallback;
+  const WorkoutSelectionPage(this.logoutCallback);
   @override
   _WorkoutSelectionPageState createState() => _WorkoutSelectionPageState();
 }
@@ -36,22 +40,25 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
         color: Colors.white,
       )
     );
-    Widget addButton = FloatingActionButton(
-      heroTag: 'WorkoutAdd',
-      tooltip: 'Add workout',
-      onPressed: () {
-        addNewWorkout();
-      },
-      child: Icon(
-        Icons.add,
-        color: Colors.white,
-      )
-    );
-    return Scaffold(
+    return FloatingScaffold(
+      appBar: AppBar(
+        title: Text('Workout'),
+        actions: [
+        IconButton(icon: Icon(Icons.add, color: Themes.normal.primaryColor,), onPressed: () {
+            addNewWorkout();
+          },
+        ),
+        IconButton(icon: Icon(Icons.logout, color: Themes.normal.primaryColor,), onPressed: () {
+            this.widget.logoutCallback();
+          },
+        ),
+      ],
+      ),
       body: Consumer<WorkoutNotifier>(builder: (context, notifier, child) {
         if (notifier.workouts.isEmpty)
           return SingleMessageScaffold('No workouts added yet.');
         return ListView.builder(
+          // shrinkWrap: true,
           padding: EdgeInsets.only(bottom: 80.0),
           itemCount: notifier.workouts.length,
           itemBuilder: (context, index) {
@@ -97,8 +104,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
           },
         );
       }),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Wrap(spacing: 10.0, children: [ playButton, addButton, ],
+      floatingActionButton: Wrap(spacing: 10.0, children: [ playButton, ],
       ),
     );
   }

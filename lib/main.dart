@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:Protalyze/config/Palette.dart';
 import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/RootPage.dart';
@@ -20,9 +19,9 @@ void main() async {
 
 void setupStatusAndNavBarColors(){
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Palette.darkBlueColor,
+    systemNavigationBarColor: Themes.normal.scaffoldBackgroundColor,
     systemNavigationBarIconBrightness: Brightness.light,
-    statusBarColor: Palette.darkBlueColor,
+    statusBarColor: Themes.normal.scaffoldBackgroundColor,
     statusBarBrightness: Brightness.light
   ));
 }

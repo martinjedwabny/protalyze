@@ -1,10 +1,12 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/bloc/WorkoutNotifier.dart';
+import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/widgets/DateHeaderListItemWidget.dart';
 import 'package:Protalyze/containers/PastWorkoutListItem.dart';
 import 'package:Protalyze/domain/PastWorkout.dart';
 import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/pages/WorkoutDisplayPage.dart';
+import 'package:Protalyze/widgets/FloatingScaffold.dart';
 import 'package:Protalyze/widgets/PastWorkoutEditDialog.dart';
 import 'package:Protalyze/widgets/PastWorkoutListItemWidget.dart';
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
@@ -15,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PastWorkoutSelectionPage extends StatefulWidget {
+  final VoidCallback logoutCallback;
+  const PastWorkoutSelectionPage(this.logoutCallback);
   @override
   _PastWorkoutSelectionPageState createState() =>
       _PastWorkoutSelectionPageState();
@@ -27,26 +31,27 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
+    return FloatingScaffold(
+      appBar: AppBar(
+        title: Text('Log'),
+        actions: [
+        IconButton(icon: Icon(Icons.add, color: Themes.normal.primaryColor,), onPressed: () {
+            addNewPastWorkout();
+          },
+        ),
+        IconButton(icon: Icon(Icons.logout, color: Themes.normal.primaryColor,), onPressed: () {
+            this.widget.logoutCallback();
+          },
+        ),
+      ],
+      ),
       body: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
         if (notifier.pastWorkouts.isEmpty)
           return SingleMessageScaffold('No registered workouts added yet.');
         return ListView(
           children: createListItems(notifier.pastWorkouts), 
           padding: EdgeInsets.only(bottom: 80.0));
-      }),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'PastWorkoutAdd',
-        tooltip: 'Register workout',
-        onPressed: () {
-          addNewPastWorkout();
-        },
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      })
     );
   }
 

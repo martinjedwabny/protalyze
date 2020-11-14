@@ -1,5 +1,6 @@
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Weight.dart';
+import 'package:Protalyze/widgets/FloatingScaffold.dart';
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,7 +37,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
       checkboxInputs['reps'] = widget.block.inputReps;
     if (checkboxInputs['diff'] == null) 
       checkboxInputs['diff'] = widget.block.inputDifficulty;
-    return Scaffold(
+    return FloatingScaffold(
       appBar: AppBar(
         title: Text('Edit exercise'),
       ),
@@ -50,19 +51,24 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
         cardTextInputNumericRow('Max reps', maxRepsControl),
         // cardCheckboxInputRow('Input reps', 'reps'),
         // cardCheckboxInputRow('Input difficulty', 'diff'),
-        Center(child: ButtonBar(
-          mainAxisSize: MainAxisSize.min, // this will take space as minimum as posible(to center)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
-              child: Text('Ok', style: TextStyle(color: Colors.white),),
+            SizedBox(width: 4.0,),
+            Expanded(child:
+              RaisedButton(
+              padding: EdgeInsets.all(16.0),
+              child: Text('Confirm', style: TextStyle(color: Colors.white, fontSize: 16.0),),
               onPressed: () {okayPress();},
-            ),
-            RaisedButton(
-              child: Text('Cancel', style: TextStyle(color: Colors.white),),
+            ),),
+            SizedBox(width: 8.0,),
+            Expanded(child: RaisedButton(
+              padding: EdgeInsets.all(16.0),
+              child: Text('Cancel', style: TextStyle(color: Colors.white, fontSize: 16.0),),
               onPressed: (){cancelPress();},
-            ),
+            ),),
+            SizedBox(width: 4.0,),
           ],
-        ),
         ),
       ],),
     );

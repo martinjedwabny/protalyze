@@ -1,3 +1,4 @@
+import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:flutter/material.dart';
 
@@ -24,10 +25,6 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Login or create an account'),
-          centerTitle: true,
-        ),
         body: Stack(
           children: <Widget>[
             showForm(),
@@ -44,6 +41,7 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
           child: new ListView(
             shrinkWrap: true,
             children: <Widget>[
+              showTitle(),
               showLogo(),
               showEmailInput(),
               showPasswordInput(),
@@ -53,6 +51,19 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
             ],
           ),
         ));
+  }
+
+  Widget showTitle(){
+    return Center(
+      child: Text(
+      'Login or create an account',
+      style: TextStyle(
+        color: Themes.normal.primaryColor,
+        fontSize: 40,
+        fontWeight: FontWeight.w700
+      )
+    ,)
+    );
   }
 
   Widget showCircularProgress() {

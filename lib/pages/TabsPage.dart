@@ -4,6 +4,7 @@ import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/pages/PastWorkoutSelectionPage.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/WorkoutSelectionPage.dart';
+import 'package:Protalyze/widgets/SalomonBottomBar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,72 +19,59 @@ class TabsPage extends StatefulWidget {
 }
 
 class _TabsPageState extends State<TabsPage> {
+  
+  final WorkoutNotifier _workoutNotifier = WorkoutNotifier();
+  final PastWorkoutNotifier _pastWorkoutNotifier = PastWorkoutNotifier();
+  
+  int _currentIndex = 0;
+  List<Widget> _children = [];
+
   @override
-  Widget build(BuildContext context) {
-    WorkoutNotifier workoutNotifier = WorkoutNotifier();
-    workoutNotifier.getWorkoutsFromStore();
-    PastWorkoutNotifier pastWorkoutNotifier = PastWorkoutNotifier();
-    pastWorkoutNotifier.getPastWorkoutsFromStore();
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
-            indicatorColor: Color.fromRGBO(255, 255, 255, 0.6),
-            indicatorPadding: EdgeInsets.only(left:40.0, right:40.0),
-            tabs: [
-              Tab(text: 'WORKOUT',),
-              Tab(text: 'LOG',),
-            ],
-          ),
-          title: Text('Protalyze', style: Themes.normal.appBarTheme.textTheme.headline6,),
-          centerTitle: true,
-          actions: <Widget>[
-            PopupMenuButton<String>(
-              icon: Icon(Icons.more_vert, color: Colors.white,),
-              onSelected: (String value){
-                switch (value) {
-                  case 'Logout':
-                    handleLogout();
-                    break;
-                  // case 'Settings':
-                  //   break;
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return {'Logout'}.map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              },
-            ),
-          ],
-        ),
-        body: TabBarView(
-          children: [
-            MultiProvider(
-              providers: [
-              ChangeNotifierProvider.value(value: workoutNotifier),
-              ChangeNotifierProvider.value(value: pastWorkoutNotifier),
-              ],
-              child: WorkoutSelectionPage(),
-            ),
-            MultiProvider(
-              providers: [
-              ChangeNotifierProvider.value(value: workoutNotifier),
-              ChangeNotifierProvider.value(value: pastWorkoutNotifier),
-              ],
-              child: PastWorkoutSelectionPage(),
-            ),
-          ],
-        ),
+  void initState() {
+    this._workoutNotifier.getWorkoutsFromStore();
+    this._pastWorkoutNotifier.getPastWorkoutsFromStore();
+    this._children = [
+      MultiProvider(
+        providers: [
+        ChangeNotifierProvider.value(value: this._workoutNotifier),
+        ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
+        ],
+        child: WorkoutSelectionPage(this.widget.logoutCallback),
       ),
-    );
+      MultiProvider(
+        providers: [
+        ChangeNotifierProvider.value(value: this._workoutNotifier),
+        ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
+        ],
+        child: PastWorkoutSelectionPage(this.widget.logoutCallback),
+      ),
+    ];
+    super.initState();
   }
 
-  void handleLogout() {
-    this.widget.logoutCallback();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        children: _children,
+        index: _currentIndex,
+      ),
+      bottomNavigationBar: SalomonBottomBar(
+        // alignment: ,
+        margin: EdgeInsets.all(16),
+        onTap: (index) => setState(() => _currentIndex = index), // new
+        currentIndex: _currentIndex, // new
+        items: [
+          new SalomonBottomBarItem(
+            icon: Icon(Icons.timer),
+            title: Text('Workouts'),
+          ),
+          new SalomonBottomBarItem(
+            icon: Icon(Icons.event_available_outlined),
+            title: Text('Log', ),
+          ),
+        ],
+      ),
+    );
   }
 }

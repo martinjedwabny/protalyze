@@ -5,21 +5,51 @@ import 'Palette.dart';
 
 class Themes{
   static final ThemeData normal =  ThemeData(
-    accentColor: Palette.orangeColor,
-    primaryColor: Palette.darkBlueColor,
+    accentColor: Palette.orange,
+    primaryColor: Palette.darkGray,
     disabledColor: Colors.grey,
-    scaffoldBackgroundColor: Colors.white,
-    backgroundColor:Colors.white,
-    buttonColor: Palette.orangeColor,
+    scaffoldBackgroundColor: Palette.lightGray,
+    backgroundColor: Colors.white,
+    buttonColor: Palette.orange,
+    cardTheme: CardTheme(
+      elevation: 0,
+      margin: EdgeInsets.all(12),
+    ),
     appBarTheme: AppBarTheme(
-      elevation: 0.0, 
-      centerTitle: true, 
+      centerTitle: false,
+      color: Colors.transparent,
+      elevation: 0,
+      iconTheme: IconThemeData(
+        color: Palette.darkGray
+      ),
       textTheme: TextTheme(
-        headline5: GoogleFonts.titilliumWeb(textStyle: TextStyle(color: Colors.white, fontSize: 32.0, fontWeight: FontWeight.w500)),
-        headline6: GoogleFonts.titilliumWeb(textStyle: TextStyle(color: Colors.white, fontSize: 24.0, fontWeight: FontWeight.w400)),
-      )
+        headline6: GoogleFonts.titilliumWebTextTheme().headline6.copyWith(
+          fontSize: 40, 
+          fontWeight: FontWeight.w700, 
+          color: Palette.darkGray
+        )
+      ),
     ),
     textTheme: GoogleFonts.titilliumWebTextTheme(),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      selectedItemColor: Palette.blue,
+      unselectedItemColor: Palette.darkGray,
+      backgroundColor: Colors.transparent,
+      selectedLabelStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w300,
+      )
+    ),
+    buttonBarTheme: ButtonBarThemeData(
+      buttonTextTheme: ButtonTextTheme.accent
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      elevation: 0,
+      disabledElevation: 0,
+      focusElevation: 0,
+      highlightElevation: 0,
+      hoverElevation: 0,
+    ),
   );
 
 }

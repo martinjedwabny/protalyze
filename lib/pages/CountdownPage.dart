@@ -1,5 +1,6 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/config/Palette.dart';
+import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/domain/CountdownElement.dart';
 import 'package:Protalyze/domain/PastWorkout.dart';
 import 'package:Protalyze/domain/Workout.dart';
@@ -27,7 +28,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Duration _totalTime;
   List<CountdownElement> _countdownElements;
   final int _prepareTime = 10;
-  final Color _buttonsColor = Palette.orangeColor;
+  final Color _buttonsColor = Colors.white;
 
   Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3");
 
@@ -157,13 +158,13 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                             togglePlayPause();
                             setState(() {});
                           },
-                          // child: Icon(
-                          //   this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause_rounded : Icons.play_arrow_outlined,
-                          //   size: 64,
-                          //   color: this._buttonsColor,
-                          // )
-                          child: Text(this.countdownFinished()? 'Done' : !this._isPause ? "Pause" : "Start", 
-                            style: TextStyle(fontSize: 36.0, color: this._buttonsColor),)
+                          child: Icon(
+                            this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause_outlined : Icons.play_arrow,
+                            size: !this._isPause ? 80 : 90,
+                            color: this._buttonsColor,
+                          )
+                          // child: Text(this.countdownFinished()? 'Done' : !this._isPause ? "Pause" : "Start", 
+                          //   style: TextStyle(fontSize: 36.0, color: this._buttonsColor),)
                           
                           );
                     }),
@@ -247,7 +248,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Palette.darkBlueColor,
+      backgroundColor: Palette.darkGray,
       body: AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
