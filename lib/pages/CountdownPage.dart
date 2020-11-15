@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/config/Palette.dart';
 import 'package:Protalyze/config/Themes.dart';
@@ -17,7 +15,6 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class CountDownPage extends StatefulWidget {
   final Workout _workout;
@@ -33,6 +30,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   List<CountdownElement> _countdownElements;
   final int _prepareTime = 10;
   final Color _buttonsColor = Colors.white;
+  bool _lastSecondsFlag = false;
 
   Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3");
 
@@ -61,6 +59,15 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     ScreenPersist.enable();
     this._controller = AnimationController(vsync: this, value: 1.0);
     this._controller.addStatusListener((status) => animationStatusChanged(status));
+    this._controller.addListener(() {
+      Duration remainingSeconds = _controller.duration * _controller.value;
+      if (remainingSeconds.inSeconds == 6)
+        _lastSecondsFlag = true;
+      else if (remainingSeconds.inSeconds == 5 && _lastSecondsFlag) {
+        _lastSecondsFlag = false;
+        playBeepSound();
+      }
+    });
     initializeCountdownElements();
   }
 
