@@ -1,6 +1,5 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/bloc/WorkoutNotifier.dart';
-import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/pages/PastWorkoutSelectionPage.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/WorkoutSelectionPage.dart';

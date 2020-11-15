@@ -47,7 +47,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     );
     return FloatingScaffold(
       appBar: AppBar(
-        title: Text(widget.workout.name),
+        title: FittedBox(fit:BoxFit.fitWidth, child: Text(widget.workout.name)),
         actions: this.widget.canEdit ? [editButton, addBlockButton] : null,
       ),
       body: getListViewFromWorkout(this.widget.workout),

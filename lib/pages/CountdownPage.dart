@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/config/Palette.dart';
 import 'package:Protalyze/config/Themes.dart';
@@ -7,6 +9,7 @@ import 'package:Protalyze/domain/Workout.dart';
 import 'package:Protalyze/misc/DurationFormatter.dart';
 import 'package:Protalyze/misc/ScreenPersist.dart';
 import 'package:Protalyze/misc/WorkoutToCountdownAdapter.dart';
+import 'package:Protalyze/widgets/CustomTimerPainter.dart';
 import 'package:Protalyze/widgets/SingleMessageConfirmationDialog.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -146,21 +149,20 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
-                  child: SleekCircularSlider(
-                    appearance: CircularSliderAppearance(
-                      customColors: CustomSliderColors(
-                      dotColor: Color(0xFFFFB1B2),
-                      trackColor: Color(0xFFE9585A),
-                      progressBarColors: [Color(0xFFFB9967), Color(0xFFE9585A)]),
-                      counterClockwise: true,
-                      startAngle: 30,
-                      infoProperties: InfoProperties(
-                        mainLabelStyle: TextStyle(fontSize: 0)),
-                      customWidths: CustomSliderWidths(trackWidth: 4, progressBarWidth: 20, shadowWidth: 0)),
-                    min: 0.0,
-                    max: 1.0,
-                    initialValue: this._controller.value,
-                  )
+                  child: 
+                  AnimatedBuilder(
+                  animation: this._controller,
+                  builder:
+                      (BuildContext context, Widget child) {
+                    return CustomPaint(
+                        painter: CustomTimerPainter(
+                          animation: this._controller,
+                          backgroundColor: Colors.grey[700],
+                          color1: Themes.normal.accentColor,
+                          color2: Colors.red,
+                    ));
+                  },
+                ),
                 ),
                 Center(child: 
                   AnimatedBuilder(
@@ -346,3 +348,4 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     }
   }
 }
+
