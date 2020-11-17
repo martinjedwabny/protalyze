@@ -1,4 +1,5 @@
 import 'package:Protalyze/domain/ExerciseBlock.dart';
+import 'package:Protalyze/domain/ExerciseObjective.dart';
 import 'package:Protalyze/domain/Weight.dart';
 import 'package:Protalyze/misc/DurationFormatter.dart';
 import 'package:Protalyze/widgets/FloatingScaffold.dart';
@@ -24,7 +25,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
   final weightControl = TextEditingController();
   final maxRepsControl = TextEditingController();
   final minRepsControl = TextEditingController();
-  Map<String,bool> checkboxInputs = Map();
+  Map<String,bool> objectivesInput = Map();
   
   @override
   void initState() {
@@ -35,6 +36,10 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     weightControl.text = widget.block.weight == null ? null : widget.block.weight.amount.toString();
     maxRepsControl.text = widget.block.maxReps == null ? null : widget.block.maxReps.toString();
     minRepsControl.text = widget.block.minReps == null ? null : widget.block.minReps.toString();
+    for (String o in ExerciseObjective.types)
+      objectivesInput[o] = false;
+    for (ExerciseObjective o in widget.block.objectives)
+      objectivesInput[o.toString()] = true;
     super.initState();
   }
 
@@ -56,8 +61,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
         cardTextInputNumericRow('Weight (kg)', weightControl, 4),
         cardTextInputNumericRow('Min reps', minRepsControl),
         cardTextInputNumericRow('Max reps', maxRepsControl),
-        // cardCheckboxInputRow('Input reps', 'reps'),
-        // cardCheckboxInputRow('Input difficulty', 'diff'),
+        cardCheckboxInputRow('Targets', objectivesInput),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -103,8 +107,10 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     block.weight = weightControl.text.length == 0 ? null : Weight(int.parse(weightControl.text), WeightType.kilos);
     block.minReps = minRepsControl.text.length == 0 ? null : int.parse(minRepsControl.text); 
     block.maxReps = maxRepsControl.text.length == 0 ? null : int.parse(maxRepsControl.text);
-    block.inputReps = this.checkboxInputs['reps'];
-    block.inputDifficulty = this.checkboxInputs['diff'];
+    block.objectives = [];
+    objectivesInput.forEach((key, value) {
+      if (value) block.objectives.add(ExerciseObjective.fromString(key));
+    });
     widget.okayCallback();
     Navigator.pop(context, () {});
   }
@@ -154,16 +160,22 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     );
   }
 
-  cardCheckboxInputRow(name, key){
-    return Card(child: CheckboxListTile(
-      title: Text(name),
-      value: this.checkboxInputs[key],
-      onChanged: (newValue) { 
-        setState(() {
-          this.checkboxInputs[key] = newValue; 
-        }); 
-      },
-      controlAffinity: ListTileControlAffinity.leading,
+  cardCheckboxInputRow(String name, Map<String,bool> input){
+    ListTile title = ListTile(title: Text(name));
+    List<CheckboxListTile> options = input.keys.map((String option) => 
+      CheckboxListTile(
+        title: Text(option),
+        value: input[option],
+        onChanged: (newValue) { 
+          setState(() {
+            input[option] = newValue;
+          }); 
+        }, controlAffinity: ListTileControlAffinity.leading,
+      )
+    ).toList();
+    return Card(
+      child: Column(
+        children: <Widget>[title] + options
       )
     );
   }
