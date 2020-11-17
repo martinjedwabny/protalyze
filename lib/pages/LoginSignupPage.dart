@@ -1,5 +1,6 @@
 import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
+import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:flutter/material.dart';
 
 class LoginSignupPage extends StatefulWidget {
@@ -18,8 +19,6 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
   bool isLoginForm = true;
   String email = '';
   String password = '';
-  String infoMessage = '';
-  bool infoMessageIsError = true;
   final formKey = new GlobalKey<FormState>();
 
   @override
@@ -47,7 +46,6 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
               showPasswordInput(),
               showPrimaryButton(),
               showSecondaryButton(),
-              showInfoMessage(),
             ],
           ),
         ));
@@ -162,31 +160,19 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
 
   void resetForm() {
     formKey.currentState.reset();
-    infoMessage = "";
   }
 
-
-Widget showInfoMessage() {
-    if (infoMessage.length > 0 && infoMessage != null) {
-      return new Text(
-        infoMessage,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontSize: 16.0,
-            color: infoMessageIsError ? Colors.red : Colors.green,
-            height: 1.0,
-            fontWeight: FontWeight.w300),
-      );
-    } else {
-      return new Container(
-        height: 0.0,
-      );
-    }
-  }
+void showErrorDialog(String title, message){
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleMessageAlertDialog(title, message);
+      },
+  );
+}
 
 void validateAndSubmit() async {
     setState(() {
-      infoMessage = "";
       isLoading = true;
     });
     if (validateAndSave()) {
@@ -199,16 +185,14 @@ void validateAndSubmit() async {
             widget.loginCallback();
           } else {
             widget.auth.sendEmailVerification();
-            infoMessage = 'Waiting for email verification';
-            infoMessageIsError = false;
+            showErrorDialog('Verify your email', 'Waiting for email verification');
           }
           print('Signed in: $userId');
         } else {
           userId = await widget.auth.signUp(email, password);
           widget.auth.sendEmailVerification();
           isLoginForm = true;
-          infoMessage = 'Waiting for email verification';
-          infoMessageIsError = false;
+          showErrorDialog('Verify your email', 'Waiting for email verification');
           print('Signed up user: $userId');
         }
         setState(() {
@@ -218,14 +202,12 @@ void validateAndSubmit() async {
         print('Error: $e');
         setState(() {
           isLoading = false;
-          infoMessage = e.message;
-          infoMessageIsError = true;
+          showErrorDialog('Error', e.message);
         });
       }
     } else {
       isLoading = false;
-      infoMessage = 'There was a problem, please retry.';
-      infoMessageIsError = true;
+      showErrorDialog('Error', 'There was a problem, please retry.');
     }
   }
 
