@@ -54,6 +54,15 @@ class ExerciseBlockListItem extends BlockListItem{
       children.add(Text('Reps: ' + block.minReps.toString() + ' min'));
     if (block.minReps == null && block.maxReps != null)
       children.add(Text('Reps: ' + block.maxReps.toString() + ' max'));
+    if (block.objectives.length > 0) {
+      String t = 'Targets: ';
+      for (int i = 0; i < block.objectives.length; i++) {
+        t += block.objectives[i].toString();
+        if (i < block.objectives.length - 1)
+          t += ', ';
+      }
+      children.add(Text(t));
+    }
     return Wrap(
       direction: Axis.vertical,
       children: children,

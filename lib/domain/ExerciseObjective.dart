@@ -5,6 +5,7 @@ enum ExerciseObjectiveType {
   Legs,
   Biceps,
   Triceps,
+  Abs,
   Cardio
 }
 
@@ -18,6 +19,7 @@ class ExerciseObjective {
     'Legs',
     'Biceps',
     'Triceps',
+    'Abs',
     'Cardio'];
   String toString() {
     switch (this.type) {
@@ -33,6 +35,8 @@ class ExerciseObjective {
         return 'Biceps';
       case ExerciseObjectiveType.Triceps:
         return 'Triceps';
+      case ExerciseObjectiveType.Abs:
+        return 'Abs';
       case ExerciseObjectiveType.Cardio:
         return 'Cardio';
       default:
@@ -58,6 +62,9 @@ class ExerciseObjective {
         break;
       case 'Triceps':
         this.type = ExerciseObjectiveType.Triceps;
+        break;
+      case 'Abs':
+        this.type = ExerciseObjectiveType.Abs;
         break;
       case 'Cardio':
         this.type = ExerciseObjectiveType.Cardio;
