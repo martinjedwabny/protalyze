@@ -1,7 +1,9 @@
 import 'package:Protalyze/domain/ExerciseBlock.dart';
 import 'package:Protalyze/domain/Weight.dart';
+import 'package:Protalyze/misc/DurationFormatter.dart';
 import 'package:Protalyze/widgets/FloatingScaffold.dart';
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
+import 'package:Protalyze/widgets/TimePicker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,26 +19,27 @@ class ExerciseEditPage extends StatefulWidget {
 class _ExerciseEditPageState extends State<ExerciseEditPage> {
   final nameControl = TextEditingController();
   final setsControl = TextEditingController();
-  final performTimeControl = TextEditingController();
-  final restTimeControl = TextEditingController();
+  Duration performTimeControl;
+  Duration restTimeControl;
   final weightControl = TextEditingController();
   final maxRepsControl = TextEditingController();
   final minRepsControl = TextEditingController();
   Map<String,bool> checkboxInputs = Map();
-
+  
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     nameControl.text = widget.block.name;
     setsControl.text = widget.block.sets != null ? widget.block.sets.toString() : '1';
-    performTimeControl.text = widget.block.performingTime.inSeconds.toString();
-    restTimeControl.text = widget.block.restTime.inSeconds.toString();
+    this.performTimeControl = widget.block.performingTime;
+    this.restTimeControl = widget.block.restTime;
     weightControl.text = widget.block.weight == null ? null : widget.block.weight.amount.toString();
     maxRepsControl.text = widget.block.maxReps == null ? null : widget.block.maxReps.toString();
     minRepsControl.text = widget.block.minReps == null ? null : widget.block.minReps.toString();
-    if (checkboxInputs['reps'] == null) 
-      checkboxInputs['reps'] = widget.block.inputReps;
-    if (checkboxInputs['diff'] == null) 
-      checkboxInputs['diff'] = widget.block.inputDifficulty;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FloatingScaffold(
       appBar: AppBar(
         title: Text('Edit exercise'),
@@ -44,9 +47,13 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
       body: ListView(children: [
         cardTextInputRow('Name', nameControl),
         cardTextInputNumericRow('Sets', setsControl),
-        cardTextInputNumericRow('Performing duration (seconds)', performTimeControl),
-        cardTextInputNumericRow('Rest duration (seconds)', restTimeControl),
-        cardTextInputNumericRow('Weight (kg)', weightControl),
+        cardDurationInputRow('Performing duration', this.performTimeControl, (Duration duration){
+          setState(() => this.performTimeControl = duration);
+        }),
+        cardDurationInputRow('Rest duration', this.restTimeControl, (Duration duration) {
+          setState(() => this.restTimeControl = duration);
+        }),
+        cardTextInputNumericRow('Weight (kg)', weightControl, 4),
         cardTextInputNumericRow('Min reps', minRepsControl),
         cardTextInputNumericRow('Max reps', maxRepsControl),
         // cardCheckboxInputRow('Input reps', 'reps'),
@@ -90,16 +97,8 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     } else {
       return showAlertDialog(context, "Error", "Name should not be empty.");
     }
-    if (performTimeControl.text != null && performTimeControl.text.length > 0){
-      block.performingTime = Duration(seconds: int.parse(performTimeControl.text)); 
-    } else {
-      return showAlertDialog(context, "Error", "Performing time should not be empty.");
-    }
-    if (restTimeControl.text != null && restTimeControl.text.length > 0){
-      block.restTime = Duration(seconds: int.parse(restTimeControl.text)); 
-    } else {
-      return showAlertDialog(context, "Error", "Rest time should not be empty.");
-    }
+    block.performingTime = performTimeControl; 
+    block.restTime = restTimeControl; 
     block.sets = setsControl.text.length == 0 ? 1 : int.parse(setsControl.text);
     block.weight = weightControl.text.length == 0 ? null : Weight(int.parse(weightControl.text), WeightType.kilos);
     block.minReps = minRepsControl.text.length == 0 ? null : int.parse(minRepsControl.text); 
@@ -118,36 +117,41 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     return Card(child: ListTile(
         title: Text(name),
         subtitle: TextField(
-                controller: controller,
-                decoration: new InputDecoration(
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                hintText: "Enter something",),
-              ),
-            ),
-        );
+          controller: controller,
+          inputFormatters: <TextInputFormatter>[
+            LengthLimitingTextInputFormatter(20),],
+          decoration: new InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          hintText: "Enter something",),
+        ),
+      ),
+  );
   }
 
-  cardTextInputNumericRow(name, controller){
+  cardTextInputNumericRow(name, controller, [int maxNumbers = 2]){
     return Card(child: ListTile(
         title: Text(name),
         subtitle: TextField(
-                controller: controller,
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
-                decoration: new InputDecoration(
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                hintText: "Enter a number"),
-              ),
-            )
-        );
+          controller: controller,
+          keyboardType: TextInputType.number,
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(maxNumbers),],
+          decoration: new InputDecoration(
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            hintText: "Enter a number"
+          ),
+        ),
+      )
+    );
   }
 
   cardCheckboxInputRow(name, key){
@@ -161,6 +165,26 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
       },
       controlAffinity: ListTileControlAffinity.leading,
       )
+    );
+  }
+
+  cardDurationInputRow(String name, Duration initialValue, Function(Duration) callback){
+    return Card(
+      child: ListTile(
+        title: Text(name),
+        subtitle: InkWell(
+          focusColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          child: Text(DurationFormatter.formatWithLetters(initialValue)),
+          onTap: (){
+            TimePicker(initialValue, (Duration time) {
+              callback(time);
+            }).showDialog(context);
+          },
+        )
+      ),
     );
   }
   

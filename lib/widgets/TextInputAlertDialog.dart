@@ -1,5 +1,6 @@
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TextInputAlertDialog extends StatelessWidget{
   final String title;
@@ -13,6 +14,8 @@ class TextInputAlertDialog extends StatelessWidget{
     return AlertDialog(
       title: Text(title),
       content: TextField(
+          inputFormatters: <TextInputFormatter>[
+            LengthLimitingTextInputFormatter(20),],
         controller: controller,
         decoration: new InputDecoration(
         hintText: "Enter something",

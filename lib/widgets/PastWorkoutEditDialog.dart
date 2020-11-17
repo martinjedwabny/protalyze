@@ -1,5 +1,6 @@
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class PastWorkoutEditDialog extends StatefulWidget {
@@ -38,6 +39,8 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
       title: Text(widget._title),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(
+          inputFormatters: <TextInputFormatter>[
+            LengthLimitingTextInputFormatter(20),],
           controller: _controller,
           decoration: new InputDecoration(
           hintText: "Enter something",

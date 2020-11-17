@@ -20,6 +20,8 @@ class GroupBlockEditDialog extends StatelessWidget{
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
+            inputFormatters: <TextInputFormatter>[
+                LengthLimitingTextInputFormatter(20),],
             controller: nameController,
             decoration: new InputDecoration(
             hintText: "Enter name",),),
@@ -27,8 +29,8 @@ class GroupBlockEditDialog extends StatelessWidget{
             controller: setsController,
             keyboardType: TextInputType.number,
             inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-            ],
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(2),],
             decoration: new InputDecoration(
             hintText: "Enter sets",),),
         ],

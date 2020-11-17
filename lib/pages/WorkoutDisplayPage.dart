@@ -13,7 +13,6 @@ import 'package:Protalyze/widgets/GroupBlockEditDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:Protalyze/widgets/TextInputAlertDialog.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

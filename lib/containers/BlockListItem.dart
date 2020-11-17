@@ -1,4 +1,5 @@
 import 'package:Protalyze/containers/ListItem.dart';
+import 'package:Protalyze/misc/DurationFormatter.dart';
 import 'package:flutter/material.dart';
 import 'package:Protalyze/domain/GroupBlock.dart';
 import 'package:Protalyze/domain/ExerciseBlock.dart';
@@ -44,7 +45,7 @@ class ExerciseBlockListItem extends BlockListItem{
 
   Widget buildContent(BuildContext context) {
     List<Widget> children = [];
-    children.add(Text('Duration: ' + block.performingTime.inSeconds.toString() + 's, ' + 'Rest: ' + block.restTime.inSeconds.toString() + 's '));
+    children.add(Text('Duration: ' + DurationFormatter.formatWithLetters(block.performingTime) + ', Rest: ' + DurationFormatter.formatWithLetters(block.restTime)));
     if (block.weight != null)
       children.add(Text('Weight: ' + block.weight.toString()));
     if (block.minReps != null && block.maxReps != null)
