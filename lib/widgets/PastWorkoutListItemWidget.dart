@@ -9,6 +9,7 @@ class PastWorkoutListItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         child: ListTile(
+          contentPadding: EdgeInsets.only(left: 12, right: 4),
           title: _item.buildTitle(context),
           subtitle: _item.buildContent(context),
           onTap: this._onTap,
