@@ -13,7 +13,7 @@ class Themes{
     buttonColor: Palette.orange,
     cardTheme: CardTheme(
       elevation: 0,
-      margin: EdgeInsets.all(12),
+      margin: EdgeInsets.all(8),
     ),
     appBarTheme: AppBarTheme(
       centerTitle: false,

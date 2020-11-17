@@ -12,6 +12,8 @@ class PastWorkoutListItem implements ListItem {
     return Text(
       pastWorkout.workout.name,
       style: Theme.of(context).textTheme.headline6,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 

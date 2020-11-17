@@ -63,48 +63,52 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
           itemCount: notifier.workouts.length,
           itemBuilder: (context, index) {
             WorkoutListItem item = WorkoutListItem(notifier.workouts[index]);
-            return Card(
-              child: ListTile(
-                title: item.buildTitle(context),
-                subtitle: item.buildContent(context),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider<PastWorkoutNotifier>.value(
-                        value: Provider.of<PastWorkoutNotifier>(this.context), 
-                        child: ChangeNotifierProvider<WorkoutNotifier>.value(
-                          value: Provider.of<WorkoutNotifier>(this.context), 
-                          child: WorkoutDisplayPage(item.workout)
-                        ),
-                      ),
-                    )
-                  );
-                },
-                trailing: Wrap(
-                  spacing: 0.0, // space between two icons
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.add),
-                      tooltip: 'Duplicate',
-                      onPressed: () {
-                        duplicateWorkout(item.workout);
-                      },
-                    ),
-                    IconButton(
-                        icon: Icon(Icons.delete_outline),
-                        tooltip: 'Remove',
-                        onPressed: () {
-                          removeWorkout(item.workout);
-                        }),
-                  ],
-                ),
-              ),
-            );
+            return buildCardForItem(item, context);
           },
         );
       }),
       floatingActionButton: Wrap(spacing: 10.0, children: [ playButton, ],
+      ),
+    );
+  }
+
+  Card buildCardForItem(WorkoutListItem item, BuildContext context) {
+    return Card(
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 12, right: 4),
+        title: item.buildTitle(context),
+        subtitle: item.buildContent(context),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChangeNotifierProvider<PastWorkoutNotifier>.value(
+                value: Provider.of<PastWorkoutNotifier>(this.context), 
+                child: ChangeNotifierProvider<WorkoutNotifier>.value(
+                  value: Provider.of<WorkoutNotifier>(this.context), 
+                  child: WorkoutDisplayPage(item.workout)
+                ),
+              ),
+            )
+          );
+        },
+        trailing: Wrap(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.add),
+              tooltip: 'Duplicate',
+              onPressed: () {
+                duplicateWorkout(item.workout);
+              },
+            ),
+            IconButton(
+                icon: Icon(Icons.delete_outline),
+                tooltip: 'Remove',
+                onPressed: () {
+                  removeWorkout(item.workout);
+                }),
+          ],
+        ),
       ),
     );
   }

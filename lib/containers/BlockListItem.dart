@@ -18,8 +18,10 @@ class GroupBlockListItem extends BlockListItem{
 
   Widget buildTitle(BuildContext context) {
     return Text(
-      block.sets == null || block.sets == 1 ? block.name : '${block.name} x${block.sets}',
+      block.sets == null || block.sets == 1 ? block.name : '${block.sets} x ${block.name}',
       style: Theme.of(context).textTheme.headline6,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 
@@ -33,8 +35,10 @@ class ExerciseBlockListItem extends BlockListItem{
 
   Widget buildTitle(BuildContext context) {
     return Text(
-      block.sets == null || block.sets == 1 ? block.name : '${block.name} x${block.sets}',
+      block.sets == null || block.sets == 1 ? block.name : '${block.sets} x ${block.name}',
       style: Theme.of(context).textTheme.headline6,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 

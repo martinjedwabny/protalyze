@@ -13,6 +13,7 @@ import 'package:Protalyze/widgets/GroupBlockEditDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:Protalyze/widgets/TextInputAlertDialog.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +48,14 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     );
     return FloatingScaffold(
       appBar: AppBar(
-        title: FittedBox(fit:BoxFit.fitWidth, child: Text(widget.workout.name)),
+        title: Text(
+          widget.workout.name,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          style: TextStyle(
+            fontSize: 24
+          ),
+        ),
         actions: this.widget.canEdit ? [editButton, addBlockButton] : null,
       ),
       body: getListViewFromWorkout(this.widget.workout),
@@ -139,6 +147,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
         child: Column(
           children: [
             ListTile(
+              contentPadding: EdgeInsets.only(left: 12, right: 4),
             title: item.buildTitle(context),
             onTap: widget.canEdit == false ? ((){}) : () {
               showDialog(
@@ -157,23 +166,31 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
             trailing: Wrap(
               spacing: 0.0, // space between two icons
               children: widget.canEdit == false ? [] : <Widget>[
-                IconButton(icon: Icon(Icons.add), tooltip: 'Add exercise', onPressed: () {
+                IconButton(icon: Icon(Icons.add), tooltip: 'Add exercise', 
+                padding: EdgeInsets.all(4),
+                onPressed: () {
                   handleAddExercise();
                 },),
-                IconButton(icon: Icon(Icons.arrow_upward), tooltip: 'Up', onPressed: () {
+                IconButton(icon: Icon(Icons.arrow_upward), tooltip: 'Up', 
+                padding: EdgeInsets.all(4),
+                onPressed: () {
                   handleUp();
                 }),
-                IconButton(icon: Icon(Icons.arrow_downward), tooltip: 'Down', onPressed: () {
+                IconButton(icon: Icon(Icons.arrow_downward), tooltip: 'Down', 
+                padding: EdgeInsets.all(4),
+                onPressed: () {
                   handleDown();
                 }),
-                IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', onPressed: () {
+                IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', 
+                padding: EdgeInsets.all(4),
+                onPressed: () {
                   handleRemove();
                 }),
               ],
             ),
           ),
           ListView(
-            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            padding: EdgeInsets.all(0),
             physics: ClampingScrollPhysics(), 
             shrinkWrap: true,
             children: block.subBlocks.map((subBlock) => getWidgetFromBlock(block, subBlock)).toList(),
@@ -190,27 +207,28 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     return Card(
       key: ValueKey(item),
       child: ListTile(
+        contentPadding: EdgeInsets.only(left: 12),
         title: item.buildTitle(context),
         subtitle: item.buildContent(context),
         onTap: widget.canEdit == false ? ((){}) : () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ExerciseEditPage(block, updateWorkout)),
-          ).then((value) {
-            setState(() {
-            });
-          });
+          editExercise(block);
         },
         trailing: Wrap(
           spacing: 0.0, // space between two icons
           children: widget.canEdit == false ? [] : <Widget>[
-            IconButton(icon: Icon(Icons.arrow_upward), tooltip: 'Up', onPressed: () {
+            IconButton(icon: Icon(Icons.arrow_upward), tooltip: 'Up', 
+            padding: EdgeInsets.all(4),
+            onPressed: () {
               handleUp();
             }),
-            IconButton(icon: Icon(Icons.arrow_downward), tooltip: 'Down', onPressed: () {
+            IconButton(icon: Icon(Icons.arrow_downward), tooltip: 'Down', 
+            padding: EdgeInsets.all(4),
+            onPressed: () {
               handleDown();
             }),
-            IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', onPressed: () {
+            IconButton(icon: Icon(Icons.delete_outline), tooltip: 'Remove', 
+            padding: EdgeInsets.all(4),
+            onPressed: () {
               handleRemove();
             }),
           ],
@@ -219,15 +237,12 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     );
   }
 
-  // void reorderItems(int oldIndex, int newIndex) {
-  //   if (newIndex != oldIndex) {
-  //     if (oldIndex < newIndex)
-  //       newIndex -= 1;
-  //     Block item = widget.workout.blocks.removeAt(oldIndex);
-  //     widget.workout.blocks.insert(newIndex, item);
-  //     updateWorkout();
-  //   }
-  // }
+  void editExercise(ExerciseBlock block){
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ExerciseEditPage(block, updateWorkout)),
+    );
+  }
   
   void addNewExercise(GroupBlock parent){
     ExerciseBlock block = ExerciseBlock('New exercise', 1, Duration(seconds: 30), Duration(seconds: 90));
@@ -235,7 +250,9 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   }
 
   void addNewGroup(GroupBlock parent){
-    GroupBlock block = GroupBlock('New Superset', 1, []);
+    GroupBlock block = GroupBlock('Superset', 1, [
+      ExerciseBlock('New exercise', 1, Duration(seconds: 30), Duration(seconds: 90)),
+    ]);
     addBlock(parent, block);
   }
 
