@@ -33,7 +33,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
     super.build(context);
     return FloatingScaffold(
       appBar: AppBar(
-        title: Text('Log'),
+        title: Text('History'),
         actions: [
         IconButton(icon: Icon(Icons.add, color: Themes.normal.primaryColor,), onPressed: () {
             addNewPastWorkout();

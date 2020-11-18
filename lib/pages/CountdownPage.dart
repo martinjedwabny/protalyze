@@ -8,6 +8,7 @@ import 'package:Protalyze/misc/DurationFormatter.dart';
 import 'package:Protalyze/misc/ScreenPersist.dart';
 import 'package:Protalyze/misc/WorkoutToCountdownAdapter.dart';
 import 'package:Protalyze/widgets/CustomTimerPainter.dart';
+import 'package:Protalyze/widgets/SimpleListDialog.dart';
 import 'package:Protalyze/widgets/SingleMessageConfirmationDialog.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -335,10 +336,26 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300, color: Colors.white),
           ),
         ),
-        Text(
-          'AFTER',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18.0, color: Colors.white70),
+        GestureDetector(
+          onTap: (){
+            showNextExercisesListDialog();
+          },
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                'AFTER',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20.0, color: Themes.normal.accentColor),
+              ),
+              SizedBox.fromSize(size: Size(4, 0),),
+              Icon(
+                Icons.remove_red_eye, 
+                color: Themes.normal.accentColor,
+                size: 22,
+              ),
+            ]
+          )
         ),
         Expanded(child:
           AutoSizeText(
@@ -354,5 +371,19 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
       );
     }
   }
+
+  void showNextExercisesListDialog() {
+    if (this._countdownElements.length < 2) return;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) =>
+        SimpleListDialog(
+          this._countdownElements.sublist(1).map((e) => e.name + ' (' + DurationFormatter.format(e.totalTime) + ')').toList(), 
+          Themes.normal.primaryColor, 
+          Colors.white70
+        )
+    );
+  }
+
 }
 

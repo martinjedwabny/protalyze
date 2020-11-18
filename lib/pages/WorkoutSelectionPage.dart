@@ -42,7 +42,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
     );
     return FloatingScaffold(
       appBar: AppBar(
-        title: Text('Workout'),
+        title: Text('Workouts'),
         actions: [
         IconButton(icon: Icon(Icons.add, color: Themes.normal.primaryColor,), onPressed: () {
             addNewWorkout();

@@ -1,6 +1,7 @@
 import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
 import 'package:Protalyze/bloc/WorkoutNotifier.dart';
 import 'package:Protalyze/pages/PastWorkoutSelectionPage.dart';
+import 'package:Protalyze/pages/StatisticsPage.dart';
 import 'package:Protalyze/persistance/Authentication.dart';
 import 'package:Protalyze/pages/WorkoutSelectionPage.dart';
 import 'package:Protalyze/widgets/SalomonBottomBar.dart';
@@ -44,6 +45,13 @@ class _TabsPageState extends State<TabsPage> {
         ],
         child: PastWorkoutSelectionPage(this.widget.logoutCallback),
       ),
+      MultiProvider(
+        providers: [
+        ChangeNotifierProvider.value(value: this._workoutNotifier),
+        ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
+        ],
+        child: StatisticsPage(this.widget.logoutCallback),
+      ),
     ];
     super.initState();
   }
@@ -67,7 +75,11 @@ class _TabsPageState extends State<TabsPage> {
           ),
           new SalomonBottomBarItem(
             icon: Icon(Icons.event_available_outlined),
-            title: Text('Log', ),
+            title: Text('History', ),
+          ),
+          new SalomonBottomBarItem(
+            icon: Icon(Icons.show_chart),
+            title: Text('Statistics', ),
           ),
         ],
       ),
