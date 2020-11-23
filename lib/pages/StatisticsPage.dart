@@ -5,13 +5,13 @@ import 'package:Protalyze/domain/PastWorkout.dart';
 import 'package:Protalyze/widgets/FloatingScaffold.dart';
 import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class StatisticsPage extends StatelessWidget {
-  final VoidCallback logoutCallback;
-  const StatisticsPage(this.logoutCallback);
+  final VoidCallback _logoutCallback;
+  final CalendarController _calendarController = CalendarController();
+  StatisticsPage(this._logoutCallback);
   @override
   Widget build(BuildContext context) {
     return FloatingScaffold(
@@ -19,7 +19,7 @@ class StatisticsPage extends StatelessWidget {
         title: Text('Statistics'),
         actions: [
         IconButton(icon: Icon(Icons.logout, color: Themes.normal.primaryColor,), onPressed: () {
-            this.logoutCallback();
+            this._logoutCallback();
           },
         ),
       ],
@@ -29,158 +29,151 @@ class StatisticsPage extends StatelessWidget {
         return ListView(children: [
           buildCalendar(notifier.pastWorkouts),
           buildCalendarLegend(),
-          buildSetStatistics(notifier.pastWorkouts),
+          buildSetStatisticsCurrentWeek(notifier.pastWorkouts),
         ],);
       })
     );
   }
 
   Widget buildCalendar(List<PastWorkout> pastWorkouts) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: SfCalendar(
-        headerHeight: 0,
-        viewHeaderStyle: ViewHeaderStyle(
-          dateTextStyle: GoogleFonts.titilliumWebTextTheme().headline6,
-          dayTextStyle: GoogleFonts.titilliumWebTextTheme().headline6
-        ),
-        firstDayOfWeek: 1,
-        initialDisplayDate: DateTime(DateTime.now().year, DateTime.now().month, 1),
-        view: CalendarView.month,
-        dataSource: PastWorkoutCalendarDataSource(pastWorkouts),
-        monthViewSettings: MonthViewSettings(
-          appointmentDisplayCount: 8,
-          numberOfWeeksInView: 5,
-          monthCellStyle: MonthCellStyle(
-            todayBackgroundColor: Colors.transparent
-          )
-        ),
-      )
+    Map<DateTime, List<ExerciseObjective>> events = Map();
+    for (PastWorkout pw in pastWorkouts) {
+      events[pw.dateTime] = (events[pw.dateTime] == null ? [] : events[pw.dateTime]);
+      for (var name in ExerciseObjective.names)
+        if (pw.workout.objectiveCount.containsKey(ExerciseObjective(name)) &&
+          pw.workout.objectiveCount[ExerciseObjective(name)] > 0)
+          events[pw.dateTime].add(ExerciseObjective(name));
+    }
+    return TableCalendar(
+      startingDayOfWeek: StartingDayOfWeek.monday,
+      calendarController: this._calendarController,
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekendStyle: TextStyle(color: Themes.normal.primaryColor),
+        weekdayStyle: TextStyle(color: Themes.normal.primaryColor),
+      ),
+      calendarStyle: CalendarStyle(
+        weekdayStyle: TextStyle(color: Colors.black),
+        weekendStyle: TextStyle(color: Colors.black),
+        holidayStyle: TextStyle(color: Colors.black),
+        outsideHolidayStyle: TextStyle(color: Themes.normal.disabledColor),
+        outsideWeekendStyle: TextStyle(color: Themes.normal.disabledColor),
+        selectedColor: Themes.normal.accentColor,
+        todayColor: Themes.normal.accentColor.withOpacity(0.7),
+        markersColor: Themes.normal.accentColor,
+      ),
+      events: events,
+      builders: CalendarBuilders(
+        dayBuilder: (BuildContext context, DateTime date, List events) =>
+          Center(child:Container(height: 40,child:Text(date.day.toString(),))),
+        todayDayBuilder: (BuildContext context, DateTime date, List events) =>
+          Center(child:Container(height: 40,child:Text(date.day.toString(),style: TextStyle(color: Themes.normal.accentColor),))),
+        markersBuilder: (context, date, events, holidays) =>
+          [Padding(padding: EdgeInsets.only(top: 20), child: GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: (events == null || events.length == 0) ? 1 : 
+                events.length < 4 ? events.length : 4,
+              primary: false,
+              padding: EdgeInsets.zero,
+              childAspectRatio: 1,
+              children: events.map((event) => 
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(Icons.circle, size: 17, color: Themes.normal.accentColor),
+                    Text(event.name.substring(0,2), style: TextStyle(fontSize: 10, color: Colors.white),)
+                  ]),
+              ).toList(),
+            ))],
+      ),
     );
   }
 
   Widget buildCalendarLegend() {
     return Container(
       padding: EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-            Icon(Icons.circle, size: 16, color: ExerciseObjectiveTypeToColorAdapter.getColor(ExerciseObjectiveType.Chest)),
-            SizedBox.fromSize(size: Size(4, 0),),
-            Text('Chest', style: TextStyle(fontSize: 18)),
-          ],),
-          Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-            Icon(Icons.circle, size: 16, color: ExerciseObjectiveTypeToColorAdapter.getColor(ExerciseObjectiveType.Back)),
-            SizedBox.fromSize(size: Size(4, 0),),
-            Text('Back', style: TextStyle(fontSize: 18)),
-          ],),
-        ],),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-            Icon(Icons.circle, size: 16, color: ExerciseObjectiveTypeToColorAdapter.getColor(ExerciseObjectiveType.Shoulders)),
-            SizedBox.fromSize(size: Size(4, 0),),
-            Text('Shoulders', style: TextStyle(fontSize: 18)),
-          ],),
-          Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-            Icon(Icons.circle, size: 16, color: ExerciseObjectiveTypeToColorAdapter.getColor(ExerciseObjectiveType.Legs)),
-            SizedBox.fromSize(size: Size(4, 0),),
-            Text('Legs', style: TextStyle(fontSize: 18)),
-          ],),
-        ],),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-            Icon(Icons.circle, size: 16, color: ExerciseObjectiveTypeToColorAdapter.getColor(ExerciseObjectiveType.Biceps)),
-            SizedBox.fromSize(size: Size(4, 0),),
-            Text('Biceps', style: TextStyle(fontSize: 18)),
-          ],),
-          Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-            Icon(Icons.circle, size: 16, color: ExerciseObjectiveTypeToColorAdapter.getColor(ExerciseObjectiveType.Triceps)),
-            SizedBox.fromSize(size: Size(4, 0),),
-            Text('Triceps', style: TextStyle(fontSize: 18)),
-          ],),
-        ],),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-            Icon(Icons.circle, size: 16, color: ExerciseObjectiveTypeToColorAdapter.getColor(ExerciseObjectiveType.Abs)),
-            SizedBox.fromSize(size: Size(4, 0),),
-            Text('Abs', style: TextStyle(fontSize: 18)),
-          ],),
-          Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-            Icon(Icons.circle, size: 16, color: ExerciseObjectiveTypeToColorAdapter.getColor(ExerciseObjectiveType.Cardio)),
-            SizedBox.fromSize(size: Size(4, 0),),
-            Text('Cardio', style: TextStyle(fontSize: 18)),
-          ],),
-        ],),
-      ],
-      )
+      child: GridView.count(
+        shrinkWrap: true,
+        crossAxisCount: 4,
+        primary: false,
+        padding: EdgeInsets.zero,
+        childAspectRatio: 2.5,
+        children: ExerciseObjective.names.map((String objectiveName) => 
+          Center(
+            child: Wrap(
+              spacing: 4,
+              crossAxisAlignment: WrapCrossAlignment.center, 
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(Icons.circle, size: 26, color: Themes.normal.accentColor),
+                    Text(objectiveName.substring(0,2), style: TextStyle(fontSize: 14, color: Colors.white),)
+                  ]),
+                Text(objectiveName, style: TextStyle(fontSize: 18)),
+              ],
+            )
+          )
+        ).toList(),
+      ),
     );
   }
 
-  Widget buildSetStatistics(List<PastWorkout> pastWorkouts) {
-    return Container(
-      padding: EdgeInsets.all(16),
-    );
+  Widget buildSetStatisticsCurrentWeek(List<PastWorkout> pastWorkouts) {
+    // var d = DateTime.now();
+    // var weekDay = d.weekday;
+    // var firstDayOfWeek = d.subtract(Duration(days: weekDay));
+    // var nextWeek = firstDayOfWeek.add(Duration(days: 7));
+    // Map<ExerciseObjective(' int')> stats = Map();
+    // for (PastWorkout pw in pastWorkouts) {
+    //   if ((pw.dateTime.isAfter(firstDayOfWeek) || pw.dateTime.isAtSameMomentAs(firstDayOfWeek)) && (pw.dateTime.isBefore(nextWeek))) {
+    //     var objectivesCount = pw.workout.objectiveCount;
+    //     if (objectivesCount == null || objectivesCount.isEmpty) continue;
+    //     for (var o in objectivesCount.keys) {
+    //       if (stats[o] == null) stats[o] = 0;
+    //       stats[o] += objectivesCount[o];
+    //     }
+    //   }
+    // }
+    // print(stats);
+    // return Container(
+    //   padding: EdgeInsets.all(16),
+    //   child: SfCartesianChart(
+    //     primaryXAxis: CategoryAxis(),
+    //     // Chart title
+    //     title: ChartTitle(text: 'Half yearly sales analysis'),
+    //     // Enable legend
+    //     legend: Legend(isVisible: true),
+    //     // Enable tooltip
+    //     tooltipBehavior: TooltipBehavior(enable: true),
+    //     series: <ChartSeries<_SalesData, String>>[
+    //       LineSeries<_SalesData, String>(
+    //           dataSource: <_SalesData>[
+    //             _SalesData('Jan', 35),
+    //             _SalesData('Feb', 28),
+    //             _SalesData('Mar', 34),
+    //             _SalesData('Apr', 32),
+    //             _SalesData('May', 40)
+    //           ],
+    //           xValueMapper: (_SalesData sales, _) => sales.year,
+    //           yValueMapper: (_SalesData sales, _) => sales.sales,
+    //           // Enable data label
+    //           dataLabelSettings: DataLabelSettings(isVisible: true))
+    //     ]
+    //   )
+    // );
+    return Container();
   }
   
 }
 
-class PastWorkoutCalendarDataSource extends CalendarDataSource {
-  PastWorkoutCalendarDataSource(List<PastWorkout> source){
-    appointments = List<MapEntry<DateTime,ExerciseObjectiveType>>();
+class PastWorkoutCalendarAdapter {
+
+  static Map<DateTime,List<ExerciseObjective>> getItems(List<PastWorkout> source){
+    Map<DateTime,List<ExerciseObjective>> items = Map<DateTime,List<ExerciseObjective>>();
     for (PastWorkout pw in source)
-      for (ExerciseObjectiveType type in pw.workout.objectives)
-        appointments.add(MapEntry(pw.dateTime, type));
-  }
-
-  @override
-  DateTime getStartTime(int index) {
-    return (appointments[index] as MapEntry<DateTime,ExerciseObjectiveType>).key;
-  }
-
-  @override
-  DateTime getEndTime(int index) {
-    return (appointments[index] as MapEntry<DateTime,ExerciseObjectiveType>).key;
-  }
-
-  @override
-  String getSubject(int index) {
-    return (appointments[index] as MapEntry<DateTime,ExerciseObjectiveType>).value.toString();
-  }
-
-  @override
-  Color getColor(int index) {
-    return ExerciseObjectiveTypeToColorAdapter.getColor((appointments[index] as MapEntry<DateTime,ExerciseObjectiveType>).value);
-  }
-
-  @override
-  bool isAllDay(int index) {
-    return false;
-  }
-}
-
-class ExerciseObjectiveTypeToColorAdapter {
-  static Color getColor(ExerciseObjectiveType type) {
-    switch (type) {
-      case ExerciseObjectiveType.Chest:
-        return Colors.blue;
-      case ExerciseObjectiveType.Back:
-        return Colors.red;
-      case ExerciseObjectiveType.Shoulders:
-        return Colors.yellow;
-      case ExerciseObjectiveType.Legs:
-        return Colors.green;
-      case ExerciseObjectiveType.Biceps:
-        return Colors.orange;
-      case ExerciseObjectiveType.Triceps:
-        return Colors.purple;
-      case ExerciseObjectiveType.Abs:
-        return Colors.brown;
-      case ExerciseObjectiveType.Cardio:
-        return Colors.lightBlueAccent;
-      default:
-        return Colors.black;
-    }
+      for (ExerciseObjective type in pw.workout.objectiveCount.keys)
+        if (pw.workout.objectiveCount[type] > 0)
+          items[pw.dateTime] = items[pw.dateTime] == null ? [] : items[pw.dateTime]..add(type);
+    return items;
   }
 }

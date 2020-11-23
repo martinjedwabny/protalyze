@@ -14,4 +14,16 @@ class Palette{
   static Color orange = Color(0xffee6f57);
   static Color blue = Color(0xFF1f3c88);
   static Color darkBlue = Color(0xFF070d59);
+
+  // static Color = Color(0xff7400b8);
+  // static Color = Color(0xff6930c3);
+  // static Color = Color(0xff5e60ce);
+  // static Color = Color(0xff5390d9);
+  // static Color = Color(0xff4ea8de);
+  // static Color = Color(0xff48bfe3);
+  // static Color = Color(0xff56cfe1);
+  // static Color = Color(0xff64dfdf);
+  // static Color = Color(0xff72efdd);
+  // static Color = Color(0xff80ffdb);
+
 }

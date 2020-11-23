@@ -36,7 +36,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     weightControl.text = widget.block.weight == null ? null : widget.block.weight.amount.toString();
     maxRepsControl.text = widget.block.maxReps == null ? null : widget.block.maxReps.toString();
     minRepsControl.text = widget.block.minReps == null ? null : widget.block.minReps.toString();
-    for (String o in ExerciseObjective.types)
+    for (String o in ExerciseObjective.names)
       objectivesInput[o] = false;
     for (ExerciseObjective o in widget.block.objectives)
       objectivesInput[o.toString()] = true;

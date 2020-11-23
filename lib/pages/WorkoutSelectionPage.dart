@@ -75,7 +75,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
   Card buildCardForItem(WorkoutListItem item, BuildContext context) {
     return Card(
       child: ListTile(
-        contentPadding: EdgeInsets.only(left: 12, right: 4),
+        contentPadding: EdgeInsets.only(left: 12, right: 2, top: 8, bottom: 8),
         title: item.buildTitle(context),
         subtitle: item.buildContent(context),
         onTap: () {

@@ -9,25 +9,21 @@ class Workout {
   String documentId;
   String name;
   List<Block> blocks;
-  Set<ExerciseObjectiveType> objectives;
 
   Workout(String name, List<Block> blocks) {
     this.name = name;
     this.blocks = blocks;
-    this.objectives = generateObjectives(this.blocks);
   }
+
   Workout.copy(Workout other){
     this.name = other.name;
     this.blocks = other.blocks.map((e) => e.copy()).toList();
-    this.objectives = generateObjectives(other.blocks);
   }
 
   Workout.fromJson(Map<String, dynamic> json)
       : name = json['name'],
         blocks = (jsonDecode(json['exercises']) as List<dynamic>).map((e) => 
-          e['type'] == 'group' ? GroupBlock.fromJson(e) : ExerciseBlock.fromJson(e)).toList() {
-    objectives = generateObjectives(this.blocks);
-  }
+          e['type'] == 'group' ? GroupBlock.fromJson(e) : ExerciseBlock.fromJson(e)).toList();
 
   Map<String, dynamic> toJson() =>
     {
@@ -35,20 +31,22 @@ class Workout {
       'exercises': jsonEncode(blocks),
     };
 
-  Set<ExerciseObjectiveType> generateObjectives(List<Block> blocks) {
-    Set<ExerciseObjectiveType> res = Set<ExerciseObjectiveType>();
-    for (Block b in blocks)
-      res.addAll(generateObjectivesFromBlock(b));
-    return res;
+  Map<ExerciseObjective, int> get objectiveCount {
+    return generateObjectives(this.blocks);
   }
 
-  Set<ExerciseObjectiveType> generateObjectivesFromBlock(Block block) {
-    Set<ExerciseObjectiveType> res = Set<ExerciseObjectiveType>();
-    if (block is ExerciseBlock)
-      res.addAll(block.objectives.map((e) => e.type).toSet());
-    else if (block is GroupBlock)
-      for (Block subBlock in block.subBlocks)
-        res.addAll(generateObjectivesFromBlock(subBlock));
+  Map<ExerciseObjective, int> generateObjectives(List<Block> blocks) {
+    Map<ExerciseObjective, int> res = Map<ExerciseObjective, int>();
+    for (String t in ExerciseObjective.names)
+      res[ExerciseObjective(t)] = 0;
+    for (Block block in blocks)
+      if (block is ExerciseBlock)
+        for (var o in block.objectives)
+          res[o] += block.sets == null ? 1 : block.sets;
+      else if (block is GroupBlock)
+        for (ExerciseBlock subBlock in block.subBlocks)
+          for (var o in subBlock.objectives)
+            res[o] += (block.sets == null ? 1 : block.sets) * (subBlock.sets == null ? 1 : subBlock.sets);
     return res;
   }
 }

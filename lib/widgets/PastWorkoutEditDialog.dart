@@ -32,9 +32,14 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     this._controller.text = this.widget._initialName;
     this._selectedDate = widget._initialDate;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget._title),
       content: Column(mainAxisSize: MainAxisSize.min, children: [

@@ -20,18 +20,18 @@ class FloatingScaffold extends StatelessWidget {
       backgroundColor: Themes.normal.scaffoldBackgroundColor,
       body: Column(
         children: <Widget>[
-            Expanded(child: Container(
-              margin: EdgeInsets.only(left: 18, right: 18, bottom: 18),
-              decoration: new BoxDecoration(
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                decoration: new BoxDecoration(
                 color: Colors.white,
                 borderRadius: new BorderRadius.all(Radius.circular(16.0))
               ),
-              child:this.body
-              
+                child:this.body
               )
             )
-            ],
-          ),
+          ],
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: this.floatingActionButton,
       );

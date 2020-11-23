@@ -33,7 +33,7 @@ dependencies:
   wakelock: ^0.1.4+2
   auto_size_text: ^2.1.0
   flutter_picker: ^1.1.5
-  syncfusion_flutter_calendar: ^18.3.50
+  table_calendar: ^2.3.1
 
 
 
@@ -96,6 +96,10 @@ flutter:
         - asset: assets/fonts/Lato/Lato-BoldItalic.ttf
           weight: 700
           style: italic
+    - family: ExerciseIcons
+      fonts:
+        - asset: assets/fonts/ExerciseIcons.ttf
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
