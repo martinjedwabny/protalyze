@@ -1,5 +1,6 @@
 import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/common/domain/ExerciseObjective.dart';
+import 'package:Protalyze/pages/statistics/ExerciseObjectiveTag.dart';
 import 'package:flutter/material.dart';
 
 class StatisticsCalendarLegend extends StatelessWidget {
@@ -12,7 +13,7 @@ class StatisticsCalendarLegend extends StatelessWidget {
     return Container(
       child: GridView.count(
         shrinkWrap: true,
-        crossAxisCount: 4,
+        crossAxisCount: 3,
         primary: false,
         padding: EdgeInsets.zero,
         childAspectRatio: 2.5,
@@ -22,13 +23,8 @@ class StatisticsCalendarLegend extends StatelessWidget {
               spacing: 4,
               crossAxisAlignment: WrapCrossAlignment.center, 
               children: [
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Icon(Icons.circle, size: 26, color: Themes.normal.accentColor),
-                    Text(objectiveName.substring(0,2), style: TextStyle(fontSize: 14, color: Colors.white),)
-                  ]),
-                Text(objectiveName, style: TextStyle(fontSize: 18)),
+                ExerciseObjectiveTag(objective: ExerciseObjective(objectiveName), size: 20),
+                Text(objectiveName, style: TextStyle(fontSize: 16)),
               ],
             )
           )

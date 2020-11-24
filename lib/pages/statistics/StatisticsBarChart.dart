@@ -60,12 +60,12 @@ class StatisticsBarChart extends StatelessWidget {
             bottomTitles: SideTitles(
               margin: 8,
               showTitles: true,
-              getTextStyles: (value) => TextStyle(color: Themes.normal.primaryColor, fontSize: 14),
-              getTitles: (double value) => ExerciseObjective.names.length > value.toInt() ? ExerciseObjective.names.elementAt(value.toInt()) : '',
+              getTextStyles: (value) => TextStyle(color: Themes.normal.primaryColor, fontSize: 12),
+              getTitles: (double value) => ExerciseObjective.names.length > value.toInt() ? ExerciseObjective.names.elementAt(value.toInt()).substring(0, ExerciseObjective.names.elementAt(value.toInt()).length < 3 ? ExerciseObjective.names.elementAt(value.toInt()).length : 3) : '',
             ),
             leftTitles: SideTitles(
               showTitles: true,
-              getTextStyles: (value) => TextStyle(color: Themes.normal.primaryColor, fontSize: 12),
+              getTextStyles: (value) => TextStyle(color: Themes.normal.primaryColor, fontSize: 10),
               margin: 0,
               reservedSize: 14,
               getTitles: (value) {

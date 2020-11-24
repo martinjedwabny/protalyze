@@ -1,6 +1,7 @@
 import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/common/domain/ExerciseObjective.dart';
 import 'package:Protalyze/common/domain/PastWorkout.dart';
+import 'package:Protalyze/pages/statistics/ExerciseObjectiveTag.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -59,12 +60,7 @@ class StatisticsCalendar extends StatelessWidget {
               padding: EdgeInsets.zero,
               childAspectRatio: 1,
               children: events.map((event) => 
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Icon(Icons.circle, size: 17, color: Themes.normal.accentColor),
-                    Text(event.name.substring(0,2), style: TextStyle(fontSize: 10, color: Colors.white),)
-                  ]),
+                ExerciseObjectiveTag(objective: event, size: 10),
               ).toList(),
             ))],
       ),
