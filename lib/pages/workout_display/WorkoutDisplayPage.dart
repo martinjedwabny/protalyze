@@ -1,3 +1,4 @@
+import 'package:Protalyze/common/widget/FloatingScaffoldSection.dart';
 import 'package:Protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:Protalyze/provider/WorkoutNotifier.dart';
 import 'package:Protalyze/config/Themes.dart';
@@ -57,7 +58,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
         ),
         actions: this.widget.canEdit ? [editButton, addBlockButton] : null,
       ),
-      body: getListViewFromWorkout(this.widget.workout),
+      body: FloatingScaffoldSection(child: getListViewFromWorkout(this.widget.workout)),
       floatingActionButton: widget.canEdit == false ? null : playButton,
     );
   }

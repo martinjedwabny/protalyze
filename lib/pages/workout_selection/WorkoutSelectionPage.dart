@@ -1,3 +1,4 @@
+import 'package:Protalyze/common/widget/FloatingScaffoldSection.dart';
 import 'package:Protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:Protalyze/provider/WorkoutNotifier.dart';
 import 'package:Protalyze/config/Themes.dart';
@@ -55,17 +56,19 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
       ],
       ),
       body: Consumer<WorkoutNotifier>(builder: (context, notifier, child) {
+        Widget body;
         if (notifier.workouts.isEmpty)
-          return SingleMessageScaffold('No workouts added yet.');
-        return ListView.builder(
-          // shrinkWrap: true,
-          padding: EdgeInsets.only(bottom: 80.0),
-          itemCount: notifier.workouts.length,
-          itemBuilder: (context, index) {
-            WorkoutListItem item = WorkoutListItem(notifier.workouts[index]);
-            return buildCardForItem(item, context);
-          },
-        );
+          body = SingleMessageScaffold('No workouts added yet.');
+        else 
+          body = Container(child: ListView.builder(
+            padding: EdgeInsets.only(bottom: 80.0),
+            itemCount: notifier.workouts.length,
+            itemBuilder: (context, index) {
+              WorkoutListItem item = WorkoutListItem(notifier.workouts[index]);
+              return buildCardForItem(item, context);
+            },
+          ));
+        return FloatingScaffoldSection(child: body);
       }),
       floatingActionButton: Wrap(spacing: 10.0, children: [ playButton, ],
       ),

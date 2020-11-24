@@ -1,10 +1,10 @@
+import 'package:Protalyze/common/widget/FloatingScaffoldSection.dart';
 import 'package:Protalyze/pages/statistics/StatisticsBarChart.dart';
 import 'package:Protalyze/pages/statistics/StatisticsCalendar.dart';
 import 'package:Protalyze/pages/statistics/StatisticsCalendarLegend.dart';
 import 'package:Protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/common/widget/FloatingScaffold.dart';
-import 'package:Protalyze/common/widget/SingleMessageScaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -26,23 +26,47 @@ class StatisticsPage extends StatelessWidget {
       ],
       ),
       body: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
-        if (notifier.pastWorkouts.isEmpty) 
-          return SingleMessageScaffold('No registered workouts added yet.');
-        else
-          return ListView(padding: EdgeInsets.all(8),children: [
-            createHeader('This week'),
-            StatisticsBarChart(pastWorkouts: notifier.pastWorkouts),
-            createHeader('This month'),
-            StatisticsCalendar(calendarController: _calendarController, pastWorkouts: notifier.pastWorkouts),
-            StatisticsCalendarLegend(),
-          ],);
+        return ListView(
+          padding: EdgeInsets.all(8),
+          children: [
+            FloatingScaffoldSection(
+              child: Column(
+                children: [
+                  createHeader('Sets this week'),
+                  Center(
+                    child:StatisticsBarChart(
+                      pastWorkouts: notifier.pastWorkouts
+                    )
+                  ),
+                ], 
+                crossAxisAlignment: CrossAxisAlignment.start,
+              ), 
+              padding: EdgeInsets.only(bottom: 8), 
+              margin: EdgeInsets.only(bottom: 16),
+            ),
+            FloatingScaffoldSection(
+              child: Column(
+                children: [
+                  createHeader('Workouts this month'),
+                  StatisticsCalendar(
+                    calendarController: _calendarController, 
+                    pastWorkouts: notifier.pastWorkouts
+                  ),
+                  StatisticsCalendarLegend(),
+                ], 
+                crossAxisAlignment: CrossAxisAlignment.start,
+              ), 
+              padding: EdgeInsets.zero
+            ),
+          ],
+        );
       })
     );
   }
 
   Widget createHeader(String text){
     return Padding(
-      padding: EdgeInsets.only(left:8,right:8,bottom:8, top:8), 
+      padding: EdgeInsets.only(left:16,right:16, top:16), 
       child: Text(
         text, 
         style: TextStyle(fontSize: 26),
@@ -51,3 +75,4 @@ class StatisticsPage extends StatelessWidget {
   }
   
 }
+

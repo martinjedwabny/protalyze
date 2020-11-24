@@ -37,6 +37,7 @@ class StatisticsBarChart extends StatelessWidget {
     double maxY = stats.values.isEmpty ? 1 : stats.values.reduce((value, element) => value > element ? value : element).toDouble();
     return Container(
       height: 200,
+      width: 430,
       child: BarChart(
         BarChartData(
           maxY: maxY * 1.2,
@@ -70,7 +71,7 @@ class StatisticsBarChart extends StatelessWidget {
               getTitles: (value) {
                 if (value == 0) {
                   return '0';
-                } else if (value == maxY/2) {
+                } else if (value == maxY~/2) {
                   return (maxY~/2).toString();
                 } else if (value == maxY) {
                   return maxY.toInt().toString();
@@ -88,7 +89,7 @@ class StatisticsBarChart extends StatelessWidget {
               x: i,
               barRods: [
                 BarChartRodData(
-                  y: stats.containsKey(ExerciseObjective.names.elementAt(i)) ? stats[ExerciseObjective.names.elementAt(i)].toDouble() : 0, 
+                  y: stats.containsKey(ExerciseObjective(ExerciseObjective.names.elementAt(i))) ? stats[ExerciseObjective(ExerciseObjective.names.elementAt(i))].toDouble() : 0, 
                   colors: [Themes.normal.accentColor, Colors.orangeAccent], 
                   width: 20,
                   backDrawRodData: BackgroundBarChartRodData(

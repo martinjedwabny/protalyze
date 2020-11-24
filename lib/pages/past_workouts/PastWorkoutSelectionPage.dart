@@ -1,3 +1,4 @@
+import 'package:Protalyze/common/widget/FloatingScaffoldSection.dart';
 import 'package:Protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:Protalyze/provider/WorkoutNotifier.dart';
 import 'package:Protalyze/config/Themes.dart';
@@ -46,11 +47,15 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
       ],
       ),
       body: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
+        Widget body;
         if (notifier.pastWorkouts.isEmpty)
-          return SingleMessageScaffold('No registered workouts added yet.');
-        return ListView(
-          children: createListItems(notifier.pastWorkouts), 
-          padding: EdgeInsets.only(bottom: 80.0));
+          body = SingleMessageScaffold('No registered workouts added yet.');
+        else 
+          body = ListView(
+            children: createListItems(notifier.pastWorkouts), 
+            padding: EdgeInsets.only(bottom: 80.0)
+          );
+        return FloatingScaffoldSection(child: body);
       })
     );
   }

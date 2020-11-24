@@ -3,6 +3,7 @@ import 'package:Protalyze/common/domain/ExerciseObjective.dart';
 import 'package:Protalyze/common/domain/Weight.dart';
 import 'package:Protalyze/common/utils/DurationFormatter.dart';
 import 'package:Protalyze/common/widget/FloatingScaffold.dart';
+import 'package:Protalyze/common/widget/FloatingScaffoldSection.dart';
 import 'package:Protalyze/common/widget/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/common/widget/TimePicker.dart';
 import 'package:flutter/material.dart';
@@ -49,40 +50,44 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
       appBar: AppBar(
         title: Text('Edit exercise'),
       ),
-      body: ListView(children: [
-        cardTextInputRow('Name', nameControl),
-        cardTextInputNumericRow('Sets', setsControl),
-        cardDurationInputRow('Performing duration', this.performTimeControl, (Duration duration){
-          setState(() => this.performTimeControl = duration);
-        }),
-        cardDurationInputRow('Rest duration', this.restTimeControl, (Duration duration) {
-          setState(() => this.restTimeControl = duration);
-        }),
-        cardTextInputNumericRow('Weight (kg)', weightControl, 4),
-        cardTextInputNumericRow('Min reps', minRepsControl),
-        cardTextInputNumericRow('Max reps', maxRepsControl),
-        cardCheckboxInputRow('Targets', objectivesInput),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(width: 4.0,),
-            Expanded(child:
-              RaisedButton(
-              padding: EdgeInsets.all(16.0),
-              child: Text('Confirm', style: TextStyle(color: Colors.white, fontSize: 16.0),),
-              onPressed: () {okayPress();},
-            ),),
-            SizedBox(width: 8.0,),
-            Expanded(child: RaisedButton(
-              padding: EdgeInsets.all(16.0),
-              child: Text('Cancel', style: TextStyle(color: Colors.white, fontSize: 16.0),),
-              onPressed: (){cancelPress();},
-            ),),
-            SizedBox(width: 4.0,),
-          ],
-        ),
-      ],),
+      body: FloatingScaffoldSection(child: getEditWorkoutBody()),
     );
+  }
+
+  ListView getEditWorkoutBody() {
+    return ListView(children: [
+      cardTextInputRow('Name', nameControl),
+      cardTextInputNumericRow('Sets', setsControl),
+      cardDurationInputRow('Performing duration', this.performTimeControl, (Duration duration){
+        setState(() => this.performTimeControl = duration);
+      }),
+      cardDurationInputRow('Rest duration', this.restTimeControl, (Duration duration) {
+        setState(() => this.restTimeControl = duration);
+      }),
+      cardTextInputNumericRow('Weight (kg)', weightControl, 4),
+      cardTextInputNumericRow('Min reps', minRepsControl),
+      cardTextInputNumericRow('Max reps', maxRepsControl),
+      cardCheckboxInputRow('Targets', objectivesInput),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(width: 4.0,),
+          Expanded(child:
+            RaisedButton(
+            padding: EdgeInsets.all(16.0),
+            child: Text('Confirm', style: TextStyle(color: Colors.white, fontSize: 16.0),),
+            onPressed: () {okayPress();},
+          ),),
+          SizedBox(width: 8.0,),
+          Expanded(child: RaisedButton(
+            padding: EdgeInsets.all(16.0),
+            child: Text('Cancel', style: TextStyle(color: Colors.white, fontSize: 16.0),),
+            onPressed: (){cancelPress();},
+          ),),
+          SizedBox(width: 4.0,),
+        ],
+      ),
+    ],);
   }
 
   showAlertDialog(BuildContext context, String title, String message) {
