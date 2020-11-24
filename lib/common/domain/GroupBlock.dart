@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:Protalyze/domain/Block.dart';
-import 'package:Protalyze/domain/ExerciseBlock.dart';
+import 'package:Protalyze/common/domain/Block.dart';
+import 'package:Protalyze/common/domain/ExerciseBlock.dart';
 
 class GroupBlock extends Block {
   List<Block> subBlocks;

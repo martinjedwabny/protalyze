@@ -1,10 +1,10 @@
-import 'package:Protalyze/domain/ExerciseBlock.dart';
-import 'package:Protalyze/domain/ExerciseObjective.dart';
-import 'package:Protalyze/domain/Weight.dart';
-import 'package:Protalyze/misc/DurationFormatter.dart';
-import 'package:Protalyze/widgets/FloatingScaffold.dart';
-import 'package:Protalyze/widgets/SingleMessageAlertDialog.dart';
-import 'package:Protalyze/widgets/TimePicker.dart';
+import 'package:Protalyze/common/domain/ExerciseBlock.dart';
+import 'package:Protalyze/common/domain/ExerciseObjective.dart';
+import 'package:Protalyze/common/domain/Weight.dart';
+import 'package:Protalyze/common/utils/DurationFormatter.dart';
+import 'package:Protalyze/common/widget/FloatingScaffold.dart';
+import 'package:Protalyze/common/widget/SingleMessageAlertDialog.dart';
+import 'package:Protalyze/common/widget/TimePicker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

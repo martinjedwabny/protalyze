@@ -1,8 +1,8 @@
-import 'package:Protalyze/domain/Block.dart';
-import 'package:Protalyze/domain/CountdownElement.dart';
-import 'package:Protalyze/domain/ExerciseBlock.dart';
-import 'package:Protalyze/domain/GroupBlock.dart';
-import 'package:Protalyze/domain/Workout.dart';
+import 'package:Protalyze/common/domain/Block.dart';
+import 'package:Protalyze/pages/countdown/CountdownElement.dart';
+import 'package:Protalyze/common/domain/ExerciseBlock.dart';
+import 'package:Protalyze/common/domain/GroupBlock.dart';
+import 'package:Protalyze/common/domain/Workout.dart';
 
 class WorkoutToCountdownAdapter{
   static List<CountdownElement> getCountdownElements(Workout workout) {

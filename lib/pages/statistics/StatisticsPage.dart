@@ -1,9 +1,9 @@
-import 'package:Protalyze/bloc/PastWorkoutNotifier.dart';
+import 'package:Protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:Protalyze/config/Themes.dart';
-import 'package:Protalyze/domain/ExerciseObjective.dart';
-import 'package:Protalyze/domain/PastWorkout.dart';
-import 'package:Protalyze/widgets/FloatingScaffold.dart';
-import 'package:Protalyze/widgets/SingleMessageScaffold.dart';
+import 'package:Protalyze/common/domain/ExerciseObjective.dart';
+import 'package:Protalyze/common/domain/PastWorkout.dart';
+import 'package:Protalyze/common/widget/FloatingScaffold.dart';
+import 'package:Protalyze/common/widget/SingleMessageScaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';

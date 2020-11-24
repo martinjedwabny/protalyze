@@ -1,8 +1,8 @@
-import 'package:Protalyze/containers/ListItem.dart';
-import 'package:Protalyze/misc/DurationFormatter.dart';
+import 'package:Protalyze/common/container/ListItem.dart';
+import 'package:Protalyze/common/utils/DurationFormatter.dart';
 import 'package:flutter/material.dart';
-import 'package:Protalyze/domain/GroupBlock.dart';
-import 'package:Protalyze/domain/ExerciseBlock.dart';
+import 'package:Protalyze/common/domain/GroupBlock.dart';
+import 'package:Protalyze/common/domain/ExerciseBlock.dart';
 
 /// A ListItem that contains data to display a heading.
 abstract class BlockListItem extends ListItem {

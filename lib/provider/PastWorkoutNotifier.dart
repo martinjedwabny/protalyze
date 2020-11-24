@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:Protalyze/domain/PastWorkout.dart';
+import 'package:Protalyze/common/domain/PastWorkout.dart';
 import 'package:Protalyze/persistance/PastWorkoutDataManager.dart';
 import 'package:flutter/material.dart';
 
