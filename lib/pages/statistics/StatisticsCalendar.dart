@@ -1,7 +1,8 @@
+import 'dart:math';
+
 import 'package:Protalyze/config/Themes.dart';
-import 'package:Protalyze/common/domain/ExerciseObjective.dart';
 import 'package:Protalyze/common/domain/PastWorkout.dart';
-import 'package:Protalyze/pages/statistics/ExerciseObjectiveTag.dart';
+import 'package:Protalyze/pages/statistics/CalendarLineTag.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -17,14 +18,6 @@ class StatisticsCalendar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<DateTime, List<ExerciseObjective>> events = Map();
-    for (PastWorkout pw in pastWorkouts) {
-      events[pw.dateTime] = (events[pw.dateTime] == null ? [] : events[pw.dateTime]);
-      for (var name in ExerciseObjective.names)
-        if (pw.workout.objectiveCount.containsKey(ExerciseObjective(name)) &&
-          pw.workout.objectiveCount[ExerciseObjective(name)] > 0)
-          events[pw.dateTime].add(ExerciseObjective(name));
-    }
     return TableCalendar(
       availableGestures: AvailableGestures.none,
       availableCalendarFormats: const {CalendarFormat.month: ''},
@@ -45,25 +38,43 @@ class StatisticsCalendar extends StatelessWidget {
         todayColor: Themes.normal.accentColor.withOpacity(0.7),
         markersColor: Themes.normal.accentColor,
       ),
-      events: events,
+      events: getPastWorkoutPerDate(),
       builders: CalendarBuilders(
         dayBuilder: (BuildContext context, DateTime date, List events) =>
           Center(child:Container(height: 40,child:Text(date.day.toString(),))),
         todayDayBuilder: (BuildContext context, DateTime date, List events) =>
           Center(child:Container(height: 40,child:Text(date.day.toString(),style: TextStyle(color: Themes.normal.accentColor),))),
-        markersBuilder: (context, date, events, holidays) =>
-          [Padding(padding: EdgeInsets.only(top: 20), child: GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: (events == null || events.length == 0) ? 1 : 
-                events.length < 4 ? events.length : 4,
-              primary: false,
-              padding: EdgeInsets.zero,
-              childAspectRatio: 1,
-              children: events.map((event) => 
-                ExerciseObjectiveTag(objective: event, size: 10),
-              ).toList(),
-            ))],
+        markersBuilder: (context, date, events, holidays) => [  
+          Padding(padding: EdgeInsets.only(top: 34, left: 8, right: 8),
+              child: Column(
+                children: getEventMarkers(events)
+              ),
+          ),
+        ]
       ),
     );
+  }
+
+  Map<DateTime, List<PastWorkout>> getPastWorkoutPerDate() {
+    Map<DateTime, List<PastWorkout>> events = Map();
+    for (PastWorkout pw in pastWorkouts) {
+      DateTime date = DateTime(pw.dateTime.year, pw.dateTime.month, pw.dateTime.day);
+      events[date] = (events[date] == null ? [] : events[date]);
+      events[date].add(pw);
+    }
+    return events;
+  }
+
+  List<Widget> getEventMarkers(List<PastWorkout> events) {
+    List<Widget> ans = [];
+    int maxMarkers = 2;
+    for (int i = 0; i < min(events.length, maxMarkers); i++) {
+      PastWorkout pw = events[i];
+      ans.add(CalendarLineTag(message: pw.workout.name, index: i));
+    }
+    if (events.length > maxMarkers) {
+      ans.add(CalendarLineTag(message: '+ ' + (events.length-maxMarkers).toString() + ' more', index: maxMarkers));
+    }
+    return ans;
   }
 }

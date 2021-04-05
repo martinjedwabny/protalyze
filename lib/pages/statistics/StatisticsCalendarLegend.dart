@@ -1,4 +1,3 @@
-import 'package:Protalyze/config/Themes.dart';
 import 'package:Protalyze/common/domain/ExerciseObjective.dart';
 import 'package:Protalyze/pages/statistics/ExerciseObjectiveTag.dart';
 import 'package:flutter/material.dart';

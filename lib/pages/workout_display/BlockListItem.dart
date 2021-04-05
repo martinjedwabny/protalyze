@@ -19,7 +19,7 @@ class GroupBlockListItem extends BlockListItem{
 
   Widget buildTitle(BuildContext context) {
     return Text(
-      block.sets == null || block.sets == 1 ? block.name : '${block.sets} x ${block.name}',
+      block.sets == null ? '1 x' : '${block.sets} x',
       style: Theme.of(context).textTheme.headline6,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,

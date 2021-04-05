@@ -1,4 +1,6 @@
 import 'package:Protalyze/common/widget/FloatingScaffoldSection.dart';
+import 'package:Protalyze/pages/statistics/StatisticsBarChart.dart';
+import 'package:Protalyze/pages/statistics/StatisticsCalendar.dart';
 import 'package:Protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:Protalyze/provider/WorkoutNotifier.dart';
 import 'package:Protalyze/config/Themes.dart';
@@ -12,10 +14,10 @@ import 'package:Protalyze/pages/past_workouts/PastWorkoutEditDialog.dart';
 import 'package:Protalyze/pages/past_workouts/PastWorkoutListItemWidget.dart';
 import 'package:Protalyze/common/widget/SingleMessageAlertDialog.dart';
 import 'package:Protalyze/common/widget/SingleMessageConfirmationDialog.dart';
-import 'package:Protalyze/common/widget/SingleMessageScaffold.dart';
 import 'package:Protalyze/common/widget/SinglePickerAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class PastWorkoutSelectionPage extends StatefulWidget {
   final VoidCallback logoutCallback;
@@ -29,6 +31,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+  final CalendarController _calendarController = CalendarController();
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -47,16 +50,65 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
       ],
       ),
       body: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
-        Widget body;
-        if (notifier.pastWorkouts.isEmpty)
-          body = SingleMessageScaffold('No registered workouts added yet.');
-        else 
-          body = ListView(
-            children: createListItems(notifier.pastWorkouts), 
-            padding: EdgeInsets.only(bottom: 80.0)
-          );
-        return FloatingScaffoldSection(child: body);
+        return ListView(
+          padding: EdgeInsets.all(8),
+          children: [
+            createHeader('Workouts this month'),
+            buildCalendarStatistics(notifier),
+            createHeader('Latest workouts'),
+            buildHistoricalPastWorkouts(notifier),
+          ],
+        );
       })
+    );
+  }
+
+  FloatingScaffoldSection buildHistoricalPastWorkouts(PastWorkoutNotifier notifier) {
+    Widget body = ListView(
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      children: createListItems(notifier.pastWorkouts), 
+      padding: EdgeInsets.only(bottom: 80.0)
+    );
+    return FloatingScaffoldSection(child: body);
+  }
+
+  FloatingScaffoldSection buildCalendarStatistics(PastWorkoutNotifier notifier) {
+    return FloatingScaffoldSection(
+            child: StatisticsCalendar(
+                  calendarController: _calendarController, 
+                  pastWorkouts: notifier.pastWorkouts
+                ),
+            padding: EdgeInsets.zero, 
+            margin: EdgeInsets.only(bottom: 16),
+          );
+  }
+
+  FloatingScaffoldSection buildWeekSetsStatistics(PastWorkoutNotifier notifier) {
+    return FloatingScaffoldSection(
+            child: Column(
+              children: [
+                createHeader('Sets this week'),
+                Center(
+                  child:StatisticsBarChart(
+                    pastWorkouts: notifier.pastWorkouts
+                  )
+                ),
+              ], 
+              crossAxisAlignment: CrossAxisAlignment.start,
+            ), 
+            padding: EdgeInsets.only(bottom: 16), 
+            margin: EdgeInsets.only(bottom: 16),
+          );
+  }
+
+  Widget createHeader(String text){
+    return Padding(
+      padding: EdgeInsets.only(bottom:16), 
+      child: Text(
+        text, 
+        style: TextStyle(fontSize: 26),
+      ),
     );
   }
 
@@ -140,6 +192,9 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
         (){ openPastWorkoutDisplayPage(item); }, 
         (){ openPastWorkoutEditDialog(item); }, 
         (){ removePastWorkout(item.pastWorkout); }));
+    }
+    if (ans.isEmpty) {
+      ans.add(Text('No workouts added yet.', style: Theme.of(context).textTheme.headline6,),);
     }
     return ans;
   }

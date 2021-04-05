@@ -380,7 +380,8 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         SimpleListDialog(
           this._countdownElements.sublist(1).map((e) => e.name + ' (' + DurationFormatter.format(e.totalTime) + ')').toList(), 
           Themes.normal.primaryColor, 
-          Colors.white70
+          Colors.white70,
+          'Next exercises'
         )
     );
   }

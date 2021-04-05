@@ -9,7 +9,7 @@ class GroupBlock extends Block {
   GroupBlock(String name, int sets, this.subBlocks) : super(name, sets);
 
   GroupBlock.copy(GroupBlock other) : super(other.name, other.sets) {
-    this.subBlocks = other.subBlocks.map((e) => e.copy());
+    this.subBlocks = other.subBlocks.map((e) => e.copy()).toList();
   }
 
   GroupBlock copy(){
