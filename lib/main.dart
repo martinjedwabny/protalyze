@@ -20,7 +20,7 @@ void main() async {
 
 void setupStatusAndNavBarColors(){
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Themes.normal.scaffoldBackgroundColor,
+      systemNavigationBarColor: Colors.transparent,
       statusBarColor: Palette.darkGray,
       systemNavigationBarIconBrightness: Brightness.dark,
       statusBarBrightness: Brightness.light

@@ -41,11 +41,11 @@ class StatisticsCalendar extends StatelessWidget {
       events: getPastWorkoutPerDate(),
       builders: CalendarBuilders(
         dayBuilder: (BuildContext context, DateTime date, List events) =>
-          Center(child:Container(height: 40,child:Text(date.day.toString(),))),
+          Center(child:Container(height: 110,child:Text(date.day.toString(),))),
         todayDayBuilder: (BuildContext context, DateTime date, List events) =>
-          Center(child:Container(height: 40,child:Text(date.day.toString(),style: TextStyle(color: Themes.normal.accentColor),))),
+          Center(child:Container(height: 110,child:Text(date.day.toString(),style: TextStyle(color: Themes.normal.accentColor),))),
         markersBuilder: (context, date, events, holidays) => [  
-          Padding(padding: EdgeInsets.only(top: 34, left: 8, right: 8),
+          Padding(padding: EdgeInsets.only(top: 18, left: 4, right: 4),
               child: Column(
                 children: getEventMarkers(events)
               ),
@@ -73,7 +73,7 @@ class StatisticsCalendar extends StatelessWidget {
       ans.add(CalendarLineTag(message: pw.workout.name, index: i));
     }
     if (events.length > maxMarkers) {
-      ans.add(CalendarLineTag(message: '+ ' + (events.length-maxMarkers).toString() + ' more', index: maxMarkers));
+      ans.add(CalendarLineTag(message: '+ ' + (events.length-maxMarkers).toString(), index: maxMarkers));
     }
     return ans;
   }

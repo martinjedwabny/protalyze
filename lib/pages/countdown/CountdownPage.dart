@@ -38,7 +38,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   @override
   void dispose() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Themes.normal.scaffoldBackgroundColor,
+      systemNavigationBarColor: Colors.transparent,
       statusBarColor: Palette.darkGray,
       systemNavigationBarIconBrightness: Brightness.dark,
       statusBarBrightness: Brightness.light
@@ -50,12 +50,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Palette.darkGray,
-      statusBarColor: Palette.darkGray,
-      systemNavigationBarIconBrightness: Brightness.light,
-      statusBarBrightness: Brightness.light
-    ));
     super.initState();
     ScreenPersist.enable();
     this._controller = AnimationController(vsync: this, value: 1.0);
@@ -149,7 +143,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Widget buildProgressCircle(){
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.all(0.0),
+        padding: EdgeInsets.all(40.0),
         child: Align(
           alignment: FractionalOffset.center,
           child: AspectRatio(
@@ -203,7 +197,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Widget buildBottomButtons(BuildContext context){
     return Container(
       child: Padding(
-        padding: EdgeInsets.only(left:8.0,right:8.0,bottom:8.0),
+        padding: EdgeInsets.only(left:8.0,right:8.0,bottom:16.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -270,6 +264,13 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      statusBarColor: Palette.darkGray,
+      systemNavigationBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.light,
+    ));
     return Scaffold(
       backgroundColor: Palette.darkGray,
       body: AnimatedBuilder(
