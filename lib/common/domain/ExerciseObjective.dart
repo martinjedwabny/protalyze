@@ -8,6 +8,6 @@ class ExerciseObjective {
   @override
   bool operator ==(other) => other is ExerciseObjective && other.name == name;
   @override
-  int get hashCode => names.contains(this.name) ? names.indexOf(this.name) : -1;
+  int get hashCode => this.name.hashCode;
 
 }

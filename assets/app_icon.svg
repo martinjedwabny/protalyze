@@ -14,7 +14,10 @@
    version="1.1"
    id="svg8"
    inkscape:version="1.0.2 (e86c8708, 2021-01-15)"
-   sodipodi:docname="app_icon.svg">
+   sodipodi:docname="app_icon.svg"
+   inkscape:export-filename="/Users/martinjedwabny/git/protalyze/assets/app_icon.png"
+   inkscape:export-xdpi="133.50778"
+   inkscape:export-ydpi="133.50778">
   <defs
      id="defs2">
     <linearGradient
@@ -194,9 +197,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.84058991"
-     inkscape:cx="422.54726"
-     inkscape:cy="546.93517"
+     inkscape:zoom="0.60571064"
+     inkscape:cx="480.03379"
+     inkscape:cy="606.59958"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -233,17 +236,23 @@
        id="circle1586"
        cx="104.2784"
        cy="155.7724"
-       r="50" />
+       r="50"
+       inkscape:export-xdpi="182.87991"
+       inkscape:export-ydpi="182.87991" />
     <path
        id="path1329"
        style="opacity:1;fill:url(#linearGradient1625);fill-opacity:1;stroke:none;stroke-width:1.21983"
        d="M 495 470 L 430 500 L 380 620 L 295 710 L 359.52734 774.52734 A 188.97638 188.97638 0 0 0 394.12305 777.72266 A 188.97638 188.97638 0 0 0 583.09961 588.74609 A 188.97638 188.97638 0 0 0 580.07422 555.07422 L 495 470 z "
-       transform="scale(0.26458333)" />
+       transform="scale(0.26458333)"
+       inkscape:export-xdpi="182.87991"
+       inkscape:export-ydpi="182.87991" />
     <g
        id="g38" />
     <g
        id="g1348"
-       transform="translate(14.320058,7.6057379)">
+       transform="translate(14.320058,7.6057379)"
+       inkscape:export-xdpi="182.87991"
+       inkscape:export-ydpi="182.87991">
       <g
          id="g92"
          style="opacity:1;fill:url(#linearGradient1221);fill-opacity:1">

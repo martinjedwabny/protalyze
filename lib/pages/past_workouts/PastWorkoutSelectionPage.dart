@@ -1,4 +1,5 @@
 import 'package:Protalyze/common/widget/FloatingScaffoldSection.dart';
+import 'package:Protalyze/common/widget/PageableListView.dart';
 import 'package:Protalyze/pages/statistics/StatisticsBarChart.dart';
 import 'package:Protalyze/pages/statistics/StatisticsCalendar.dart';
 import 'package:Protalyze/provider/PastWorkoutNotifier.dart';
@@ -55,6 +56,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
           children: [
             createHeader('Workouts this month'),
             buildCalendarStatistics(notifier),
+            buildWeekSetsStatistics(notifier),
             createHeader('Latest workouts'),
             buildHistoricalPastWorkouts(notifier),
           ],
@@ -63,17 +65,17 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
     );
   }
 
-  FloatingScaffoldSection buildHistoricalPastWorkouts(PastWorkoutNotifier notifier) {
-    Widget body = ListView(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      children: createListItems(notifier.pastWorkouts), 
-      padding: EdgeInsets.only(bottom: 80.0)
-    );
-    return FloatingScaffoldSection(child: body);
+  Widget buildHistoricalPastWorkouts(PastWorkoutNotifier notifier) {
+    return FloatingScaffoldSection(
+      child: PageableListView(
+        items: createListItems(notifier.pastWorkouts), 
+        perPage: 10, 
+        messageNoItems: "No workouts added yet.",
+        physics: ClampingScrollPhysics(),
+        shrinkWraps: true,));
   }
 
-  FloatingScaffoldSection buildCalendarStatistics(PastWorkoutNotifier notifier) {
+  Widget buildCalendarStatistics(PastWorkoutNotifier notifier) {
     return FloatingScaffoldSection(
             child: StatisticsCalendar(
                   calendarController: _calendarController, 
@@ -84,22 +86,22 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
           );
   }
 
-  FloatingScaffoldSection buildWeekSetsStatistics(PastWorkoutNotifier notifier) {
-    return FloatingScaffoldSection(
-            child: Column(
-              children: [
-                createHeader('Sets this week'),
-                Center(
-                  child:StatisticsBarChart(
-                    pastWorkouts: notifier.pastWorkouts
-                  )
-                ),
-              ], 
-              crossAxisAlignment: CrossAxisAlignment.start,
-            ), 
-            padding: EdgeInsets.only(bottom: 16), 
-            margin: EdgeInsets.only(bottom: 16),
-          );
+  Widget buildWeekSetsStatistics(PastWorkoutNotifier notifier) {
+    StatelessWidget barChart = StatisticsBarChart(
+      pastWorkouts: notifier.pastWorkouts,
+      messageNoItems: "No workouts added yet.",);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        createHeader('Sets this week'),
+        FloatingScaffoldSection(
+          child: Center(
+            child: barChart
+          ),
+          margin: EdgeInsets.only(bottom: 16),
+        ),
+      ]
+    );
   }
 
   Widget createHeader(String text){
@@ -178,24 +180,29 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
     orderedPastWorkouts.sort((a, b) => - a.dateTime.compareTo(b.dateTime));
     List<Widget> ans = [];
     for (int i = 0; i < orderedPastWorkouts.length; i++) {
-      DateTime date = orderedPastWorkouts[i].dateTime;
-      String dateF = "${date.day}-${date.month}-${date.year}";
-      DateTime otherDate = i == 0 ? null : orderedPastWorkouts[i - 1].dateTime;
-      String otherF = i == 0
-          ? null
-          : "${otherDate.day}-${otherDate.month}-${otherDate.year}";
-      if (dateF != otherF) {
-        ans.add(DateHeaderListItemWidget(date));
-      }
-      PastWorkoutListItem item = PastWorkoutListItem(orderedPastWorkouts[i]);
-      ans.add(PastWorkoutListItemWidget(item, 
-        (){ openPastWorkoutDisplayPage(item); }, 
-        (){ openPastWorkoutEditDialog(item); }, 
-        (){ removePastWorkout(item.pastWorkout); }));
-    }
-    if (ans.isEmpty) {
-      ans.add(Text('No workouts added yet.', style: Theme.of(context).textTheme.headline6,),);
+      ans.add(createListItem(orderedPastWorkouts, i));
     }
     return ans;
+  }
+
+  Widget createListItem(List<PastWorkout> orderedPastWorkouts, int i) {
+    List<Widget> columnItems = [];
+    DateTime date = orderedPastWorkouts[i].dateTime;
+    String dateF = "${date.day}-${date.month}-${date.year}";
+    DateTime otherDate = i == 0 ? null : orderedPastWorkouts[i - 1].dateTime;
+    String otherF = i == 0
+        ? null
+        : "${otherDate.day}-${otherDate.month}-${otherDate.year}";
+    if (dateF != otherF) {
+      columnItems.add(DateHeaderListItemWidget(date));
+    }
+    PastWorkoutListItem item = PastWorkoutListItem(orderedPastWorkouts[i]);
+    columnItems.add(PastWorkoutListItemWidget(item, 
+      (){ openPastWorkoutDisplayPage(item); }, 
+      (){ openPastWorkoutEditDialog(item); }, 
+      (){ removePastWorkout(item.pastWorkout); }));
+    return Column(
+      children: columnItems,
+    );
   }
 }

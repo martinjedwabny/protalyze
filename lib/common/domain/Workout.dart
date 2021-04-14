@@ -37,16 +37,18 @@ class Workout {
 
   Map<ExerciseObjective, int> generateObjectives(List<Block> blocks) {
     Map<ExerciseObjective, int> res = Map<ExerciseObjective, int>();
-    for (String t in ExerciseObjective.names)
-      res[ExerciseObjective(t)] = 0;
     for (Block block in blocks)
       if (block is ExerciseBlock)
-        for (var o in block.objectives)
+        for (ExerciseObjective o in block.objectives) {
+          if (!res.containsKey(o)) res[o] = 0;
           res[o] += block.sets == null ? 1 : block.sets;
+        }
       else if (block is GroupBlock)
         for (ExerciseBlock subBlock in block.subBlocks)
-          for (var o in subBlock.objectives)
-            res[o] += (block.sets == null ? 1 : block.sets) * (subBlock.sets == null ? 1 : subBlock.sets);
+          for (ExerciseObjective o in subBlock.objectives) {
+          if (!res.containsKey(o)) res[o] = 0;
+          res[o] += (block.sets == null ? 1 : block.sets) * (subBlock.sets == null ? 1 : subBlock.sets);
+        }
     return res;
   }
 }

@@ -8,9 +8,11 @@ class StatisticsBarChart extends StatelessWidget {
   const StatisticsBarChart({
     Key key,
     @required this.pastWorkouts,
+    @required this.messageNoItems,
   }) : super(key: key);
 
   final List<PastWorkout> pastWorkouts;
+  final String messageNoItems;
 
   Map<ExerciseObjective,int> objectiveCountPerDayBetween(DateTime start, DateTime finish){
     Map<ExerciseObjective,int> stats = Map();
@@ -20,7 +22,6 @@ class StatisticsBarChart extends StatelessWidget {
         var objectivesCount = pw.workout.objectiveCount;
         if (objectivesCount == null || objectivesCount.isEmpty) continue;
         for (var o in objectivesCount.keys) {
-          // if (objectivesCount[o] == 0) continue;
           if (!stats.containsKey(o)) stats[o] = 0;
           stats[o] += objectivesCount[o];
         }
@@ -35,6 +36,13 @@ class StatisticsBarChart extends StatelessWidget {
     var nextWeek = firstDayOfWeek.add(Duration(days: 7));
     Map<ExerciseObjective,int> stats = objectiveCountPerDayBetween(firstDayOfWeek, nextWeek);
     double maxY = stats.values.isEmpty ? 1 : stats.values.reduce((value, element) => value > element ? value : element).toDouble();
+    if (stats.isEmpty) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical:8),
+        child: Text(this.messageNoItems, 
+          style: Theme.of(context).textTheme.headline6,
+          textAlign: TextAlign.center,),);
+    }
     return Container(
       height: 200,
       width: 430,
@@ -61,7 +69,7 @@ class StatisticsBarChart extends StatelessWidget {
               margin: 8,
               showTitles: true,
               getTextStyles: (value) => TextStyle(color: Themes.normal.primaryColor, fontSize: 12),
-              getTitles: (double value) => ExerciseObjective.names.length > value.toInt() ? ExerciseObjective.names.elementAt(value.toInt()).substring(0, ExerciseObjective.names.elementAt(value.toInt()).length < 3 ? ExerciseObjective.names.elementAt(value.toInt()).length : 3) : '',
+              getTitles: (double value) => stats.keys.elementAt(value.toInt()).name.substring(0, stats.keys.elementAt(value.toInt()).name.length < 3 ? stats.keys.elementAt(value.toInt()).name.length : 3),
             ),
             leftTitles: SideTitles(
               showTitles: true,
@@ -84,12 +92,12 @@ class StatisticsBarChart extends StatelessWidget {
           borderData: FlBorderData(
             show: false,
           ),
-          barGroups: List<BarChartGroupData>.generate(ExerciseObjective.names.length, (i) => 
+          barGroups: List<BarChartGroupData>.generate(stats.length, (i) => 
             BarChartGroupData(
               x: i,
               barRods: [
                 BarChartRodData(
-                  y: stats.containsKey(ExerciseObjective(ExerciseObjective.names.elementAt(i))) ? stats[ExerciseObjective(ExerciseObjective.names.elementAt(i))].toDouble() : 0, 
+                  y: stats.values.elementAt(i).toDouble(), 
                   colors: [Themes.normal.accentColor, Colors.orangeAccent], 
                   width: 20,
                   backDrawRodData: BackgroundBarChartRodData(
