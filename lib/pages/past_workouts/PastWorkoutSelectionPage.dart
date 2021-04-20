@@ -50,57 +50,55 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
         ),
       ],
       ),
-      body: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
-        return ListView(
+      body: ListView(
           padding: EdgeInsets.all(8),
           children: [
             createHeader('Workouts this month'),
-            buildCalendarStatistics(notifier),
-            buildWeekSetsStatistics(notifier),
+            buildCalendarStatistics(),
+            createHeader('Sets this week'),
+            buildWeekSetsStatistics(),
             createHeader('Latest workouts'),
-            buildHistoricalPastWorkouts(notifier),
+            buildHistoricalPastWorkouts(),
           ],
-        );
-      })
+        )
     );
   }
 
-  Widget buildHistoricalPastWorkouts(PastWorkoutNotifier notifier) {
+  Widget buildHistoricalPastWorkouts() {
     return FloatingScaffoldSection(
-      child: PageableListView(
+      child: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
+        return PageableListView(
         items: createListItems(notifier.pastWorkouts), 
         perPage: 10, 
         messageNoItems: "No workouts added yet.",
         physics: ClampingScrollPhysics(),
-        shrinkWraps: true,));
+        shrinkWraps: true,);
+      }));
   }
 
-  Widget buildCalendarStatistics(PastWorkoutNotifier notifier) {
+  Widget buildCalendarStatistics() {
     return FloatingScaffoldSection(
-            child: StatisticsCalendar(
-                  calendarController: _calendarController, 
-                  pastWorkouts: notifier.pastWorkouts
-                ),
-            padding: EdgeInsets.zero, 
-            margin: EdgeInsets.only(bottom: 16),
+      child: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
+        return StatisticsCalendar(
+            calendarController: _calendarController, 
+            pastWorkouts: notifier.pastWorkouts
           );
+      }),
+      padding: EdgeInsets.zero, 
+      margin: EdgeInsets.only(bottom: 16)
+    );
   }
 
-  Widget buildWeekSetsStatistics(PastWorkoutNotifier notifier) {
-    StatelessWidget barChart = StatisticsBarChart(
-      pastWorkouts: notifier.pastWorkouts,
-      messageNoItems: "No workouts added yet.",);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        createHeader('Sets this week'),
-        FloatingScaffoldSection(
-          child: Center(
-            child: barChart
-          ),
-          margin: EdgeInsets.only(bottom: 16),
-        ),
-      ]
+  Widget buildWeekSetsStatistics() {
+    return FloatingScaffoldSection(
+      child: Center(
+        child: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
+          return StatisticsBarChart(
+            pastWorkouts: notifier.pastWorkouts,
+            messageNoItems: "No workouts added yet.",);
+        }),
+      ),
+      margin: EdgeInsets.only(bottom: 16),
     );
   }
 

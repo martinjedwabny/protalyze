@@ -43,7 +43,6 @@ class _PageableListViewState extends State<PageableListView> {
       itemBuilder: (context, index) {
         if (index == present)
           return Container(
-            height: 40,
             child: RaisedButton(
               padding: EdgeInsets.all(16.0),
               child: Text('Show more', style: TextStyle(color: Colors.white, fontSize: 16.0),),
