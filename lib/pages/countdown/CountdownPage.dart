@@ -36,19 +36,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3");
 
   @override
-  void dispose() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.transparent,
-      statusBarColor: Palette.darkGray,
-      systemNavigationBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light
-    ));
-    ScreenPersist.disable();
-    this._controller.dispose();
-    super.dispose();
-  }
-
-  @override
   void initState() {
     super.initState();
     ScreenPersist.enable();
@@ -64,6 +51,35 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
       }
     });
     initializeCountdownElements();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleDark);
+    return Scaffold(
+      backgroundColor: Palette.darkGray,
+      body: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Column(
+              children: <Widget>[
+                buildCurrentTimeWidget(),
+                buildExercisesWidget(),
+                buildProgressCircle(),
+                buildBottomButtons(context),
+              ],
+            );
+          }
+      )
+    );
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleLight);
+    ScreenPersist.disable();
+    this._controller.dispose();
+    super.dispose();
   }
 
   void animationStatusChanged(AnimationStatus status) {
@@ -260,33 +276,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
           (){});
         },
       );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.transparent,
-      statusBarColor: Palette.darkGray,
-      systemNavigationBarIconBrightness: Brightness.light,
-      statusBarBrightness: Brightness.light,
-      statusBarIconBrightness: Brightness.light,
-    ));
-    return Scaffold(
-      backgroundColor: Palette.darkGray,
-      body: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return Column(
-              children: <Widget>[
-                buildCurrentTimeWidget(),
-                buildExercisesWidget(),
-                buildProgressCircle(),
-                buildBottomButtons(context),
-              ],
-            );
-          }
-      )
-    );
   }
 
   String get blockRemainingTimeString {

@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'Palette.dart';
 
 class Themes{
+
+  static final SystemUiOverlayStyle systemUiOverlayStyleLight = SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.dark,
+    statusBarColor: Palette.darkGray,
+    statusBarBrightness: Brightness.light,
+    statusBarIconBrightness: Brightness.light,
+  );
+
+  static final SystemUiOverlayStyle systemUiOverlayStyleDark = SystemUiOverlayStyle(
+    systemNavigationBarColor: Palette.darkGray,
+    systemNavigationBarDividerColor: Palette.darkGray,
+    systemNavigationBarIconBrightness: Brightness.light,
+    statusBarColor: Palette.darkGray,
+    statusBarBrightness: Brightness.light,
+    statusBarIconBrightness: Brightness.light,
+  );
+
   static final ThemeData normal =  ThemeData(
     accentColor: Palette.orange,
     primaryColor: Palette.darkGray,

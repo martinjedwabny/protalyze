@@ -19,12 +19,8 @@ void main() async {
 }
 
 void setupStatusAndNavBarColors(){
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.transparent,
-      statusBarColor: Palette.darkGray,
-      systemNavigationBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light
-  ));
+  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
+  SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleLight);
 }
 
 class MyApp extends StatelessWidget {
