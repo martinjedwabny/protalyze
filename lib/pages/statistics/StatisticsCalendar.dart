@@ -27,22 +27,12 @@ class StatisticsCalendar extends StatelessWidget {
         weekendStyle: TextStyle(color: Themes.normal.primaryColor),
         weekdayStyle: TextStyle(color: Themes.normal.primaryColor),
       ),
-      calendarStyle: CalendarStyle(
-
-        // contentPadding: EdgeInsets.zero,
-        // weekdayStyle: TextStyle(color: Colors.black),
-        // weekendStyle: TextStyle(color: Colors.black),
-        // holidayStyle: TextStyle(color: Colors.black),
-        // outsideHolidayStyle: TextStyle(color: Themes.normal.disabledColor),
-        // outsideWeekendStyle: TextStyle(color: Themes.normal.disabledColor),
-        // selectedColor: Themes.normal.accentColor,
-        // todayColor: Themes.normal.accentColor.withOpacity(0.7),
-        // markersColor: Themes.normal.accentColor,
-      ),
       eventLoader: getPastWorkoutForDate,
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),))),
-        todayBuilder: (context, day, focusedDay) => Text(day.day.toString(),style: TextStyle(color: Themes.normal.accentColor),),
+        todayBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),style: TextStyle(color: Themes.normal.accentColor),),),),
+        disabledBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),style: TextStyle(color: Themes.normal.disabledColor),),),),
+        outsideBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),style: TextStyle(color: Themes.normal.disabledColor),),),),
         markerBuilder: (context, day, events) => 
           Padding(padding: EdgeInsets.only(top: 18, left: 4, right: 4),
             child: Column(children: getEventMarkers(events)),
