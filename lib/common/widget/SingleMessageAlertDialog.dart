@@ -9,7 +9,7 @@ class SingleMessageAlertDialog extends StatelessWidget{
       title: Text(_title),
       content: Text(_message),
       actions: [
-        FlatButton(
+        TextButton(
           child: Text("Ok"),
           onPressed: () {Navigator.of(context).pop();},
         ),

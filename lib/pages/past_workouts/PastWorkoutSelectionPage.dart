@@ -18,7 +18,6 @@ import 'package:Protalyze/common/widget/SingleMessageConfirmationDialog.dart';
 import 'package:Protalyze/common/widget/SinglePickerAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class PastWorkoutSelectionPage extends StatefulWidget {
   final VoidCallback logoutCallback;
@@ -32,7 +31,6 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final CalendarController _calendarController = CalendarController();
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -80,7 +78,6 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
     return FloatingScaffoldSection(
       child: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
         return StatisticsCalendar(
-            calendarController: _calendarController, 
             pastWorkouts: notifier.pastWorkouts
           );
       }),

@@ -22,7 +22,7 @@ class TextInputAlertDialog extends StatelessWidget{
         ),
       ),
       actions: [
-        FlatButton(
+        TextButton(
           child: Text("Ok"),
           onPressed: () {
             if (controller.text.isEmpty) {

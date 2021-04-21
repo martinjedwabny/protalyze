@@ -53,14 +53,14 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
         ),
         Row(children:[
           Text("Date: ${this._selectedDate.toLocal()}".split(' ')[0]),
-          FlatButton(
+          TextButton(
             onPressed: () => selectDate(context),
             child: Text(DateFormat("MMM d").format(this._selectedDate)),
           ),
         ]),
       ]),
       actions: [
-        FlatButton(
+        TextButton(
           child: Text("Ok"),
           onPressed: () {
             if (_controller.text.isEmpty) {

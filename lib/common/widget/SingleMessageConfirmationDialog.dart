@@ -10,14 +10,14 @@ class SingleMessageConfirmationDialog extends StatelessWidget{
       title: Text(this._title),
       content: Text(this._message),
       actions: [
-        FlatButton(
+        TextButton(
           child: Text("Yes"),
           onPressed: () {
             this._okEvent();
             Navigator.of(context).pop();
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text("No"),
           onPressed: () {
             this._cancelEvent();

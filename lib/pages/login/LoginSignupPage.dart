@@ -131,21 +131,23 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
         padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
         child: SizedBox(
           height: 40.0,
-          child: new RaisedButton(
-            elevation: 5.0,
-            shape: new RoundedRectangleBorder(
+          child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 5.0,
+                shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0)),
-            child: new Text(isLoginForm ? 'Login' : 'Create account',
+              ),
+              child: new Text(isLoginForm ? 'Login' : 'Create account',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: (){
-              validateAndSubmit();
-            },
-          ),
+              onPressed: (){
+                validateAndSubmit();
+              },
+            ),
         ));
   }
 
   Widget showSecondaryButton() {
-    return new FlatButton(
+    return new TextButton(
         child: new Text(
             isLoginForm ? 'Create an account' : 'Have an account? Sign in',
             style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),

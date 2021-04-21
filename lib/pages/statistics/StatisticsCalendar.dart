@@ -9,58 +9,54 @@ import 'package:table_calendar/table_calendar.dart';
 class StatisticsCalendar extends StatelessWidget {
   const StatisticsCalendar({
     Key key,
-    @required CalendarController calendarController,
     @required this.pastWorkouts,
-  }) : _calendarController = calendarController, super(key: key);
+  }) : super(key: key);
 
-  final CalendarController _calendarController;
   final List<PastWorkout> pastWorkouts;
 
   @override
   Widget build(BuildContext context) {
     return TableCalendar(
+      firstDay: DateTime.now().subtract(Duration(days: 365 * 20)),
+      lastDay: DateTime.now().add(Duration(days: 365 * 20)),
+      focusedDay: DateTime.now(),
       availableGestures: AvailableGestures.none,
       availableCalendarFormats: const {CalendarFormat.month: ''},
       startingDayOfWeek: StartingDayOfWeek.monday,
-      calendarController: this._calendarController,
       daysOfWeekStyle: DaysOfWeekStyle(
         weekendStyle: TextStyle(color: Themes.normal.primaryColor),
         weekdayStyle: TextStyle(color: Themes.normal.primaryColor),
       ),
       calendarStyle: CalendarStyle(
-        contentPadding: EdgeInsets.zero,
-        weekdayStyle: TextStyle(color: Colors.black),
-        weekendStyle: TextStyle(color: Colors.black),
-        holidayStyle: TextStyle(color: Colors.black),
-        outsideHolidayStyle: TextStyle(color: Themes.normal.disabledColor),
-        outsideWeekendStyle: TextStyle(color: Themes.normal.disabledColor),
-        selectedColor: Themes.normal.accentColor,
-        todayColor: Themes.normal.accentColor.withOpacity(0.7),
-        markersColor: Themes.normal.accentColor,
+
+        // contentPadding: EdgeInsets.zero,
+        // weekdayStyle: TextStyle(color: Colors.black),
+        // weekendStyle: TextStyle(color: Colors.black),
+        // holidayStyle: TextStyle(color: Colors.black),
+        // outsideHolidayStyle: TextStyle(color: Themes.normal.disabledColor),
+        // outsideWeekendStyle: TextStyle(color: Themes.normal.disabledColor),
+        // selectedColor: Themes.normal.accentColor,
+        // todayColor: Themes.normal.accentColor.withOpacity(0.7),
+        // markersColor: Themes.normal.accentColor,
       ),
-      events: getPastWorkoutPerDate(),
-      builders: CalendarBuilders(
-        dayBuilder: (BuildContext context, DateTime date, List events) =>
-          Center(child:Container(height: 110,child:Text(date.day.toString(),))),
-        todayDayBuilder: (BuildContext context, DateTime date, List events) =>
-          Center(child:Container(height: 110,child:Text(date.day.toString(),style: TextStyle(color: Themes.normal.accentColor),))),
-        markersBuilder: (context, date, events, holidays) => [  
+      eventLoader: getPastWorkoutForDate,
+      calendarBuilders: CalendarBuilders(
+        defaultBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),))),
+        todayBuilder: (context, day, focusedDay) => Text(day.day.toString(),style: TextStyle(color: Themes.normal.accentColor),),
+        markerBuilder: (context, day, events) => 
           Padding(padding: EdgeInsets.only(top: 18, left: 4, right: 4),
-              child: Column(
-                children: getEventMarkers(events)
-              ),
+            child: Column(children: getEventMarkers(events)),
           ),
-        ]
       ),
     );
   }
 
-  Map<DateTime, List<PastWorkout>> getPastWorkoutPerDate() {
-    Map<DateTime, List<PastWorkout>> events = Map();
+  List<PastWorkout> getPastWorkoutForDate(DateTime day) {
+    List<PastWorkout> events = [];
     for (PastWorkout pw in pastWorkouts) {
-      DateTime date = DateTime(pw.dateTime.year, pw.dateTime.month, pw.dateTime.day);
-      events[date] = (events[date] == null ? [] : events[date]);
-      events[date].add(pw);
+      if(pw.dateTime.year==day.year && pw.dateTime.month==day.month && pw.dateTime.day==day.day) {
+        events.add(pw);
+      }
     }
     return events;
   }

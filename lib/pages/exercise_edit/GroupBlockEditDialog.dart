@@ -36,7 +36,7 @@ class GroupBlockEditDialog extends StatelessWidget{
         ],
       ),
       actions: [
-        FlatButton(
+        TextButton(
           child: Text("Ok"),
           onPressed: () {
             if (nameController.text.isEmpty) {

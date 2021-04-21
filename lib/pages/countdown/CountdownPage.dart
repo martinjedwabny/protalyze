@@ -186,7 +186,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                   AnimatedBuilder(
                     animation: _controller,
                     builder: (context, child) {
-                      return FlatButton(
+                      return TextButton(
                           onPressed: () {
                             togglePlayPause();
                             setState(() {});
@@ -217,7 +217,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            FlatButton(
+            TextButton(
               onPressed: () {
                 handleSaveWorkoutButton(context);
               },
@@ -243,7 +243,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                 ),
               ]
             ),
-            FlatButton(
+            TextButton(
               onPressed: () {
                 handleExitButton();
               },
@@ -258,7 +258,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   void handleSaveWorkoutButton(BuildContext context){
     PastWorkout toSave = PastWorkout(Workout.copy(this.widget._workout), DateTime.now());
     Provider.of<PastWorkoutNotifier>(context, listen: false).addPastWorkout(toSave).then((v) {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Workout registered!'),
       ));
     });

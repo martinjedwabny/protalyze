@@ -73,14 +73,18 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
         children: <Widget>[
           SizedBox(width: 4.0,),
           Expanded(child:
-            RaisedButton(
-            padding: EdgeInsets.all(16.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(16.0),
+              ),
             child: Text('Confirm', style: TextStyle(color: Colors.white, fontSize: 16.0),),
             onPressed: () {okayPress();},
           ),),
           SizedBox(width: 8.0,),
-          Expanded(child: RaisedButton(
-            padding: EdgeInsets.all(16.0),
+          Expanded(child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.all(16.0),
+              ),
             child: Text('Cancel', style: TextStyle(color: Colors.white, fontSize: 16.0),),
             onPressed: (){cancelPress();},
           ),),
