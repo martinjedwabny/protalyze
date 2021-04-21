@@ -70,6 +70,21 @@ class Themes{
       highlightElevation: 0,
       hoverElevation: 0,
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Palette.orange,
+      )
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        primary: Palette.orange,
+      )
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        primary: Palette.orange,
+      )
+    ),
   );
 
 }
