@@ -1,4 +1,4 @@
-import 'package:Protalyze/common/domain/Workout.dart';
+import 'package:protalize/common/domain/Workout.dart';
 
 class PastWorkout {
   final Workout workout;

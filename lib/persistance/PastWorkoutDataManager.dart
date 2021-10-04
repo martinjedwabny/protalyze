@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:Protalyze/common/domain/PastWorkout.dart';
+import 'package:protalize/common/domain/PastWorkout.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class PastWorkoutDataManager {

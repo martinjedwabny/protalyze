@@ -1,6 +1,6 @@
-import 'package:Protalyze/common/domain/ExerciseObjective.dart';
-import 'package:Protalyze/common/domain/PastWorkout.dart';
-import 'package:Protalyze/config/Themes.dart';
+import 'package:protalize/common/domain/ExerciseObjective.dart';
+import 'package:protalize/common/domain/PastWorkout.dart';
+import 'package:protalize/config/Themes.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 

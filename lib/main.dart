@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:Protalyze/config/Themes.dart';
-import 'package:Protalyze/persistance/Authentication.dart';
-import 'package:Protalyze/pages/RootPage.dart';
+import 'package:protalize/config/Themes.dart';
+import 'package:protalize/persistance/Authentication.dart';
+import 'package:protalize/pages/RootPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
     setupFirestore();
     setupVerticalHorientation();
     return MaterialApp(
-      title: 'Protalyze',
+      title: 'protalize',
       home: RootPage(auth: new Auth(),),
       theme: Themes.normal,
       debugShowCheckedModeBanner: false,

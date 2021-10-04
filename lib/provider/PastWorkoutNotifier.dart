@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:Protalyze/common/domain/PastWorkout.dart';
-import 'package:Protalyze/persistance/PastWorkoutDataManager.dart';
+import 'package:protalize/common/domain/PastWorkout.dart';
+import 'package:protalize/persistance/PastWorkoutDataManager.dart';
 import 'package:flutter/material.dart';
 
 class PastWorkoutNotifier extends ChangeNotifier {

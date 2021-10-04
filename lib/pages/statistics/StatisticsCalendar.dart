@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:Protalyze/config/Themes.dart';
-import 'package:Protalyze/common/domain/PastWorkout.dart';
-import 'package:Protalyze/pages/statistics/CalendarLineTag.dart';
+import 'package:protalize/config/Themes.dart';
+import 'package:protalize/common/domain/PastWorkout.dart';
+import 'package:protalize/pages/statistics/CalendarLineTag.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 

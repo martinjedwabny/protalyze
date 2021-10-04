@@ -1,4 +1,4 @@
-package com.example.Protalyze
+package com.example.protalize
 
 import io.flutter.embedding.android.FlutterActivity
 

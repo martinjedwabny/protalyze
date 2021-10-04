@@ -1,5 +1,5 @@
-import 'package:Protalyze/common/container/ListItem.dart';
-import 'package:Protalyze/common/domain/PastWorkout.dart';
+import 'package:protalize/common/container/ListItem.dart';
+import 'package:protalize/common/domain/PastWorkout.dart';
 import 'package:flutter/material.dart';
 
 /// A ListItem that contains data to display a heading.
