@@ -1,4 +1,4 @@
-import 'package:protalize/config/Themes.dart';
+import 'package:protalyze/config/Themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

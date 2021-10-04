@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:protalize/common/domain/Block.dart';
-import 'package:protalize/common/domain/ExerciseBlock.dart';
-import 'package:protalize/common/domain/ExerciseObjective.dart';
-import 'package:protalize/common/domain/GroupBlock.dart';
+import 'package:protalyze/common/domain/Block.dart';
+import 'package:protalyze/common/domain/ExerciseBlock.dart';
+import 'package:protalyze/common/domain/ExerciseObjective.dart';
+import 'package:protalyze/common/domain/GroupBlock.dart';
 
 class Workout {
   String documentId;

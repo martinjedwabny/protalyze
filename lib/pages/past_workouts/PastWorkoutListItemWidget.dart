@@ -1,4 +1,4 @@
-import 'package:protalize/pages/past_workouts/PastWorkoutListItem.dart';
+import 'package:protalyze/pages/past_workouts/PastWorkoutListItem.dart';
 import 'package:flutter/material.dart';
 
 class PastWorkoutListItemWidget extends StatelessWidget {

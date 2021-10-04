@@ -1,4 +1,4 @@
-# protalize
+# protalyze
 
 A workout assistant app built in Flutter.
 

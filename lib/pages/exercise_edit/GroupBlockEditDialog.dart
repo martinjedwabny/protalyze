@@ -1,4 +1,4 @@
-import 'package:protalize/common/widget/SingleMessageAlertDialog.dart';
+import 'package:protalyze/common/widget/SingleMessageAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

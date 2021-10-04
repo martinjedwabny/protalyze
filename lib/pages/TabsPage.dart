@@ -1,9 +1,9 @@
-import 'package:protalize/provider/PastWorkoutNotifier.dart';
-import 'package:protalize/provider/WorkoutNotifier.dart';
-import 'package:protalize/pages/past_workouts/PastWorkoutSelectionPage.dart';
-import 'package:protalize/persistance/Authentication.dart';
-import 'package:protalize/pages/workout_selection/WorkoutSelectionPage.dart';
-import 'package:protalize/common/widget/SalomonBottomBar.dart';
+import 'package:protalyze/provider/PastWorkoutNotifier.dart';
+import 'package:protalyze/provider/WorkoutNotifier.dart';
+import 'package:protalyze/pages/past_workouts/PastWorkoutSelectionPage.dart';
+import 'package:protalyze/persistance/Authentication.dart';
+import 'package:protalyze/pages/workout_selection/WorkoutSelectionPage.dart';
+import 'package:protalyze/common/widget/SalomonBottomBar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

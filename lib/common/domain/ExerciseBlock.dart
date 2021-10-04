@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:protalize/common/domain/ExerciseObjective.dart';
-import 'package:protalize/common/domain/Weight.dart';
+import 'package:protalyze/common/domain/ExerciseObjective.dart';
+import 'package:protalyze/common/domain/Weight.dart';
 import 'Block.dart';
 
 class ExerciseBlock extends Block {

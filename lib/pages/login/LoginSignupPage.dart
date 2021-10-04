@@ -1,6 +1,6 @@
-import 'package:protalize/config/Themes.dart';
-import 'package:protalize/persistance/Authentication.dart';
-import 'package:protalize/common/widget/SingleMessageAlertDialog.dart';
+import 'package:protalyze/config/Themes.dart';
+import 'package:protalyze/persistance/Authentication.dart';
+import 'package:protalyze/common/widget/SingleMessageAlertDialog.dart';
 import 'package:flutter/material.dart';
 
 class LoginSignupPage extends StatefulWidget {

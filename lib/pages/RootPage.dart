@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:protalize/persistance/Authentication.dart';
-import 'package:protalize/pages/login/LoginSignupPage.dart';
-import 'package:protalize/pages/TabsPage.dart';
+import 'package:protalyze/persistance/Authentication.dart';
+import 'package:protalyze/pages/login/LoginSignupPage.dart';
+import 'package:protalyze/pages/TabsPage.dart';
 
 class RootPage extends StatefulWidget {
   final BaseAuth auth;
