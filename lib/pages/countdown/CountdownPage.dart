@@ -368,7 +368,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
       context: context,
       builder: (BuildContext context) =>
         SimpleListDialog(
-          this._countdownElements.sublist(1).map((e) => e.name + ' (' + DurationFormatter.format(e.totalTime) + ')').toList(), 
+          this._countdownElements.sublist(1).map((e) => e.name.substring(0, e.name.length < 20 ? e.name.length : 20) + ' (' + DurationFormatter.format(e.totalTime) + ')').toList(), 
           Themes.normal.primaryColor, 
           Colors.white70,
           'Next exercises'
