@@ -153,12 +153,10 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return GroupBlockEditDialog('Edit superset name', (String name, int sets) {
-                    block.name = name;
+                  return GroupBlockEditDialog('Edit number of supersets', (int sets) {
                     block.sets = sets;
                     updateWorkout();
                   }, 
-                  initialText: block.name, 
                   initialSets: block.sets == null ? 1 : block.sets);
                 },
               );
