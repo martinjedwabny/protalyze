@@ -23,9 +23,6 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
   final setsControl = TextEditingController();
   Duration performTimeControl;
   Duration restTimeControl;
-  final weightControl = TextEditingController();
-  final maxRepsControl = TextEditingController();
-  final minRepsControl = TextEditingController();
   Map<String,bool> objectivesInput = Map();
   
   @override
@@ -34,9 +31,6 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     setsControl.text = widget.block.sets != null ? widget.block.sets.toString() : '1';
     this.performTimeControl = widget.block.performingTime;
     this.restTimeControl = widget.block.restTime;
-    weightControl.text = widget.block.weight == null ? null : widget.block.weight.amount.toString();
-    maxRepsControl.text = widget.block.maxReps == null ? null : widget.block.maxReps.toString();
-    minRepsControl.text = widget.block.minReps == null ? null : widget.block.minReps.toString();
     for (String o in ExerciseObjective.names)
       objectivesInput[o] = false;
     for (ExerciseObjective o in widget.block.objectives)
@@ -56,7 +50,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
 
   ListView getEditWorkoutBody() {
     return ListView(children: [
-      cardTextInputRow('Name', nameControl),
+      cardTextInputRow('Description', nameControl),
       cardTextInputNumericRow('Sets', setsControl),
       cardDurationInputRow('Performing duration', this.performTimeControl, (Duration duration){
         setState(() => this.performTimeControl = duration);
@@ -64,9 +58,6 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
       cardDurationInputRow('Rest duration', this.restTimeControl, (Duration duration) {
         setState(() => this.restTimeControl = duration);
       }),
-      cardTextInputNumericRow('Weight (kg)', weightControl, 4),
-      cardTextInputNumericRow('Min reps', minRepsControl),
-      cardTextInputNumericRow('Max reps', maxRepsControl),
       cardCheckboxInputRow('Targets', objectivesInput),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -113,9 +104,6 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     block.performingTime = performTimeControl; 
     block.restTime = restTimeControl; 
     block.sets = setsControl.text.length == 0 ? 1 : int.parse(setsControl.text);
-    block.weight = weightControl.text.length == 0 ? null : Weight(int.parse(weightControl.text), WeightType.kilos);
-    block.minReps = minRepsControl.text.length == 0 ? null : int.parse(minRepsControl.text); 
-    block.maxReps = maxRepsControl.text.length == 0 ? null : int.parse(maxRepsControl.text);
     block.objectives = [];
     objectivesInput.forEach((key, value) {
       if (value) block.objectives.add(ExerciseObjective.fromString(key));
@@ -134,7 +122,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
         subtitle: TextField(
           controller: controller,
           inputFormatters: <TextInputFormatter>[
-            LengthLimitingTextInputFormatter(20),],
+            LengthLimitingTextInputFormatter(100),],
           decoration: new InputDecoration(
           border: InputBorder.none,
           focusedBorder: InputBorder.none,

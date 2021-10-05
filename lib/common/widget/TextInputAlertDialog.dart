@@ -5,9 +5,10 @@ import 'package:flutter/services.dart';
 class TextInputAlertDialog extends StatelessWidget{
   final String title;
   final String initialValue;
+  final int inputMaxLength;
   final void Function(String text) callback;
   final controller = TextEditingController();
-  TextInputAlertDialog(this.title, this.callback, {this.initialValue = ''});
+  TextInputAlertDialog(this.title, this.callback, {this.initialValue = '', this.inputMaxLength = 40});
   @override
   Widget build(BuildContext context) {
     this.controller.text = this.initialValue;
@@ -15,7 +16,7 @@ class TextInputAlertDialog extends StatelessWidget{
       title: Text(title),
       content: TextField(
           inputFormatters: <TextInputFormatter>[
-            LengthLimitingTextInputFormatter(20),],
+            LengthLimitingTextInputFormatter(this.inputMaxLength),],
         controller: controller,
         decoration: new InputDecoration(
         hintText: "Enter something",

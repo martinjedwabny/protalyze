@@ -46,14 +46,6 @@ class ExerciseBlockListItem extends BlockListItem{
   Widget buildContent(BuildContext context) {
     List<Widget> children = [];
     children.add(Text('Duration: ' + DurationFormatter.formatWithLetters(block.performingTime) + ', Rest: ' + DurationFormatter.formatWithLetters(block.restTime)));
-    if (block.weight != null)
-      children.add(Text('Weight: ' + block.weight.toString()));
-    if (block.minReps != null && block.maxReps != null)
-      children.add(Text('Reps: ' + block.minReps.toString() + '-' + block.maxReps.toString()));
-    if (block.minReps != null && block.maxReps == null)
-      children.add(Text('Reps: ' + block.minReps.toString() + ' min'));
-    if (block.minReps == null && block.maxReps != null)
-      children.add(Text('Reps: ' + block.maxReps.toString() + ' max'));
     if (block.objectives.length > 0) {
       String t = 'Targets: ';
       for (int i = 0; i < block.objectives.length; i++) {
