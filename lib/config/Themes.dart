@@ -25,12 +25,11 @@ class Themes{
   );
 
   static final ThemeData normal =  ThemeData(
-    accentColor: Palette.orange,
+    colorScheme: ColorScheme(primary: Palette.darkGray, primaryVariant: Palette.darkGray, secondary: Palette.orange, secondaryVariant: Palette.orange, surface: Palette.lightGray, background: Colors.white, error: Colors.red, onPrimary: Palette.orange, onSecondary: Palette.lightGray, onSurface: Palette.darkGray, onBackground: Palette.darkGray, onError: Palette.lightGray, brightness: Brightness.light),
     primaryColor: Palette.darkGray,
     disabledColor: Colors.grey,
     scaffoldBackgroundColor: Palette.lightGray,
     backgroundColor: Colors.white,
-    buttonColor: Palette.orange,
     cardTheme: CardTheme(
       elevation: 0,
       margin: EdgeInsets.all(8),
@@ -42,13 +41,11 @@ class Themes{
       iconTheme: IconThemeData(
         color: Palette.darkGray
       ),
-      textTheme: TextTheme(
-        headline6: GoogleFonts.titilliumWebTextTheme().headline6.copyWith(
+      titleTextStyle: GoogleFonts.titilliumWebTextTheme().headline6.copyWith(
           fontSize: 40, 
           fontWeight: FontWeight.w700, 
           color: Palette.darkGray
-        )
-      ),
+        ),
     ),
     textTheme: GoogleFonts.titilliumWebTextTheme(),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(

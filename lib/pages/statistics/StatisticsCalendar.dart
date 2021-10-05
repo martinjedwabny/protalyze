@@ -30,7 +30,7 @@ class StatisticsCalendar extends StatelessWidget {
       eventLoader: getPastWorkoutForDate,
       calendarBuilders: CalendarBuilders(
         defaultBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),))),
-        todayBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),style: TextStyle(color: Themes.normal.accentColor),),),),
+        todayBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),style: TextStyle(color: Themes.normal.colorScheme.secondary),),),),
         disabledBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),style: TextStyle(color: Themes.normal.disabledColor),),),),
         outsideBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),style: TextStyle(color: Themes.normal.disabledColor),),),),
         markerBuilder: (context, day, events) => 

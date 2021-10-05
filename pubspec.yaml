@@ -30,12 +30,12 @@ dependencies:
   audioplayers: ^0.18.3
   google_fonts: ^2.0.0
   provider: ^5.0.0
-  wakelock: ^0.5.1
+  wakelock: ^0.5.6
   auto_size_text: ^2.1.0
   flutter_picker: ^2.0.1
   table_calendar: ^3.0.0
   fl_chart: ^0.35.0
-  enough_giphy_flutter: ^0.2.1
+  enough_giphy_flutter: ^0.2.2
 
 
 

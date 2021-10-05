@@ -1,6 +1,5 @@
 import 'package:protalyze/common/domain/ExerciseBlock.dart';
 import 'package:protalyze/common/domain/ExerciseObjective.dart';
-import 'package:protalyze/common/domain/Weight.dart';
 import 'package:protalyze/common/utils/DurationFormatter.dart';
 import 'package:protalyze/common/widget/FloatingScaffold.dart';
 import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
@@ -8,6 +7,7 @@ import 'package:protalyze/common/widget/SingleMessageAlertDialog.dart';
 import 'package:protalyze/common/widget/TimePicker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:protalyze/config/Themes.dart';
 
 class ExerciseEditPage extends StatefulWidget {
   final ExerciseBlock block;
@@ -163,6 +163,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
       CheckboxListTile(
         title: Text(option),
         value: input[option],
+        activeColor: Themes.normal.colorScheme.secondary,
         onChanged: (newValue) { 
           setState(() {
             input[option] = newValue;

@@ -98,7 +98,7 @@ class StatisticsBarChart extends StatelessWidget {
               barRods: [
                 BarChartRodData(
                   y: stats.values.elementAt(i).toDouble(), 
-                  colors: [Themes.normal.accentColor, Colors.orangeAccent], 
+                  colors: [Themes.normal.colorScheme.secondary, Colors.orangeAccent], 
                   width: 20,
                   backDrawRodData: BackgroundBarChartRodData(
                     show: true,

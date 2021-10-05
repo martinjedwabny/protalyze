@@ -18,7 +18,7 @@ void main() async {
 }
 
 void setupStatusAndNavBarColors(){
-  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
   SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleLight);
 }
 

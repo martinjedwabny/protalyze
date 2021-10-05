@@ -176,7 +176,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                         painter: CustomTimerPainter(
                           animation: this._controller,
                           backgroundColor: Colors.grey[700],
-                          color1: Themes.normal.accentColor,
+                          color1: Themes.normal.colorScheme.secondary,
                           color2: Colors.red,
                     ));
                   },
@@ -336,12 +336,12 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
               Text(
                 'AFTER',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20.0, color: Themes.normal.accentColor),
+                style: TextStyle(fontSize: 20.0, color: Themes.normal.colorScheme.secondary),
               ),
               SizedBox.fromSize(size: Size(4, 0),),
               Icon(
                 Icons.remove_red_eye, 
-                color: Themes.normal.accentColor,
+                color: Themes.normal.colorScheme.secondary,
                 size: 22,
               ),
             ]
