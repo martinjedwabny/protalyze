@@ -1,3 +1,4 @@
+import 'package:protalyze/common/utils/GifHandler.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:protalyze/config/Palette.dart';
 import 'package:protalyze/config/Themes.dart';
@@ -102,7 +103,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   void initializeCountdownElements(){
     // Set initial duration / prepare time to this._prepareTime seconds
     this._controller.duration = Duration(seconds: this._prepareTime);
-    this._countdownElements = [new CountdownElement('Prepare', new Duration(seconds: this._prepareTime))];
+    this._countdownElements = [new CountdownElement('Prepare', new Duration(seconds: this._prepareTime), '')];
     this._totalTime = Duration(seconds: 0);
     // Add perform and rest times for each block
     this._countdownElements += WorkoutToCountdownAdapter.getCountdownElements(this.widget._workout);
@@ -298,6 +299,16 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     return this._countdownElements[0].name;
   }
 
+  String get currentExerciseGif {
+    if (this._countdownElements.length == 0) return '';
+    return this._countdownElements[0].gifUrl;
+  }
+
+  String get nextExerciseGif {
+    if (this._countdownElements.length < 2) return '';
+    return this._countdownElements[1].gifUrl;
+  }
+
   Widget get exercisesTexts {
     if (this._countdownElements.isEmpty) {
       return Container(child: Text(
@@ -315,18 +326,17 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300, color: Colors.white),
       );
     } else {
-      return Column(children: [
-        Expanded(child:
-          AutoSizeText(
+      Widget currentExerciseGifButton = createGifButton(currentExerciseString , currentExerciseGif, 30);
+      Widget nextExerciseGifButton =  createGifButton(nextExerciseString, nextExerciseGif, 20);
+      var currentExerciseText = AutoSizeText(
             currentExerciseString,
             maxLines: 2,
             minFontSize: 10,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300, color: Colors.white),
-          ),
-        ),
-        GestureDetector(
+          );
+      var nextExercisesTextButton = GestureDetector(
           onTap: (){
             showNextExercisesListDialog();
           },
@@ -346,9 +356,8 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
               ),
             ]
           )
-        ),
-        Expanded(child:
-          AutoSizeText(
+        );
+      var nextExerciseText = AutoSizeText(
             nextExerciseString,
             maxLines: 1,
             minFontSize: 10,
@@ -356,10 +365,36 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 18.0, fontWeight: FontWeight.w300, color: Colors.white70),
-          )
-        )]
+          );
+      return Column(children: [
+        Expanded(child:
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center, 
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              currentExerciseText,
+              currentExerciseGifButton,
+            ],),
+        ),
+        nextExercisesTextButton,
+        Expanded(child:
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center, 
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              nextExerciseText,
+              nextExerciseGifButton,
+            ],),
+        ),
+        ]
       );
     }
+  }
+
+  Widget createGifButton(String title, String gifUrl, double size) {
+    return gifUrl == '' ? SizedBox(width: 1, height: 1) : IconButton(
+      onPressed: () {showGifDialog(title, gifUrl);}, 
+      icon: Icon(Icons.ondemand_video, size: size, color: Themes.normal.colorScheme.secondary,));
   }
 
   void showNextExercisesListDialog() {
@@ -372,6 +407,24 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
           Themes.normal.primaryColor, 
           Colors.white70,
           'Next exercises'
+        )
+    );
+  }
+
+  void showGifDialog(String title, String gifUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) =>
+        AlertDialog(
+          title: Text(title, style: TextStyle(color: Colors.white,),),
+          backgroundColor: Themes.normal.colorScheme.primary,
+          content: GifHandler.createGifImage(gifUrl, 400),
+          actions: [
+            TextButton(
+              child: Text("Ok"),
+              onPressed: () {Navigator.of(context).pop();},
+            ),
+          ],
         )
     );
   }

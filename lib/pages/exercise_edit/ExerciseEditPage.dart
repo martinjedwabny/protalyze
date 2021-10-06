@@ -1,6 +1,7 @@
 import 'package:protalyze/common/domain/ExerciseBlock.dart';
 import 'package:protalyze/common/domain/ExerciseObjective.dart';
 import 'package:protalyze/common/utils/DurationFormatter.dart';
+import 'package:protalyze/common/utils/GifHandler.dart';
 import 'package:protalyze/common/widget/FloatingScaffold.dart';
 import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
 import 'package:protalyze/common/widget/SingleMessageAlertDialog.dart';
@@ -24,6 +25,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
   Duration performTimeControl;
   Duration restTimeControl;
   Map<String,bool> objectivesInput = Map();
+  String gifUrl;
   
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
       objectivesInput[o] = false;
     for (ExerciseObjective o in widget.block.objectives)
       objectivesInput[o.toString()] = true;
+    this.gifUrl = widget.block.gifUrl;
     super.initState();
   }
 
@@ -57,6 +60,9 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
       }),
       cardDurationInputRow('Rest duration', this.restTimeControl, (Duration duration) {
         setState(() => this.restTimeControl = duration);
+      }),
+      cardGifInputRow('GIF', this.gifUrl, (String gifUrl) {
+        setState(() => this.gifUrl = gifUrl);
       }),
       cardCheckboxInputRow('Targets', objectivesInput),
       Row(
@@ -108,6 +114,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
     objectivesInput.forEach((key, value) {
       if (value) block.objectives.add(ExerciseObjective.fromString(key));
     });
+    block.gifUrl = this.gifUrl;
     widget.okayCallback();
     Navigator.pop(context, () {});
   }
@@ -195,6 +202,31 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
           },
         )
       ),
+    );
+  }
+
+  cardGifInputRow(String name, String initialValue, Function(String) callback){
+    Widget title = ListTile(
+        title: Row(children: [
+          Text(name),
+          IconButton(
+            icon: Icon(Icons.edit, size: 16),
+            tooltip: 'Edit',
+            onPressed: () {
+              GifHandler.searchGif(context).then((String gifUrl) {
+                setState(() {
+                  this.gifUrl = gifUrl;
+                });
+              });
+            },
+          ),
+        ]),
+      );
+    Widget gif = this.gifUrl == null || this.gifUrl == '' ? SizedBox(width: 1, height: 1) : GifHandler.createGifImage(gifUrl, 150);
+    return Card(
+      child: Column(
+        children: <Widget>[title, gif],
+      )
     );
   }
   

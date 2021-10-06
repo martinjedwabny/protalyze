@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:protalyze/common/domain/ExerciseObjective.dart';
-import 'package:protalyze/common/domain/Weight.dart';
 import 'Block.dart';
 
 class ExerciseBlock extends Block {
@@ -8,13 +7,14 @@ class ExerciseBlock extends Block {
   Duration performingTime;
   Duration restTime;
   List<ExerciseObjective> objectives;
+  String gifUrl;
   // Constructors
   ExerciseBlock(
     String name,  
     int sets,
     this.performingTime, 
     this.restTime, {
-      this.objectives}) : super(name, sets) {
+      this.objectives, this.gifUrl}) : super(name, sets) {
         if (objectives == null)
           objectives = [];
       }
@@ -25,6 +25,7 @@ class ExerciseBlock extends Block {
     this.objectives = other.objectives;
     if (objectives == null)
       objectives = [];
+    this.gifUrl = other.gifUrl;
   }
 
   ExerciseBlock copy(){
@@ -39,6 +40,7 @@ class ExerciseBlock extends Block {
       this.restTime = Duration(seconds: json['restTime']);
       this.objectives = json['objectives'] == null ? [] : (jsonDecode(json['objectives']) as List<dynamic>).map((e) => 
         ExerciseObjective.fromString(e)).toList();
+      this.gifUrl = json['gifUrl'];
     }
 
   Map<String, dynamic> toJson() =>
@@ -48,6 +50,7 @@ class ExerciseBlock extends Block {
       'performingTime' : performingTime.inSeconds,
       'restTime' : restTime.inSeconds,
       'objectives' : objectives == null ? null : jsonEncode(objectives.map((e) => e.toString()).toList()),
+      'gifUrl' : gifUrl,
     };
 
   String toString(){

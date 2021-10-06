@@ -31,10 +31,10 @@ class WorkoutToCountdownAdapter{
     int sets = block.sets == null ? 1 : block.sets;
     for (int i = 0; i < sets; i++){
       if (block.performingTime != null && block.performingTime.inSeconds > 0) {
-        ans.add(new CountdownElement(block.toString(), block.performingTime));
+        ans.add(new CountdownElement(block.toString(), block.performingTime, block.gifUrl));
       }
       if (block.restTime != null && block.restTime.inSeconds > 0) {
-        ans.add(new CountdownElement('Rest', block.restTime));
+        ans.add(new CountdownElement('Rest', block.restTime, ''));
       }
     }
     return ans;

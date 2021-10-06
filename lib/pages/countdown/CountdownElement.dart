@@ -1,5 +1,7 @@
 class CountdownElement {
   String name;
   Duration totalTime;
-  CountdownElement(this.name, this.totalTime);
+  String gifUrl;
+
+  CountdownElement(this.name, this.totalTime, this.gifUrl);
 }

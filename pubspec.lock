@@ -105,49 +105,7 @@ packages:
       name: cupertino_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
-  cupertino_list_tile:
-    dependency: transitive
-    description:
-      name: cupertino_list_tile
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
-  cupertino_progress_bar:
-    dependency: transitive
-    description:
-      name: cupertino_progress_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
-  cupertino_stepper:
-    dependency: transitive
-    description:
-      name: cupertino_stepper
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
-  enough_giphy:
-    dependency: transitive
-    description:
-      name: enough_giphy
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
-  enough_giphy_flutter:
-    dependency: "direct main"
-    description:
-      name: enough_giphy_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.2"
-  enough_platform_widgets:
-    dependency: transitive
-    description:
-      name: enough_platform_widgets
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.2"
+    version: "1.0.3"
   equatable:
     dependency: transitive
     description:
@@ -244,13 +202,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  flutter_platform_widgets:
-    dependency: transitive
-    description:
-      name: flutter_platform_widgets
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.9.5"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -261,6 +212,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  giphy_picker:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "7a77924f596239eb9e8a371475f3bfdb485ff0e9"
+      url: "https://github.com/sohaibnoman/giphy_picker"
+    source: git
+    version: "2.0.0"
   google_fonts:
     dependency: "direct main"
     description:
@@ -407,7 +367,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.0"
+    version: "6.0.1"
   simple_gesture_detector:
     dependency: transitive
     description:

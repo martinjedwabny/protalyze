@@ -24,18 +24,20 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.17.0
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.3
   firebase_auth: ^1.1.1
   cloud_firestore: ^1.0.6
   audioplayers: ^0.18.3
   google_fonts: ^2.0.0
-  provider: ^5.0.0
+  provider: ^6.0.1
   wakelock: ^0.5.6
   auto_size_text: ^2.1.0
   flutter_picker: ^2.0.1
   table_calendar: ^3.0.0
   fl_chart: ^0.35.0
-  enough_giphy_flutter: ^0.2.2
+  giphy_picker:
+    git:
+      url: https://github.com/sohaibnoman/giphy_picker
 
 
 
