@@ -13,7 +13,6 @@ import 'package:protalyze/common/widget/SimpleListDialog.dart';
 import 'package:protalyze/common/widget/SingleMessageConfirmationDialog.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
