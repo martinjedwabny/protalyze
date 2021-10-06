@@ -222,7 +222,7 @@ class _ExerciseEditPageState extends State<ExerciseEditPage> {
           ),
         ]),
       );
-    Widget gif = this.gifUrl == null || this.gifUrl == '' ? SizedBox(width: 1, height: 1) : GifHandler.createGifImage(gifUrl, 150);
+    Widget gif = this.gifUrl == null || this.gifUrl == '' ? SizedBox(width: 1, height: 1) : GifHandler.createGifImage(gifUrl, height: 150);
     return Card(
       child: Column(
         children: <Widget>[title, gif],

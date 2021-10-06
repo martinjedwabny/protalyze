@@ -417,7 +417,10 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         AlertDialog(
           title: Text(title, style: TextStyle(color: Colors.white,),),
           backgroundColor: Themes.normal.colorScheme.primary,
-          content: GifHandler.createGifImage(gifUrl, 400),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[GifHandler.createGifImage(gifUrl, width: 400)],
+          ),
           actions: [
             TextButton(
               child: Text("Ok"),
