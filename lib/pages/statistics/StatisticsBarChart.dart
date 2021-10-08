@@ -72,21 +72,10 @@ class StatisticsBarChart extends StatelessWidget {
               getTitles: (double value) => stats.keys.elementAt(value.toInt()).name.substring(0, stats.keys.elementAt(value.toInt()).name.length < 3 ? stats.keys.elementAt(value.toInt()).name.length : 3),
             ),
             leftTitles: SideTitles(
-              showTitles: true,
-              getTextStyles: (context, value) => TextStyle(color: Themes.normal.primaryColor, fontSize: 10),
-              margin: 0,
-              reservedSize: 14,
-              getTitles: (value) {
-                if (value == 0) {
-                  return '0';
-                } else if (value == maxY~/2) {
-                  return (maxY~/2).toString();
-                } else if (value == maxY) {
-                  return maxY.toInt().toString();
-                } else {
-                  return '';
-                }
-              },
+              showTitles: false,
+            ),
+            topTitles: SideTitles(
+              showTitles: false,
             ),
           ),
           borderData: FlBorderData(
