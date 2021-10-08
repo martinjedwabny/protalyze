@@ -122,7 +122,8 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
               'Select an option:',
               Map.fromIterable(workouts, key: (w) => w.name, value: (w) => w),
               ((Workout w) {
-            PastWorkout pastWorkout = PastWorkout(w, DateTime.now());
+                
+            PastWorkout pastWorkout = PastWorkout(w, DateTime.now(),'');
             addPastWorkout(pastWorkout);
           }));
         });
@@ -143,8 +144,8 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
     );
   }
 
-  void updatePastWorkout(PastWorkout wk, String text, DateTime date) {
-    Provider.of<PastWorkoutNotifier>(context, listen: false).updatePastWorkout(wk, name: text, date: date);
+  void updatePastWorkout(PastWorkout wk, String text, DateTime date, String notes) {
+    Provider.of<PastWorkoutNotifier>(context, listen: false).updatePastWorkout(wk, name: text, date: date, notes: notes);
   }
 
   void openPastWorkoutEditDialog(PastWorkoutListItem item) {
@@ -152,10 +153,10 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
       context: context,
       builder: (BuildContext context) {
         return PastWorkoutEditDialog(
-            'Edit workout name', item.pastWorkout.workout.name,
-            (String text, DateTime selectedDate) {
-          updatePastWorkout(item.pastWorkout, text, selectedDate);
-        }, item.pastWorkout.dateTime);
+            'Edit workout', item.pastWorkout.workout.name, item.pastWorkout.dateTime, item.pastWorkout.notes,
+            (String text, DateTime selectedDate, String notes) {
+          updatePastWorkout(item.pastWorkout, text, selectedDate, notes);
+        });
       },
     );
   }

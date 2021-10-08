@@ -28,11 +28,13 @@ class PastWorkoutNotifier extends ChangeNotifier {
     await PastWorkoutDataManager.removePastWorkout(pastWorkout);
   }
 
-  Future<void> updatePastWorkout(PastWorkout pastWorkout, {String name, DateTime date}) async {
+  Future<void> updatePastWorkout(PastWorkout pastWorkout, {String name, DateTime date, String notes}) async {
     if (name != null && name.length > 0)
       pastWorkout.workout.name = name;
     if (date != null)
       pastWorkout.dateTime = date;
+    if (notes != null)
+      pastWorkout.notes = notes;
     notifyListeners();
     await PastWorkoutDataManager.updatePastWorkout(pastWorkout);
   }

@@ -6,17 +6,19 @@ import 'package:intl/intl.dart';
 class PastWorkoutEditDialog extends StatefulWidget {
   final String _title;
   final String _initialName;
-  final void Function(String text, DateTime dateTime) _callback;
   final DateTime _initialDate;
+  final String _initialNotes;
+  final void Function(String text, DateTime dateTime, String notes) _callback;
 
-  PastWorkoutEditDialog(this._title, this._initialName, this._callback, this._initialDate);
+  PastWorkoutEditDialog(this._title, this._initialName, this._initialDate, this._initialNotes, this._callback);
 
   @override
   _PastWorkoutEditDialogState createState() => _PastWorkoutEditDialogState();
 }
 
 class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
-  final _controller = TextEditingController();
+  final _workoutNameTextController = TextEditingController();
+  final _workoutNotesTextController = TextEditingController();
   DateTime _selectedDate;
 
   Future<Null> selectDate(BuildContext context) async {
@@ -33,7 +35,8 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
 
   @override
   void initState() {
-    this._controller.text = this.widget._initialName;
+    this._workoutNameTextController.text = this.widget._initialName;
+    this._workoutNameTextController.text = this.widget._initialNotes;
     this._selectedDate = widget._initialDate;
     super.initState();
   }
@@ -46,7 +49,15 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
         TextField(
           inputFormatters: <TextInputFormatter>[
             LengthLimitingTextInputFormatter(20),],
-          controller: _controller,
+          controller: _workoutNameTextController,
+          decoration: new InputDecoration(
+          hintText: "Enter something",
+          ),
+        ),
+        TextField(
+          inputFormatters: <TextInputFormatter>[
+            LengthLimitingTextInputFormatter(1000),],
+          controller: _workoutNotesTextController,
           decoration: new InputDecoration(
           hintText: "Enter something",
           ),
@@ -63,7 +74,7 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
         TextButton(
           child: Text("Ok"),
           onPressed: () {
-            if (_controller.text.isEmpty) {
+            if (_workoutNameTextController.text.isEmpty) {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -71,7 +82,7 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
                 },
               );
             } else {
-              widget._callback(_controller.text, this._selectedDate);
+              widget._callback(this._workoutNameTextController.text, this._selectedDate, this._workoutNotesTextController.text);
               Navigator.of(context).pop();
             }
           },
