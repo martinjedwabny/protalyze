@@ -391,7 +391,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   Widget createGifButton(String title, String gifUrl, double size) {
-    return gifUrl == '' ? SizedBox(width: 1, height: 1) : IconButton(
+    return gifUrl == null || gifUrl == '' ? SizedBox(width: 1, height: 1) : IconButton(
       onPressed: () {showGifDialog(title, gifUrl);}, 
       icon: Icon(Icons.ondemand_video, size: size, color: Themes.normal.colorScheme.secondary,));
   }
