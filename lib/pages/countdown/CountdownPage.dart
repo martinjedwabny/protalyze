@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:protalyze/common/utils/GifHandler.dart';
 import 'package:protalyze/common/widget/TextInputAlertDialog.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
@@ -296,14 +298,16 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     return DurationFormatter.format(this._totalTime - _controller.duration * (1.0 - _controller.value));
   }
 
-  String get nextExerciseString {
-    if (this._countdownElements.length < 2) return '';
-    return this._countdownElements[1].name;
-  }
-
   String get currentExerciseString {
     if (this._countdownElements.length == 0) return '';
-    return this._countdownElements[0].name;
+    String s = this._countdownElements[0].name;
+    return s;
+  }
+
+  String get nextExerciseString {
+    if (this._countdownElements.length < 2) return '';
+    String s = this._countdownElements[1].name;
+    return s;
   }
 
   String get currentExerciseGif {
@@ -323,85 +327,53 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 40.0, color: Colors.white),
       ));
-    } else if (this._countdownElements.length == 1) {
-      return AutoSizeText(
-        currentExerciseString,
-        maxLines: 2,
-        minFontSize: 10,
-        overflow: TextOverflow.ellipsis,
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300, color: Colors.white),
-      );
     } else {
       Widget currentExerciseGifButton = createGifButton(currentExerciseString , currentExerciseGif, 30);
-      Widget nextExerciseGifButton =  createGifButton(nextExerciseString, nextExerciseGif, 20);
-      var currentExerciseText = AutoSizeText(
+      var currentExerciseText = Text(
             currentExerciseString,
-            maxLines: 2,
-            minFontSize: 10,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
             style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300, color: Colors.white),
-          );
-      var nextExercisesTextButton = GestureDetector(
-          onTap: (){
-            showNextExercisesListDialog();
-          },
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(
-                'AFTER',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20.0, color: Themes.normal.colorScheme.secondary),
-              ),
-              SizedBox.fromSize(size: Size(4, 0),),
-              Icon(
-                Icons.remove_red_eye, 
-                color: Themes.normal.colorScheme.secondary,
-                size: 22,
-              ),
-            ]
-          )
-        );
-      var nextExerciseText = AutoSizeText(
-            nextExerciseString,
-            maxLines: 1,
-            minFontSize: 10,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
+      );
+      if (this._countdownElements.length == 1)
+        return Column(children: [
+          Row(mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(child: Container(child: currentExerciseText)),
+              SizedBox.fromSize(size: Size(12, 12),),
+              currentExerciseGifButton,],),
+        ]
+      );
+      Widget nextExerciseGifButton =  createGifButton(nextExerciseString, nextExerciseGif, 20);
+      var nextExerciseText = Text(
+            nextExerciseString,
             style: TextStyle(
                 fontSize: 18.0, fontWeight: FontWeight.w300, color: Colors.white70),
-          );
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+      );
+      var nextExercisesTextButton = createNextExercisesTextButton();
       return Column(children: [
-        Expanded(child:
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center, 
-            mainAxisAlignment: MainAxisAlignment.center,
+          Row(mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              currentExerciseText,
-              currentExerciseGifButton,
-            ],),
-        ),
-        nextExercisesTextButton,
-        Expanded(child:
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center, 
-            mainAxisAlignment: MainAxisAlignment.center,
+              Flexible(child: Container(child: currentExerciseText)),
+              SizedBox.fromSize(size: Size(12, 12),),
+              currentExerciseGifButton,],),
+          nextExercisesTextButton,
+          Row(mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              nextExerciseText,
-              nextExerciseGifButton,
-            ],),
-        ),
+              Flexible(child: Container(child: nextExerciseText)),
+              SizedBox.fromSize(size: Size(4, 4),),
+              nextExerciseGifButton,],),
         ]
       );
     }
   }
 
   Widget createGifButton(String title, String gifUrl, double size) {
-    return gifUrl == null || gifUrl == '' ? SizedBox(width: 1, height: 1) : IconButton(
-      onPressed: () {showGifDialog(title, gifUrl);}, 
-      icon: Icon(Icons.ondemand_video, size: size, color: Themes.normal.colorScheme.secondary,));
+    return gifUrl == null || gifUrl == '' ? SizedBox(width: 1, height: 1) : GestureDetector(
+      onTap: () {showGifDialog(title, gifUrl);}, 
+      child: Icon(Icons.ondemand_video, size: size, color: Themes.normal.colorScheme.secondary,));
   }
 
   void showNextExercisesListDialog() {
@@ -436,6 +408,30 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             ),
           ],
         )
+    );
+  }
+
+  Widget createNextExercisesTextButton() {
+    return GestureDetector(
+      onTap: (){
+        showNextExercisesListDialog();
+      },
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(
+            'AFTER',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20.0, color: Themes.normal.colorScheme.secondary),
+          ),
+          SizedBox.fromSize(size: Size(4, 0),),
+          Icon(
+            Icons.remove_red_eye, 
+            color: Themes.normal.colorScheme.secondary,
+            size: 22,
+          ),
+        ]
+      )
     );
   }
 
