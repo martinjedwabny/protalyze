@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:protalyze/common/utils/GifHandler.dart';
 import 'package:protalyze/common/widget/TextInputAlertDialog.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
@@ -14,7 +12,6 @@ import 'package:protalyze/pages/countdown/WorkoutToCountdownAdapter.dart';
 import 'package:protalyze/pages/countdown/CustomTimerPainter.dart';
 import 'package:protalyze/common/widget/SimpleListDialog.dart';
 import 'package:protalyze/common/widget/SingleMessageConfirmationDialog.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
