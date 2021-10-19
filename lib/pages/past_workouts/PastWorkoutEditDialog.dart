@@ -51,7 +51,7 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
             LengthLimitingTextInputFormatter(20),],
           controller: _workoutNameTextController,
           decoration: new InputDecoration(
-          hintText: "Enter something",
+          hintText: "Enter workout name",
           ),
         ),
         TextField(
@@ -59,7 +59,7 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
             LengthLimitingTextInputFormatter(1000),],
           controller: _workoutNotesTextController,
           decoration: new InputDecoration(
-          hintText: "Enter something",
+          hintText: "Enter notes",
           ),
         ),
         Row(children:[

@@ -98,7 +98,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   }
 
   Widget getNotesText() {
-    if (this.widget.workoutNotes.isEmpty)
+    if (this.widget.workoutNotes == null || this.widget.workoutNotes == '')
       return SizedBox(width: 1, height: 1);
     return Card(
       key: ValueKey(this.widget.workoutNotes),

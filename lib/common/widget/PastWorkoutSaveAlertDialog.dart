@@ -67,7 +67,7 @@ class _PastWorkoutSaveAlertDialog<T> extends State<PastWorkoutSaveAlertDialog> {
             LengthLimitingTextInputFormatter(1000),],
             controller: _notesController,
             decoration: new InputDecoration(
-            hintText: "Enter something",
+            hintText: "Enter notes",
             ),
           ),
       ]),
