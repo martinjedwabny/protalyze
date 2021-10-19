@@ -1,5 +1,6 @@
 import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
 import 'package:protalyze/common/widget/PageableListView.dart';
+import 'package:protalyze/common/widget/PastWorkoutSaveAlertDialog.dart';
 import 'package:protalyze/pages/statistics/StatisticsBarChart.dart';
 import 'package:protalyze/pages/statistics/StatisticsCalendar.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
@@ -15,7 +16,6 @@ import 'package:protalyze/pages/past_workouts/PastWorkoutEditDialog.dart';
 import 'package:protalyze/pages/past_workouts/PastWorkoutListItemWidget.dart';
 import 'package:protalyze/common/widget/SingleMessageAlertDialog.dart';
 import 'package:protalyze/common/widget/SingleMessageConfirmationDialog.dart';
-import 'package:protalyze/common/widget/SinglePickerAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,6 +49,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
       ],
       ),
       body: ListView(
+          controller: ScrollController(),
           padding: EdgeInsets.all(8),
           children: [
             createHeader('Workouts this month'),
@@ -117,13 +118,11 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
           if (workouts.isEmpty)
             return SingleMessageAlertDialog(
                 'Error', 'Please add a workout before registering them.');
-          return SinglePickerAlertDialog<Workout>(
-              'Register a workout',
-              'Select an option:',
+          return PastWorkoutSaveAlertDialog(
               Map.fromIterable(workouts, key: (w) => w.name, value: (w) => w),
-              ((Workout w) {
+              ((Workout selected, DateTime date, String notes) {
                 
-            PastWorkout pastWorkout = PastWorkout(w, DateTime.now(),'');
+            PastWorkout pastWorkout = PastWorkout(selected, date, notes);
             addPastWorkout(pastWorkout);
           }));
         });
@@ -167,6 +166,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
         builder: (context) => WorkoutDisplayPage(
           item.pastWorkout.workout,
           canEdit: false,
+          workoutNotes: item.pastWorkout.notes,
         )),
     );
   }

@@ -38,6 +38,7 @@ class _PageableListViewState extends State<PageableListView> {
     }
     return ListView.builder(
       shrinkWrap: true,
+      controller: ScrollController(),
       physics: ClampingScrollPhysics(),
       itemCount: (present < widget.items.length) ? present + 1 : present,
       itemBuilder: (context, index) {

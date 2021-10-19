@@ -61,6 +61,7 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
           body = SingleMessageScaffold('No workouts added yet.');
         else 
           body = Container(child: ListView.builder(
+            controller: ScrollController(),
             padding: EdgeInsets.only(bottom: 80.0),
             itemCount: notifier.workouts.length,
             itemBuilder: (context, index) {

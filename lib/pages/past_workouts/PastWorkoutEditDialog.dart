@@ -36,7 +36,7 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
   @override
   void initState() {
     this._workoutNameTextController.text = this.widget._initialName;
-    this._workoutNameTextController.text = this.widget._initialNotes;
+    this._workoutNotesTextController.text = this.widget._initialNotes;
     this._selectedDate = widget._initialDate;
     super.initState();
   }

@@ -258,7 +258,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   void handleSaveWorkoutButton(BuildContext context){
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (_) {
         return TextInputAlertDialog('Enter workout notes', (String notes) {
           PastWorkout toSave = PastWorkout(Workout.copy(this.widget._workout), DateTime.now(), notes);
           Provider.of<PastWorkoutNotifier>(context, listen: false).addPastWorkout(toSave).then((v) {
@@ -266,7 +266,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
               content: Text('Workout registered!'),
             ));
           });
-        }, initialValue: '',inputMaxLength: 1000,);
+        }, initialValue: '', inputMaxLength: 1000,);
       },
     );
   }

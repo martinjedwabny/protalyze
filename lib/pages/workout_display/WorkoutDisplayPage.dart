@@ -20,8 +20,9 @@ import 'package:provider/provider.dart';
 class WorkoutDisplayPage extends StatefulWidget {
   final Workout workout;
   final bool canEdit;
-  
-  WorkoutDisplayPage(this.workout, {this.canEdit = true});
+  final String workoutNotes;
+
+  WorkoutDisplayPage(this.workout, {this.canEdit = true, this.workoutNotes = ''});
 
   @override
   _WorkoutDisplayPageState createState() => _WorkoutDisplayPageState();
@@ -96,12 +97,28 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     );
   }
 
+  Widget getNotesText() {
+    if (this.widget.workoutNotes.isEmpty)
+      return SizedBox(width: 1, height: 1);
+    return Card(
+      key: ValueKey(this.widget.workoutNotes),
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 12),
+        title: Text('Notes',
+        style: Theme.of(context).textTheme.headline6,
+        overflow: TextOverflow.ellipsis,),
+        subtitle: Text(this.widget.workoutNotes),
+      ),
+    );
+  }
+
   Widget getListViewFromWorkout(Workout workout){
     if (workout.blocks.isEmpty)
       return SingleMessageScaffold('No exercises added yet.');
+    Widget notesText = getNotesText();
     return ListView(
       padding: EdgeInsets.only(bottom: 80.0),
-      children: workout.blocks.map((item) => getWidgetFromBlock(null, item)).toList(),
+      children: [notesText] + workout.blocks.map((item) => getWidgetFromBlock(null, item)).toList(),
     );
   }
 
@@ -189,6 +206,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
           ),
           ListView(
             padding: EdgeInsets.all(0),
+            controller: ScrollController(),
             physics: ClampingScrollPhysics(), 
             shrinkWrap: true,
             children: block.subBlocks.map((subBlock) => getWidgetFromBlock(block, subBlock)).toList(),
