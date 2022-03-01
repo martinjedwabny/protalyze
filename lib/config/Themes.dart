@@ -25,7 +25,7 @@ class Themes{
   );
 
   static final ThemeData normal =  ThemeData(
-    colorScheme: ColorScheme(primary: Palette.darkGray, primaryVariant: Palette.darkGray, secondary: Palette.orange, secondaryVariant: Palette.orange, surface: Palette.lightGray, background: Colors.white, error: Colors.red, onPrimary: Palette.orange, onSecondary: Palette.lightGray, onSurface: Palette.darkGray, onBackground: Palette.darkGray, onError: Palette.lightGray, brightness: Brightness.light),
+    colorScheme: ColorScheme(primary: Palette.darkGray, primaryContainer: Palette.darkGray, secondary: Palette.orange, secondaryContainer: Palette.orange, surface: Palette.lightGray, background: Colors.white, error: Colors.red, onPrimary: Palette.orange, onSecondary: Palette.lightGray, onSurface: Palette.darkGray, onBackground: Palette.darkGray, onError: Palette.lightGray, brightness: Brightness.light),
     primaryColor: Palette.darkGray,
     disabledColor: Colors.grey,
     scaffoldBackgroundColor: Palette.lightGray,
