@@ -44,11 +44,12 @@ class StatisticsBarChart extends StatelessWidget {
           textAlign: TextAlign.center,),);
     }
     return Container(
+      padding: EdgeInsets.symmetric(vertical:8),
       height: 200,
       width: 430,
       child: BarChart(
         BarChartData(
-          maxY: maxY * 1.2,
+          maxY: maxY,
           alignment: BarChartAlignment.spaceAround,
           barTouchData: BarTouchData(
             enabled: false,
@@ -77,6 +78,12 @@ class StatisticsBarChart extends StatelessWidget {
             topTitles: SideTitles(
               showTitles: false,
             ),
+            rightTitles: SideTitles(
+              showTitles: true,
+            ),
+          ),
+          gridData: FlGridData(
+            show: false,
           ),
           borderData: FlBorderData(
             show: false,
