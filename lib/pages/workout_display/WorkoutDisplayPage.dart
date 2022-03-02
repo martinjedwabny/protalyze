@@ -273,13 +273,22 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   }
 
   void addBlock(GroupBlock parent, Block child) {
-    setState(() {
-      if (parent == null)
-        this.widget.workout.blocks.add(child);
-      else
-        parent.subBlocks.add(child);
-      Provider.of<WorkoutNotifier>(context, listen: false).updateWorkout(widget.workout);
-    });
+    if (parent.subBlocks.length >= 30) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SingleMessageAlertDialog('Error', 'Limit exceeded.');
+        },
+      );
+    } else {
+      setState(() {
+        if (parent == null)
+          this.widget.workout.blocks.add(child);
+        else
+          parent.subBlocks.add(child);
+        Provider.of<WorkoutNotifier>(context, listen: false).updateWorkout(widget.workout);
+      });
+    }
   }
   
   void updateWorkout() {

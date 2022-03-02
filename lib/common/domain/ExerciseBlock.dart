@@ -47,6 +47,7 @@ class ExerciseBlock extends Block {
     {
       'type': 'exercise',
       'name' : name,
+      'sets' : sets == null ? 1 : sets,
       'performingTime' : performingTime.inSeconds,
       'restTime' : restTime.inSeconds,
       'objectives' : objectives == null ? null : jsonEncode(objectives.map((e) => e.toString()).toList()),
