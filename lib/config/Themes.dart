@@ -34,6 +34,14 @@ class Themes{
       elevation: 0,
       margin: EdgeInsets.all(8),
     ),
+    sliderTheme: SliderThemeData(
+      thumbColor: Palette.orange,
+      activeTrackColor: Palette.orange,
+      inactiveTrackColor: Colors.black.withAlpha(20),
+      trackHeight: 18.0,
+      thumbShape: RoundSliderThumbShape(elevation: 0),
+      overlayColor: Colors.transparent,
+    ),
     appBarTheme: AppBarTheme(
       centerTitle: false,
       color: Colors.transparent,

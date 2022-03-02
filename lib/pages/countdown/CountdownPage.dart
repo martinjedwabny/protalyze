@@ -32,8 +32,9 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   final int _prepareTime = 10;
   final Color _buttonsColor = Colors.white;
   bool _lastSecondsFlag = false;
+  double _currentVolume = 0.5;
 
-  Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3");
+  Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3", volume: _currentVolume);
 
   @override
   void initState() {
@@ -66,6 +67,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                 buildCurrentTimeWidget(),
                 buildExercisesWidget(),
                 buildProgressCircle(),
+                buildVolumeSlider(),
                 buildBottomButtons(context),
               ],
             );
@@ -208,6 +210,26 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         ),
       )
     );
+  }
+
+  Widget buildVolumeSlider(){
+    Widget volumeDownIcon = Icon(Icons.volume_down_outlined, size: 24, color: Colors.white70, );
+    Widget volumeUpIcon = Icon(Icons.volume_up_outlined, size: 24, color: Colors.white70,);
+    Widget volumeSlider = Slider(
+      value: _currentVolume, 
+      onChanged: (double value) {
+        setState(() {
+          _currentVolume = value;
+        });
+      },
+    );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Padding(padding: EdgeInsets.only(left: 20), child: volumeDownIcon),
+        Expanded(child: volumeSlider),
+        Padding(padding: EdgeInsets.only(right: 20), child: volumeUpIcon),
+    ],);
   }
 
   Widget buildBottomButtons(BuildContext context){
