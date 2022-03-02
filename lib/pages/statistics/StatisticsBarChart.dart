@@ -44,7 +44,7 @@ class StatisticsBarChart extends StatelessWidget {
           textAlign: TextAlign.center,),);
     }
     return Container(
-      padding: EdgeInsets.symmetric(vertical:8),
+      padding: EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 16),
       height: 200,
       width: 430,
       child: BarChart(
