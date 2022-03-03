@@ -62,7 +62,7 @@ class _TabsPageState extends State<TabsPage> {
         currentIndex: _currentIndex, // new
         items: [
           new SalomonBottomBarItem(
-            icon: Icon(Icons.timer),
+            icon: Icon(Icons.timer_outlined),
             title: Text('Workouts'),
           ),
           new SalomonBottomBarItem(

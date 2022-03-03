@@ -1,3 +1,4 @@
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:protalyze/config/Themes.dart';
 import 'package:protalyze/persistance/Authentication.dart';
 import 'package:protalyze/common/widget/SingleMessageAlertDialog.dart';
@@ -27,7 +28,7 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
         body: Stack(
           children: <Widget>[
             showForm(),
-            showCircularProgress(),
+            showProgressIndicator(),
           ],
         ));
   }
@@ -64,9 +65,12 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
     );
   }
 
-  Widget showCircularProgress() {
+  Widget showProgressIndicator() {
     if (isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return Center(
+        child: LoadingAnimationWidget.dotsTriangle(
+          color: Themes.normal.colorScheme.secondary, 
+          size: 50));
     }
     return Container(
       height: 0.0,
