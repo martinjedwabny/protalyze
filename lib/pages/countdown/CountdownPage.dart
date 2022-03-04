@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:protalyze/common/utils/GifHandler.dart';
 import 'package:protalyze/common/widget/TextInputAlertDialog.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
@@ -126,8 +128,10 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     bool shouldContinueAnimation = this._controller.isAnimating;
     int pastRemainingSeconds = (this._controller.duration.inSeconds * this._controller.value).toInt();
     int newRemainingSeconds = pastRemainingSeconds + seconds;
-    if (newRemainingSeconds <= 0)
+    if (newRemainingSeconds <= 0) {
       stepToNextExercise();
+      return;
+    }
     if (seconds > 0) {
       this._controller.duration += Duration(seconds: seconds);
       this._totalTime += Duration(seconds: seconds);
@@ -199,9 +203,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   Widget buildProgressIndicator(){
     return Expanded(
-      child: Padding(
-        padding: EdgeInsets.all(40.0),
-        child: Stack(
+      child: Stack(
           children: [
             Positioned.fill(
               child: Center(
@@ -227,7 +229,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(width: 20,height: 20,),
+                SizedBox(width: 30,height: 30,),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
@@ -248,7 +250,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                               },
                               child: Icon(
                                 this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause_outlined : Icons.play_arrow,
-                                size: !this._isPause ? 90 : 100,
+                                size: !this._isPause ? 70 : 80,
                                 color: this._buttonsColor,
                               )
                             );
@@ -256,7 +258,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                     ),
                     IconButton(
                       onPressed: () { stepToNextExercise();}, 
-                      icon: Icon(Icons.fast_forward, color: this._buttonsColor, size: 40,)
+                      icon: Icon(Icons.fast_forward, color: this._buttonsColor, size: 36,)
                     ),
                   ],),
                   SizedBox(width: 4,height: 4,),
@@ -270,7 +272,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             )
           ],
         ),
-      )
     );
   }
 
@@ -279,11 +280,11 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
       style: OutlinedButton.styleFrom(
         shape: CircleBorder(),
         backgroundColor: Themes.normal.colorScheme.primary,
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(10),
         side: BorderSide(width: 2.0, color: Colors.white),
       ),
       onPressed: () { callback.call(); }, 
-      child: Text(text, style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),),
+      child: Text(text, style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),),
     );
   }
 
@@ -464,10 +465,11 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   Widget createNextExercisesList() {
-    List<String> listElements = this._countdownElementList.sublist(1).map((e) => e.name.substring(0, e.name.length < 20 ? e.name.length : 20) + ' (' + DurationFormatter.format(e.totalTime) + ')').toList();
+    List<String> listElements = this._countdownElementList.sublist(min(this._currentCountdownElementIndex+1,this._countdownElementList.length)).map((e) => e.name.substring(0, e.name.length < 20 ? e.name.length : 20) + ' (' + DurationFormatter.format(e.totalTime) + ')').toList();
     return Container(
         height: 100,
         width: 300,
+        margin: EdgeInsets.only(bottom: 20.0),
         child: ShaderMask(
           shaderCallback: (Rect rect) {
             return LinearGradient(
@@ -479,6 +481,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
           },
           blendMode: BlendMode.dstOut,
           child: ListView(
+          padding: EdgeInsets.zero,
           physics: ClampingScrollPhysics(),
           shrinkWrap: true,
           children: listElements.asMap().entries.map((entry) {
