@@ -1,9 +1,9 @@
-import 'dart:math';
-
-import 'package:line_icons/line_icon.dart';
-import 'package:line_icons/line_icons.dart';
-import 'package:protalyze/common/utils/GifHandler.dart';
 import 'package:protalyze/common/widget/TextInputAlertDialog.dart';
+import 'package:protalyze/pages/countdown/CountdownBottomButtons.dart';
+import 'package:protalyze/pages/countdown/CountdownControls.dart';
+import 'package:protalyze/pages/countdown/CountdownExercisesInfo.dart';
+import 'package:protalyze/pages/countdown/CountdownProgressIndicator.dart';
+import 'package:protalyze/pages/countdown/CountdownVolumeSlider.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:protalyze/config/Palette.dart';
 import 'package:protalyze/config/Themes.dart';
@@ -13,7 +13,6 @@ import 'package:protalyze/common/domain/Workout.dart';
 import 'package:protalyze/common/utils/DurationFormatter.dart';
 import 'package:protalyze/common/utils/ScreenPersist.dart';
 import 'package:protalyze/pages/countdown/WorkoutToCountdownAdapter.dart';
-import 'package:protalyze/pages/countdown/CustomTimerPainter.dart';
 import 'package:protalyze/common/widget/SingleMessageConfirmationDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -34,7 +33,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   List<CountdownElement> _countdownElementList;
   int _currentCountdownElementIndex = 0;
   final int _prepareTime = 10;
-  final Color _buttonsColor = Colors.white;
   bool _lastSecondsFlag = false;
   double _currentVolume = 0.5;
   String _comments = '';
@@ -95,7 +93,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   void animationStatusChanged(AnimationStatus status) {
     if (status == AnimationStatus.dismissed) {
       playBeepSound();
-      stepToNextExercise();
+      stepToNextExercise(forceContinue: true);
     }
   }
 
@@ -103,9 +101,9 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     return this._currentCountdownElementIndex == this._countdownElementList.length;
   }
 
-  void stepToNextExercise() {
+  void stepToNextExercise({bool forceContinue = false}) {
     if (isCountdownFinished()) return;
-    bool shouldContinueAnimation = this._controller.isAnimating;
+    bool shouldContinueAnimation = this._controller.isAnimating || forceContinue;
     this._totalTime -= this._controller.duration;
     this._currentCountdownElementIndex++;
     if (isCountdownFinished()) return;
@@ -175,14 +173,9 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   Widget buildCurrentTimeWidget() {
     var currentTimeFontSize = 120.0;
-    return SizedBox(height: 140, child: Container(
-      alignment: Alignment.topCenter,
-      child: Text(
-        blockRemainingTimeString,
-        style: TextStyle(fontSize: currentTimeFontSize, color: Colors.white,),
-      ),
-    )
-    );
+    return SizedBox(height: 140, 
+      child: Container(alignment: Alignment.topCenter,
+        child: Text(blockRemainingTimeString,style: TextStyle(fontSize: currentTimeFontSize, color: Colors.white,))));
   }
 
   Widget buildExercisesWidget(){
@@ -195,7 +188,11 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         Container(
           padding: EdgeInsets.only(left: 70, right: 70),
           child: Container(
-            child: exercisesTexts,
+            child: CountdownExercisesInfo(
+              this._controller, 
+              this._countdownElementList, 
+              () => this._currentCountdownElementIndex, 
+              this._totalTime),
             )
           ),
         ],
@@ -209,149 +206,36 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
           children: [
             Positioned.fill(
               child: Center(
-                child: AspectRatio(
-                  aspectRatio: 1.0,
-                  child: AnimatedBuilder(
-                    animation: this._controller,
-                    builder: (BuildContext context, Widget child) {
-                      return CustomPaint(
-                        size: Size.infinite,
-                          painter: CustomTimerPainter(
-                            animation: this._controller,
-                            backgroundColor: Colors.grey[700],
-                            color1: Themes.normal.colorScheme.secondary,
-                            color2: Colors.red,
-                      ));
-                    },
-                  ),
-                ),
+                child: CountdownProgressIndicator(_controller)
               ),
             ),
-            Center(child: 
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(width: 30,height: 30,),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      onPressed: () { stepToPrevExercise(); }, 
-                      icon: LineIcon.backward(color: this._buttonsColor, size: 40,)
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 10),
-                      child: AnimatedBuilder(
-                        animation: _controller,
-                        builder: (context, child) {
-                          return TextButton(
-                              onPressed: () {
-                                togglePlayPause();
-                                setState(() {});
-                              },
-                              child: Icon(
-                                this.countdownFinished()? LineIcons.check : !this._isPause ? LineIcons.pause : LineIcons.play,
-                                size: 90,
-                                color: this._buttonsColor,
-                              )
-                            );
-                      }),
-                    ),
-                    IconButton(
-                      onPressed: () { stepToNextExercise();}, 
-                      icon: LineIcon.forward(color: this._buttonsColor, size: 40,)
-                    ),
-                  ],),
-                  SizedBox(width: 4,height: 4,),
-                  Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min,
-                  children: [
-                    buildProgressTextButton('-5s', () { addSeconds(-5); }),
-                    buildProgressTextButton('+5s', () { addSeconds(5); }),
-                  ],),
-              ]
-              )
+            Center(child: CountdownControls(
+              this._controller, 
+              () => stepToPrevExercise(), 
+              () => stepToNextExercise(), 
+              () => togglePlayPause(), 
+              () => addSeconds(-5), 
+              () => addSeconds(5), 
+              () => this.countdownFinished(), 
+              () => this._isPause)
             )
           ],
         ),
     );
   }
 
-  Widget buildProgressTextButton(String text, Function callback){
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        shape: CircleBorder(),
-        backgroundColor: Themes.normal.colorScheme.primary,
-        padding: EdgeInsets.all(8),
-        side: BorderSide(width: 2.0, color: Colors.white),
-      ),
-      onPressed: () { callback.call(); }, 
-      child: Text(text, style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),),
-    );
-  }
-
   Widget buildVolumeSlider(){
-    Widget volumeDownIcon = Icon(Icons.volume_down_outlined, size: 24, color: Colors.white70, );
-    Widget volumeUpIcon = Icon(Icons.volume_up_outlined, size: 24, color: Colors.white70,);
-    Widget volumeSlider = Slider(
-      value: _currentVolume, 
-      onChanged: (double value) {
-        setState(() {
-          _currentVolume = value;
-        });
-      },
+    return CountdownVolumeSlider(
+      this._currentVolume, 
+      (volume) {this._currentVolume = volume;}
     );
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Padding(padding: EdgeInsets.only(left: 20), child: volumeDownIcon),
-        Expanded(child: volumeSlider),
-        Padding(padding: EdgeInsets.only(right: 20), child: volumeUpIcon),
-    ],);
   }
 
   Widget buildBottomButtons(BuildContext context){
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.only(left:8.0,right:8.0,bottom:16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            TextButton(
-              onPressed: () {
-                handleSaveWorkoutButton(context);
-              },
-              child: Text("Save", style: TextStyle(fontSize: 24.0, color: this._buttonsColor))
-            ),
-            Column(
-              children: [
-                SizedBox(
-                  height: 44.0,
-                  child: 
-                    Text(totalRemainingTimeString,
-                    style: TextStyle(
-                      fontSize: 36.0,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ),
-                Text('Total',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.white70,
-                  ),
-                ),
-              ]
-            ),
-            TextButton(
-              onPressed: () {
-                handleExitButton();
-              },
-              child: Text("Exit", style: TextStyle(fontSize: 24.0, color: this._buttonsColor))
-            ),
-          ],
-        ),
-      )
+    return CountdownBottomButtons(
+      () => totalRemainingTimeString, 
+      () => handleSaveWorkoutButton(context), 
+      () => handleExitButton()
     );
   }
 
@@ -388,117 +272,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     return DurationFormatter.format(this._totalTime - _controller.duration * (1.0 - _controller.value));
   }
 
-  String get currentExerciseString {
-    if (this._countdownElementList.length == 0) return '';
-    String s = this._countdownElementList[this._currentCountdownElementIndex].name;
-    return s;
-  }
-
-  String get currentExerciseGif {
-    if (this._countdownElementList.length == 0) return '';
-    return this._countdownElementList[this._currentCountdownElementIndex].gifUrl;
-  }
-
-  Widget get exercisesTexts {
-    if (isCountdownFinished()) {
-      return Container(child: Text(
-        'FINISHED',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 40.0, color: Colors.white),
-      ));
-    } else {
-      Widget currentExerciseGifButton = createGifButton(currentExerciseString , currentExerciseGif, 30);
-      var currentExerciseText = Text(
-            currentExerciseString,
-            style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300, color: Colors.white),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-      );
-      var currentExerciseTextContainer =
-        Row(mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(child: Container(child: currentExerciseText)),
-            SizedBox.fromSize(size: Size(12, 12),),
-            currentExerciseGifButton,],);
-      if (this._countdownElementList.length == 1)
-        return Column(children: [currentExerciseTextContainer]);
-      var nextExercisesTitle = Text(
-            'AFTER',
-            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500, color: Colors.white70),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-      );
-      var nextExercisesList = createNextExercisesList();
-      return Column(
-        children: [
-            currentExerciseTextContainer,
-            nextExercisesTitle,
-            nextExercisesList,
-        ]
-      );
-    }
-  }
-
-  Widget createGifButton(String title, String gifUrl, double size) {
-    return gifUrl == null || gifUrl == '' ? SizedBox(width: 1, height: 1) : GestureDetector(
-      onTap: () {showGifDialog(title, gifUrl);}, 
-      child: Icon(Icons.ondemand_video, size: size, color: Themes.normal.colorScheme.secondary,));
-  }
-
-  void showGifDialog(String title, String gifUrl) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) =>
-        AlertDialog(
-          title: Text(title, style: TextStyle(color: Colors.white,),),
-          backgroundColor: Themes.normal.colorScheme.primary,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[GifHandler.createGifImage(gifUrl, width: 400)],
-          ),
-          actions: [
-            TextButton(
-              child: Text("Ok"),
-              onPressed: () {Navigator.of(context).pop();},
-            ),
-          ],
-        )
-    );
-  }
-
-  Widget createNextExercisesList() {
-    List<String> listElements = this._countdownElementList.sublist(min(this._currentCountdownElementIndex+1,this._countdownElementList.length)).map((e) => e.name.substring(0, e.name.length < 20 ? e.name.length : 20) + ' (' + DurationFormatter.format(e.totalTime) + ')').toList();
-    return Container(
-        height: 80,
-        width: 300,
-        margin: EdgeInsets.only(bottom: 30.0),
-        child: ShaderMask(
-          shaderCallback: (Rect rect) {
-            return LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.transparent, Colors.black],
-              stops: [0.8, 1.0],
-            ).createShader(rect);
-          },
-          blendMode: BlendMode.dstOut,
-          child: ListView(
-          padding: EdgeInsets.zero,
-          physics: ClampingScrollPhysics(),
-          shrinkWrap: true,
-          children: listElements.asMap().entries.map((entry) {
-            String e = entry.value;
-            return Card(
-              margin: EdgeInsets.all(2),
-              color: Colors.transparent,
-              child: Text(e, style: TextStyle(color: Colors.white70, fontSize: 14), textAlign: TextAlign.center),
-            );
-          }
-          ).toList(),
-      )
-      )
-    );
-  }
 
   Widget buildCommentsButton() {
     var commentTextAndIcon = Container(
