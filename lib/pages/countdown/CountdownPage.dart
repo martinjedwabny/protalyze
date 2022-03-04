@@ -33,6 +33,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   final Color _buttonsColor = Colors.white;
   bool _lastSecondsFlag = false;
   double _currentVolume = 0.5;
+  String _comments = '';
 
   Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3", volume: _currentVolume * 0.75);
 
@@ -69,6 +70,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                 buildCurrentTimeWidget(),
                 buildExercisesWidget(),
                 buildProgressIndicator(),
+                buildCommentsButton(),
                 buildVolumeSlider(),
                 buildBottomButtons(context),
               ],
@@ -110,7 +112,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   void stepToPrevExercise() {
-    if (isCountdownFinished()) return;
+    if (isCountdownFinished() || this._currentCountdownElementIndex == 0) return;
     bool shouldContinueAnimation = this._controller.isAnimating;
     this._currentCountdownElementIndex--;
     this._controller.duration = this._countdownElementList[this._currentCountdownElementIndex].totalTime;
@@ -222,49 +224,66 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
               ),
             ),
             Center(child: 
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextButton(
-                    onPressed: () { addSeconds(-5); }, 
-                    child: Text('-5s', style: TextStyle(color: Colors.white, fontSize: 16),),
-                  ),
-                  IconButton(
-                    onPressed: () { stepToPrevExercise(); }, 
-                    icon: Icon(Icons.fast_rewind, color: Colors.white, size: 30,)
-                  ),
-                AnimatedBuilder(
-                  animation: _controller,
-                  builder: (context, child) {
-                    return TextButton(
-                        onPressed: () {
-                          togglePlayPause();
-                          setState(() {});
-                        },
-                        child: Icon(
-                          this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause_outlined : Icons.play_arrow,
-                          size: !this._isPause ? 80 : 90,
-                          color: this._buttonsColor,
-                        )
-                        // child: Text(this.countdownFinished()? 'Done' : !this._isPause ? "Pause" : "Start", 
-                        //   style: TextStyle(fontSize: 36.0, color: this._buttonsColor),)
-                        
-                        );
-                  }),
-                  IconButton(
-                    onPressed: () { stepToNextExercise();}, 
-                    icon: Icon(Icons.fast_forward, color: Colors.white, size: 30,)
-                  ),
-                  TextButton(
-                    onPressed: () { addSeconds(5); }, 
-                    child: Text('+5s', style: TextStyle(color: Colors.white, fontSize: 16),),
-                  ),
-                ],)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(width: 20,height: 20,),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: () { stepToPrevExercise(); }, 
+                      icon: Icon(Icons.fast_rewind, color: this._buttonsColor, size: 40,)
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, child) {
+                          return TextButton(
+                              onPressed: () {
+                                togglePlayPause();
+                                setState(() {});
+                              },
+                              child: Icon(
+                                this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause_outlined : Icons.play_arrow,
+                                size: !this._isPause ? 90 : 100,
+                                color: this._buttonsColor,
+                              )
+                            );
+                      }),
+                    ),
+                    IconButton(
+                      onPressed: () { stepToNextExercise();}, 
+                      icon: Icon(Icons.fast_forward, color: this._buttonsColor, size: 40,)
+                    ),
+                  ],),
+                  SizedBox(width: 4,height: 4,),
+                  Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min,
+                  children: [
+                    buildProgressTextButton('-5s', () { addSeconds(-5); }),
+                    buildProgressTextButton('+5s', () { addSeconds(5); }),
+                  ],),
+              ]
+              )
             )
           ],
         ),
       )
+    );
+  }
+
+  Widget buildProgressTextButton(String text, Function callback){
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        shape: CircleBorder(),
+        backgroundColor: Themes.normal.colorScheme.primary,
+        padding: EdgeInsets.all(16),
+        side: BorderSide(width: 2.0, color: Colors.white),
+      ),
+      onPressed: () { callback.call(); }, 
+      child: Text(text, style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700),),
     );
   }
 
@@ -334,19 +353,12 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   void handleSaveWorkoutButton(BuildContext context){
-    showDialog(
-      context: context,
-      builder: (_) {
-        return TextInputAlertDialog('Enter workout notes', (String notes) {
-          PastWorkout toSave = PastWorkout(Workout.copy(this.widget._workout), DateTime.now(), notes);
-          Provider.of<PastWorkoutNotifier>(context, listen: false).addPastWorkout(toSave).then((v) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Workout registered!'),
-            ));
-          });
-        }, initialValue: '', inputMaxLength: 1000,);
-      },
-    );
+    PastWorkout toSave = PastWorkout(Workout.copy(this.widget._workout), DateTime.now(), this._comments);
+    Provider.of<PastWorkoutNotifier>(context, listen: false).addPastWorkout(toSave).then((v) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Workout registered!'),
+      ));
+    });
   }
 
   void handleExitButton(){
@@ -400,16 +412,16 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             textAlign: TextAlign.center,
       );
       var currentExerciseTextContainer =
-          Row(mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(child: Container(child: currentExerciseText)),
-              SizedBox.fromSize(size: Size(12, 12),),
-              currentExerciseGifButton,],);
+        Row(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(child: Container(child: currentExerciseText)),
+            SizedBox.fromSize(size: Size(12, 12),),
+            currentExerciseGifButton,],);
       if (this._countdownElementList.length == 1)
         return Column(children: [currentExerciseTextContainer]);
       var nextExercisesTitle = Text(
             'AFTER',
-            style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w300, color: Themes.normal.colorScheme.secondary),
+            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500, color: Colors.white70),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
       );
@@ -480,6 +492,41 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
           ).toList(),
       )
       )
+    );
+  }
+
+  Widget buildCommentsButton() {
+    var commentTextAndIcon = Container(
+      padding: EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.add_comment_outlined, color: Themes.normal.colorScheme.secondary),
+          SizedBox.fromSize(size: Size(12, 12),),
+          Text('Comments', style: TextStyle(color: Themes.normal.colorScheme.secondary, fontSize: 20),),
+        ]));
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.center,
+      child: TextButton(
+        onPressed: () { handleTapComment();}, 
+        child: commentTextAndIcon)
+      );
+  }
+
+  void handleTapComment(){
+    showDialog(
+      context: context,
+      builder: (_) {
+        return TextInputAlertDialog('Comments', (String notes) {
+          this._comments = notes;
+        }, 
+        initialValue: this._comments, 
+        inputMaxLength: 2000,
+        nullInput: true,
+        multilineInput: true,);
+      },
     );
   }
 
