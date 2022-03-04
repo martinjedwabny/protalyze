@@ -10,7 +10,6 @@ import 'package:protalyze/common/utils/DurationFormatter.dart';
 import 'package:protalyze/common/utils/ScreenPersist.dart';
 import 'package:protalyze/pages/countdown/WorkoutToCountdownAdapter.dart';
 import 'package:protalyze/pages/countdown/CustomTimerPainter.dart';
-import 'package:protalyze/common/widget/SimpleListDialog.dart';
 import 'package:protalyze/common/widget/SingleMessageConfirmationDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -28,13 +27,14 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   AnimationController _controller;
   bool _isPause = true;
   Duration _totalTime;
-  List<CountdownElement> _countdownElements;
+  List<CountdownElement> _countdownElementList;
+  int _currentCountdownElementIndex = 0;
   final int _prepareTime = 10;
   final Color _buttonsColor = Colors.white;
   bool _lastSecondsFlag = false;
   double _currentVolume = 0.5;
 
-  Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3", volume: _currentVolume);
+  Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3", volume: _currentVolume * 0.75);
 
   @override
   void initState() {
@@ -58,15 +58,17 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleDark);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Palette.darkGray,
       body: AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
             return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 buildCurrentTimeWidget(),
                 buildExercisesWidget(),
-                buildProgressCircle(),
+                buildProgressIndicator(),
                 buildVolumeSlider(),
                 buildBottomButtons(context),
               ],
@@ -91,26 +93,62 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     }
   }
 
+  bool isCountdownFinished() {
+    return this._currentCountdownElementIndex == this._countdownElementList.length;
+  }
+
   void stepToNextExercise() {
-    if (this._countdownElements.isEmpty) return;
-    this._totalTime -= this._countdownElements[0].totalTime;
-    this._countdownElements.removeAt(0);
-    if (this._countdownElements.isEmpty) return;
-    this._controller.duration = this._countdownElements[0].totalTime;
+    if (isCountdownFinished()) return;
+    bool shouldContinueAnimation = this._controller.isAnimating;
+    this._totalTime -= this._controller.duration;
+    this._currentCountdownElementIndex++;
+    if (isCountdownFinished()) return;
+    this._controller.duration = this._countdownElementList[this._currentCountdownElementIndex].totalTime;
     this._controller.value = 1.0;
-    this._controller.reverse();
+    if (shouldContinueAnimation)
+      this._controller.reverse();
+  }
+
+  void stepToPrevExercise() {
+    if (isCountdownFinished()) return;
+    bool shouldContinueAnimation = this._controller.isAnimating;
+    this._currentCountdownElementIndex--;
+    this._controller.duration = this._countdownElementList[this._currentCountdownElementIndex].totalTime;
+    this._controller.value = 1.0;
+    this._totalTime += this._controller.duration;
+    if (shouldContinueAnimation)
+      this._controller.reverse();
+  }
+
+  void addSeconds(int seconds) {
+    bool shouldContinueAnimation = this._controller.isAnimating;
+    int pastRemainingSeconds = (this._controller.duration.inSeconds * this._controller.value).toInt();
+    int newRemainingSeconds = pastRemainingSeconds + seconds;
+    if (newRemainingSeconds <= 0)
+      stepToNextExercise();
+    if (seconds > 0) {
+      this._controller.duration += Duration(seconds: seconds);
+      this._totalTime += Duration(seconds: seconds);
+    } else {
+      this._controller.duration -= Duration(seconds: -seconds);
+      this._totalTime -= Duration(seconds: -seconds);
+    }
+    this._controller.value = newRemainingSeconds.toDouble() / this._controller.duration.inSeconds.toDouble();
+    if (shouldContinueAnimation)
+      this._controller.reverse();
   }
 
   void initializeCountdownElements(){
     // Set initial duration / prepare time to this._prepareTime seconds
     this._controller.duration = Duration(seconds: this._prepareTime);
-    this._countdownElements = [new CountdownElement('Prepare', new Duration(seconds: this._prepareTime), '')];
+    this._countdownElementList = [new CountdownElement('Prepare', new Duration(seconds: this._prepareTime), '')];
     this._totalTime = Duration(seconds: 0);
     // Add perform and rest times for each block
-    this._countdownElements += WorkoutToCountdownAdapter.getCountdownElements(this.widget._workout);
-    for (CountdownElement element in this._countdownElements){
+    this._countdownElementList += WorkoutToCountdownAdapter.getCountdownElements(this.widget._workout);
+    for (CountdownElement element in this._countdownElementList){
       this._totalTime += element.totalTime;
     }
+    this._currentCountdownElementIndex = 0;
   }
 
   bool countdownFinished(){
@@ -149,7 +187,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         Container(
           padding: EdgeInsets.only(left: 70, right: 70),
           child: Container(
-            height: 160.0,
             child: exercisesTexts,
             )
           ),
@@ -158,55 +195,74 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     );
   }
 
-  Widget buildProgressCircle(){
+  Widget buildProgressIndicator(){
     return Expanded(
       child: Padding(
         padding: EdgeInsets.all(40.0),
-        child: Align(
-          alignment: FractionalOffset.center,
-          child: AspectRatio(
-            aspectRatio: 1.0,
-            child: Stack(
-              children: <Widget>[
-                Positioned.fill(
-                  child: 
-                  AnimatedBuilder(
-                  animation: this._controller,
-                  builder:
-                      (BuildContext context, Widget child) {
-                    return CustomPaint(
-                        painter: CustomTimerPainter(
-                          animation: this._controller,
-                          backgroundColor: Colors.grey[700],
-                          color1: Themes.normal.colorScheme.secondary,
-                          color2: Colors.red,
-                    ));
-                  },
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Center(
+                child: AspectRatio(
+                  aspectRatio: 1.0,
+                  child: AnimatedBuilder(
+                    animation: this._controller,
+                    builder: (BuildContext context, Widget child) {
+                      return CustomPaint(
+                        size: Size.infinite,
+                          painter: CustomTimerPainter(
+                            animation: this._controller,
+                            backgroundColor: Colors.grey[700],
+                            color1: Themes.normal.colorScheme.secondary,
+                            color2: Colors.red,
+                      ));
+                    },
+                  ),
                 ),
-                ),
-                Center(child: 
-                  AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      return TextButton(
-                          onPressed: () {
-                            togglePlayPause();
-                            setState(() {});
-                          },
-                          child: Icon(
-                            this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause_outlined : Icons.play_arrow,
-                            size: !this._isPause ? 80 : 90,
-                            color: this._buttonsColor,
-                          )
-                          // child: Text(this.countdownFinished()? 'Done' : !this._isPause ? "Pause" : "Start", 
-                          //   style: TextStyle(fontSize: 36.0, color: this._buttonsColor),)
-                          
-                          );
-                    }),
-                )
-              ],
+              ),
             ),
-          ),
+            Center(child: 
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton(
+                    onPressed: () { addSeconds(-5); }, 
+                    child: Text('-5s', style: TextStyle(color: Colors.white, fontSize: 16),),
+                  ),
+                  IconButton(
+                    onPressed: () { stepToPrevExercise(); }, 
+                    icon: Icon(Icons.fast_rewind, color: Colors.white, size: 30,)
+                  ),
+                AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return TextButton(
+                        onPressed: () {
+                          togglePlayPause();
+                          setState(() {});
+                        },
+                        child: Icon(
+                          this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause_outlined : Icons.play_arrow,
+                          size: !this._isPause ? 80 : 90,
+                          color: this._buttonsColor,
+                        )
+                        // child: Text(this.countdownFinished()? 'Done' : !this._isPause ? "Pause" : "Start", 
+                        //   style: TextStyle(fontSize: 36.0, color: this._buttonsColor),)
+                        
+                        );
+                  }),
+                  IconButton(
+                    onPressed: () { stepToNextExercise();}, 
+                    icon: Icon(Icons.fast_forward, color: Colors.white, size: 30,)
+                  ),
+                  TextButton(
+                    onPressed: () { addSeconds(5); }, 
+                    child: Text('+5s', style: TextStyle(color: Colors.white, fontSize: 16),),
+                  ),
+                ],)
+            )
+          ],
         ),
       )
     );
@@ -312,35 +368,24 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   String get totalRemainingTimeString {
-    if (this._countdownElements.isEmpty)
+    if (isCountdownFinished())
       return DurationFormatter.format(this._totalTime);
     return DurationFormatter.format(this._totalTime - _controller.duration * (1.0 - _controller.value));
   }
 
   String get currentExerciseString {
-    if (this._countdownElements.length == 0) return '';
-    String s = this._countdownElements[0].name;
-    return s;
-  }
-
-  String get nextExerciseString {
-    if (this._countdownElements.length < 2) return '';
-    String s = this._countdownElements[1].name;
+    if (this._countdownElementList.length == 0) return '';
+    String s = this._countdownElementList[this._currentCountdownElementIndex].name;
     return s;
   }
 
   String get currentExerciseGif {
-    if (this._countdownElements.length == 0) return '';
-    return this._countdownElements[0].gifUrl;
-  }
-
-  String get nextExerciseGif {
-    if (this._countdownElements.length < 2) return '';
-    return this._countdownElements[1].gifUrl;
+    if (this._countdownElementList.length == 0) return '';
+    return this._countdownElementList[this._currentCountdownElementIndex].gifUrl;
   }
 
   Widget get exercisesTexts {
-    if (this._countdownElements.isEmpty) {
+    if (isCountdownFinished()) {
       return Container(child: Text(
         'FINISHED',
         textAlign: TextAlign.center,
@@ -354,36 +399,26 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
       );
-      if (this._countdownElements.length == 1)
-        return Column(children: [
+      var currentExerciseTextContainer =
           Row(mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Flexible(child: Container(child: currentExerciseText)),
               SizedBox.fromSize(size: Size(12, 12),),
-              currentExerciseGifButton,],),
-        ]
-      );
-      Widget nextExerciseGifButton =  createGifButton(nextExerciseString, nextExerciseGif, 20);
-      var nextExerciseText = Text(
-            nextExerciseString,
-            style: TextStyle(
-                fontSize: 18.0, fontWeight: FontWeight.w300, color: Colors.white70),
+              currentExerciseGifButton,],);
+      if (this._countdownElementList.length == 1)
+        return Column(children: [currentExerciseTextContainer]);
+      var nextExercisesTitle = Text(
+            'AFTER',
+            style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w300, color: Themes.normal.colorScheme.secondary),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
       );
-      var nextExercisesTextButton = createNextExercisesTextButton();
-      return Column(children: [
-          Row(mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(child: Container(child: currentExerciseText)),
-              SizedBox.fromSize(size: Size(12, 12),),
-              currentExerciseGifButton,],),
-          nextExercisesTextButton,
-          Row(mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(child: Container(child: nextExerciseText)),
-              SizedBox.fromSize(size: Size(4, 4),),
-              nextExerciseGifButton,],),
+      var nextExercisesList = createNextExercisesList();
+      return Column(
+        children: [
+            currentExerciseTextContainer,
+            nextExercisesTitle,
+            nextExercisesList,
         ]
       );
     }
@@ -393,20 +428,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     return gifUrl == null || gifUrl == '' ? SizedBox(width: 1, height: 1) : GestureDetector(
       onTap: () {showGifDialog(title, gifUrl);}, 
       child: Icon(Icons.ondemand_video, size: size, color: Themes.normal.colorScheme.secondary,));
-  }
-
-  void showNextExercisesListDialog() {
-    if (this._countdownElements.length < 2) return;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) =>
-        SimpleListDialog(
-          this._countdownElements.sublist(1).map((e) => e.name.substring(0, e.name.length < 20 ? e.name.length : 20) + ' (' + DurationFormatter.format(e.totalTime) + ')').toList(), 
-          Themes.normal.primaryColor, 
-          Colors.white70,
-          'Next exercises'
-        )
-    );
   }
 
   void showGifDialog(String title, String gifUrl) {
@@ -430,26 +451,34 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     );
   }
 
-  Widget createNextExercisesTextButton() {
-    return GestureDetector(
-      onTap: (){
-        showNextExercisesListDialog();
-      },
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Text(
-            'AFTER',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20.0, color: Themes.normal.colorScheme.secondary),
-          ),
-          SizedBox.fromSize(size: Size(4, 0),),
-          Icon(
-            Icons.remove_red_eye, 
-            color: Themes.normal.colorScheme.secondary,
-            size: 22,
-          ),
-        ]
+  Widget createNextExercisesList() {
+    List<String> listElements = this._countdownElementList.sublist(1).map((e) => e.name.substring(0, e.name.length < 20 ? e.name.length : 20) + ' (' + DurationFormatter.format(e.totalTime) + ')').toList();
+    return Container(
+        height: 100,
+        width: 300,
+        child: ShaderMask(
+          shaderCallback: (Rect rect) {
+            return LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.transparent, Colors.black],
+              stops: [0.8, 1.0],
+            ).createShader(rect);
+          },
+          blendMode: BlendMode.dstOut,
+          child: ListView(
+          physics: ClampingScrollPhysics(),
+          shrinkWrap: true,
+          children: listElements.asMap().entries.map((entry) {
+            String e = entry.value;
+            return Card(
+              margin: EdgeInsets.all(2),
+              color: Colors.transparent,
+              child: Text(e, style: TextStyle(color: Colors.white70, fontSize: 14), textAlign: TextAlign.center),
+            );
+          }
+          ).toList(),
+      )
       )
     );
   }
