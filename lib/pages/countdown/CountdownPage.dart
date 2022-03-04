@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:line_icons/line_icon.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:protalyze/common/utils/GifHandler.dart';
 import 'package:protalyze/common/widget/TextInputAlertDialog.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
@@ -236,7 +238,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                   children: [
                     IconButton(
                       onPressed: () { stepToPrevExercise(); }, 
-                      icon: Icon(Icons.fast_rewind, color: this._buttonsColor, size: 40,)
+                      icon: LineIcon.backward(color: this._buttonsColor, size: 40,)
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 10),
@@ -249,8 +251,8 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                                 setState(() {});
                               },
                               child: Icon(
-                                this.countdownFinished()? Icons.done : !this._isPause ? Icons.pause_outlined : Icons.play_arrow,
-                                size: !this._isPause ? 70 : 80,
+                                this.countdownFinished()? LineIcons.check : !this._isPause ? LineIcons.pause : LineIcons.play,
+                                size: 90,
                                 color: this._buttonsColor,
                               )
                             );
@@ -258,7 +260,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
                     ),
                     IconButton(
                       onPressed: () { stepToNextExercise();}, 
-                      icon: Icon(Icons.fast_forward, color: this._buttonsColor, size: 36,)
+                      icon: LineIcon.forward(color: this._buttonsColor, size: 40,)
                     ),
                   ],),
                   SizedBox(width: 4,height: 4,),
@@ -280,7 +282,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
       style: OutlinedButton.styleFrom(
         shape: CircleBorder(),
         backgroundColor: Themes.normal.colorScheme.primary,
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(8),
         side: BorderSide(width: 2.0, color: Colors.white),
       ),
       onPressed: () { callback.call(); }, 
@@ -467,9 +469,9 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Widget createNextExercisesList() {
     List<String> listElements = this._countdownElementList.sublist(min(this._currentCountdownElementIndex+1,this._countdownElementList.length)).map((e) => e.name.substring(0, e.name.length < 20 ? e.name.length : 20) + ' (' + DurationFormatter.format(e.totalTime) + ')').toList();
     return Container(
-        height: 100,
+        height: 80,
         width: 300,
-        margin: EdgeInsets.only(bottom: 20.0),
+        margin: EdgeInsets.only(bottom: 30.0),
         child: ShaderMask(
           shaderCallback: (Rect rect) {
             return LinearGradient(

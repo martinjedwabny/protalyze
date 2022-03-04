@@ -38,6 +38,7 @@ dependencies:
   giphy_picker:
     git:
       url: https://github.com/sohaibnoman/giphy_picker
+  line_icons: ^2.0.1
 
 
 
