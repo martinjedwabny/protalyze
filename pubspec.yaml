@@ -34,11 +34,9 @@ dependencies:
   flutter_picker: ^2.0.1
   table_calendar: ^3.0.0
   fl_chart: ^0.45.0
-  loading_animation_widget: ^1.1.0+2
   giphy_picker:
     git:
       url: https://github.com/sohaibnoman/giphy_picker
-  line_icons: ^2.0.1
 
 
 

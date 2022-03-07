@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icon.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:protalyze/config/Themes.dart';
 
 class CountdownControls extends StatefulWidget {
@@ -20,12 +18,22 @@ class CountdownControls extends StatefulWidget {
 }
 
 class _CountdownControlsState extends State<CountdownControls> {
+
+  final Icon backButton = Icon(Icons.fast_rewind, color: Colors.white, size: 40,);
+  final Icon forwardButton = Icon(Icons.fast_forward, color: Colors.white, size: 40,);
+  final Icon playButton = Icon(Icons.play_arrow,color: Colors.white, size: 90,);
+  final Icon pauseButton = Icon(Icons.pause,color: Colors.white, size: 90,);
+  final Icon doneButton = Icon(Icons.done,color: Colors.white, size: 90,);
+
+  final double topMargin = 40;
+  final double interRowSpacing = 10;
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(width: 30,height: 30,),
+        SizedBox(width: 1,height: topMargin,),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +42,7 @@ class _CountdownControlsState extends State<CountdownControls> {
             IconButton(
               padding: EdgeInsets.zero,
               onPressed: () => this.widget.backwardCallback(), 
-              icon: LineIcon.backward(color: Colors.white, size: 40,)
+              icon: backButton,
             ),
             AnimatedBuilder(
               animation: this.widget.controller,
@@ -44,20 +52,16 @@ class _CountdownControlsState extends State<CountdownControls> {
                       this.widget.playPauseCallback();
                       setState(() {});
                     },
-                    child: Icon(
-                      this.widget.countdownFinished()? LineIcons.check : !this.widget.isPause() ? LineIcons.pause : LineIcons.play,
-                      size: 90,
-                      color: Colors.white,
-                    )
+                    child: this.widget.countdownFinished()? doneButton : !this.widget.isPause() ? pauseButton : playButton,
                   );
             }),
             IconButton(
               padding: EdgeInsets.zero,
               onPressed: () => this.widget.forwardCallback(), 
-              icon: LineIcon.forward(color: Colors.white, size: 40,)
+              icon: forwardButton,
             ),
           ],),
-          SizedBox(width: 4,height: 4,),
+          SizedBox(width: 1,height: interRowSpacing,),
           Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min,
           children: [
             buildProgressTextButton('-5s', () => this.widget.minusCallback()),
@@ -71,12 +75,12 @@ class _CountdownControlsState extends State<CountdownControls> {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
         shape: CircleBorder(),
-        backgroundColor: Themes.normal.colorScheme.primary,
+        backgroundColor: Colors.white,
         padding: EdgeInsets.all(8),
         side: BorderSide(width: 2.0, color: Colors.white),
       ),
       onPressed: () { callback.call(); }, 
-      child: Text(text, style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),),
+      child: Text(text, style: TextStyle(color: Themes.normal.colorScheme.primary, fontSize: 12, fontWeight: FontWeight.w700),),
     );
   }
 }
