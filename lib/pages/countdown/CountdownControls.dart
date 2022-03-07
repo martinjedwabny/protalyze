@@ -28,31 +28,31 @@ class _CountdownControlsState extends State<CountdownControls> {
         SizedBox(width: 30,height: 30,),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
+              padding: EdgeInsets.zero,
               onPressed: () => this.widget.backwardCallback(), 
               icon: LineIcon.backward(color: Colors.white, size: 40,)
             ),
-            Container(
-              margin: EdgeInsets.only(left: 10),
-              child: AnimatedBuilder(
-                animation: this.widget.controller,
-                builder: (context, child) {
-                  return TextButton(
-                      onPressed: () {
-                        this.widget.playPauseCallback();
-                        setState(() {});
-                      },
-                      child: Icon(
-                        this.widget.countdownFinished()? LineIcons.check : !this.widget.isPause() ? LineIcons.pause : LineIcons.play,
-                        size: 90,
-                        color: Colors.white,
-                      )
-                    );
-              }),
-            ),
+            AnimatedBuilder(
+              animation: this.widget.controller,
+              builder: (context, child) {
+                return TextButton(
+                    onPressed: () {
+                      this.widget.playPauseCallback();
+                      setState(() {});
+                    },
+                    child: Icon(
+                      this.widget.countdownFinished()? LineIcons.check : !this.widget.isPause() ? LineIcons.pause : LineIcons.play,
+                      size: 90,
+                      color: Colors.white,
+                    )
+                  );
+            }),
             IconButton(
+              padding: EdgeInsets.zero,
               onPressed: () => this.widget.forwardCallback(), 
               icon: LineIcon.forward(color: Colors.white, size: 40,)
             ),
