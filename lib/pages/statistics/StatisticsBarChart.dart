@@ -32,7 +32,7 @@ class StatisticsBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var firstDayOfWeek = DateTime.now().subtract(Duration(days: DateTime.now().weekday)).add(Duration(days: 1));
+    var firstDayOfWeek = DateTime.now().subtract(Duration(days: DateTime.now().weekday));
     var nextWeek = firstDayOfWeek.add(Duration(days: 7));
     Map<ExerciseObjective,int> stats = objectiveCountPerDayBetween(firstDayOfWeek, nextWeek);
     double maxY = stats.values.isEmpty ? 1 : stats.values.reduce((value, element) => value > element ? value : element).toDouble();
