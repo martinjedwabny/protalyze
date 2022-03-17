@@ -1,3 +1,5 @@
+import 'package:protalyze/pages/exercise_repository/ExerciseRepositoryPage.dart';
+import 'package:protalyze/provider/ExerciseNotifier.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:protalyze/provider/WorkoutNotifier.dart';
 import 'package:protalyze/pages/past_workouts/PastWorkoutSelectionPage.dart';
@@ -20,6 +22,7 @@ class TabsPage extends StatefulWidget {
 class _TabsPageState extends State<TabsPage> {
   
   final WorkoutNotifier _workoutNotifier = WorkoutNotifier();
+  final ExerciseNotifier _exerciseNotifier = ExerciseNotifier();
   final PastWorkoutNotifier _pastWorkoutNotifier = PastWorkoutNotifier();
   
   int _currentIndex = 0;
@@ -29,13 +32,21 @@ class _TabsPageState extends State<TabsPage> {
   void initState() {
     this._workoutNotifier.getWorkoutsFromStore();
     this._pastWorkoutNotifier.getPastWorkoutsFromStore();
+    this._exerciseNotifier.getExerciseBlocksFromStore();
     this._children = [
       MultiProvider(
         providers: [
         ChangeNotifierProvider.value(value: this._workoutNotifier),
+        ChangeNotifierProvider.value(value: this._exerciseNotifier),
         ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
         ],
         child: WorkoutSelectionPage(this.widget.logoutCallback),
+      ),
+      MultiProvider(
+        providers: [
+        ChangeNotifierProvider.value(value: this._exerciseNotifier),
+        ],
+        child: ExerciseRepositoryPage(this.widget.logoutCallback),
       ),
       MultiProvider(
         providers: [
@@ -64,6 +75,10 @@ class _TabsPageState extends State<TabsPage> {
           new SalomonBottomBarItem(
             icon: Icon(Icons.timer_outlined),
             title: Text('Workouts'),
+          ),
+          new SalomonBottomBarItem(
+            icon: Icon(Icons.list_alt_rounded),
+            title: Text('Exercises'),
           ),
           new SalomonBottomBarItem(
             icon: Icon(Icons.event_available_outlined),

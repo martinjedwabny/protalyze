@@ -4,6 +4,7 @@ import 'Block.dart';
 
 class ExerciseBlock extends Block {
   // Necessary
+  String documentId;
   Duration performingTime;
   Duration restTime;
   List<ExerciseObjective> objectives;
