@@ -10,8 +10,32 @@ class CountdownProgressIndicator extends StatefulWidget {
 }
 
 class _CountdownProgressIndicatorState extends State<CountdownProgressIndicator> {
+
+  final double heightLimit = 200.0;
+  final double topMarginSmallLayout = 110.0;
+
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+      if(constraints.maxHeight > heightLimit) {
+        return buildBigLayoutIndicator();
+      } else {
+        return buildSmallLayoutIndicator();
+      }
+    });
+  }
+
+  Widget buildSmallLayoutIndicator() {
+    return Container(
+      padding: EdgeInsets.only(top: topMarginSmallLayout, left: 40.0, right: 40.0),
+      width: double.infinity,
+      child: Slider(
+        value: this.widget._controller.value, 
+        onChanged: (value) {}),
+    );
+  }
+
+  Widget buildBigLayoutIndicator() {
     return AspectRatio(
       aspectRatio: 1.0,
       child: AnimatedBuilder(

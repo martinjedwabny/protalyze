@@ -19,19 +19,73 @@ class CountdownControls extends StatefulWidget {
 
 class _CountdownControlsState extends State<CountdownControls> {
 
-  final Icon backButton = Icon(Icons.fast_rewind, color: Colors.white, size: 40,);
-  final Icon forwardButton = Icon(Icons.fast_forward, color: Colors.white, size: 40,);
-  final Icon playButton = Icon(Icons.play_arrow,color: Colors.white, size: 90,);
-  final Icon pauseButton = Icon(Icons.pause,color: Colors.white, size: 90,);
-  final Icon doneButton = Icon(Icons.done,color: Colors.white, size: 90,);
+  final Icon backIcon = Icon(Icons.fast_rewind, color: Colors.white, size: 40,);
+  final Icon forwardIcon = Icon(Icons.fast_forward, color: Colors.white, size: 40,);
+  final Icon playIcon = Icon(Icons.play_arrow,color: Colors.white, size: 90,);
+  final Icon pauseIcon = Icon(Icons.pause,color: Colors.white, size: 90,);
+  final Icon doneIcon = Icon(Icons.done,color: Colors.white, size: 90,);
 
   final double topMargin = 40;
   final double interRowSpacing = 10;
+  final double heightLimit = 200.0;
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+      if(constraints.maxHeight > heightLimit) {
+        return buildBigLayoutControls();
+      } else {
+        return buildSmallLayoutControls();
+      }
+    });
+  }
+
+  Widget backButton() => IconButton(
+    padding: EdgeInsets.zero,
+    onPressed: () => this.widget.backwardCallback(), 
+    icon: backIcon,
+  );
+
+  Widget playButton() => AnimatedBuilder(
+    animation: this.widget.controller,
+    builder: (context, child) {
+      return TextButton(
+          onPressed: () {
+            this.widget.playPauseCallback();
+            setState(() {});
+          },
+          child: this.widget.countdownFinished()? doneIcon : !this.widget.isPause() ? pauseIcon : playIcon,
+        );
+  });
+
+  Widget forwardButton() => IconButton(
+    padding: EdgeInsets.zero,
+    onPressed: () => this.widget.forwardCallback(), 
+    icon: forwardIcon,
+  );
+
+  Widget minusButton() => buildProgressTextButton('-5s', () => this.widget.minusCallback());
+
+  Widget plusButton() => buildProgressTextButton('+5s', () => this.widget.plusCallback());
+
+  Widget buildSmallLayoutControls() {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        minusButton(),
+        backButton(),
+        playButton(),
+        forwardButton(),
+        plusButton(),
+      ],
+    );
+  }
+
+  Widget buildBigLayoutControls() {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(width: 1,height: topMargin,),
         Row(
@@ -39,33 +93,15 @@ class _CountdownControlsState extends State<CountdownControls> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: () => this.widget.backwardCallback(), 
-              icon: backButton,
-            ),
-            AnimatedBuilder(
-              animation: this.widget.controller,
-              builder: (context, child) {
-                return TextButton(
-                    onPressed: () {
-                      this.widget.playPauseCallback();
-                      setState(() {});
-                    },
-                    child: this.widget.countdownFinished()? doneButton : !this.widget.isPause() ? pauseButton : playButton,
-                  );
-            }),
-            IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: () => this.widget.forwardCallback(), 
-              icon: forwardButton,
-            ),
+            backButton(),
+            playButton(),
+            forwardButton(),
           ],),
           SizedBox(width: 1,height: interRowSpacing,),
           Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min,
           children: [
-            buildProgressTextButton('-5s', () => this.widget.minusCallback()),
-            buildProgressTextButton('+5s', () => this.widget.plusCallback()),
+            minusButton(),
+            plusButton(),
           ],),
       ]
       );
@@ -75,12 +111,12 @@ class _CountdownControlsState extends State<CountdownControls> {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
         shape: CircleBorder(),
-        backgroundColor: Colors.white,
-        padding: EdgeInsets.all(8),
+        backgroundColor: Themes.normal.colorScheme.primary,
+        padding: EdgeInsets.all(16),
         side: BorderSide(width: 2.0, color: Colors.white),
       ),
       onPressed: () { callback.call(); }, 
-      child: Text(text, style: TextStyle(color: Themes.normal.colorScheme.primary, fontSize: 12, fontWeight: FontWeight.w700),),
+      child: Text(text, style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),),
     );
   }
 }
