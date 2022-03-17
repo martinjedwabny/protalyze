@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:protalyze/config/Themes.dart';
 import 'package:protalyze/persistance/Authentication.dart';
 import 'package:protalyze/common/widget/SingleMessageAlertDialog.dart';
@@ -204,13 +205,56 @@ void validateAndSubmit() async {
         print('Error: $e');
         setState(() {
           isLoading = false;
-          showErrorDialog('Error', e.message);
+          if (e is FirebaseAuthException && e.code == 'wrong-password')
+            showWrongPasswordDialog('Error', e.message);
+          else
+            showErrorDialog('Error', e.message);
         });
       }
     } else {
       isLoading = false;
       showErrorDialog('Error', 'There was a problem, please retry.');
     }
+  }
+
+  void showWrongPasswordDialog(String title, String text){
+    showDialog(context: context, 
+    builder: (context) => AlertDialog(
+      title: Text(title),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(text),
+          SizedBox(width: 1, height: 20,),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 5.0,
+              shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0)),
+            ),
+            child: new Text('Reset password',
+              style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+            onPressed: (){
+              resetPassword();
+              Navigator.of(context).pop();
+              showDialog(context: context, builder: (context) =>
+                SingleMessageAlertDialog('Reset password', 'An email has been sent. Please access your mailbox to reset your password.'));
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          child: Text("Ok"),
+          onPressed: () {Navigator.of(context).pop();},
+        ),
+      ],
+    )
+    );
+  }
+
+  void resetPassword(){
+    this.widget.auth.resetPassword(email);
   }
 
   bool validateAndSave() {
