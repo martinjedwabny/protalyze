@@ -1,4 +1,5 @@
 import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
+import 'package:protalyze/provider/ExerciseNotifier.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:protalyze/provider/WorkoutNotifier.dart';
 import 'package:protalyze/config/Themes.dart';
@@ -84,8 +85,12 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
           title: const Text('Choose what to add'),
           children: <Widget>[
             SimpleDialogOption(
+              onPressed: () { Navigator.pop(context); chooseExistingExercise(null); },
+              child: const Text('Existing exercise'),
+            ),
+            SimpleDialogOption(
               onPressed: () { addNewExercise(null); Navigator.pop(context); },
-              child: const Text('Exercise'),
+              child: const Text('New exercise'),
             ),
             SimpleDialogOption(
               onPressed: () { addNewGroup(null); Navigator.pop(context); },
@@ -95,6 +100,28 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
         );
       },
     );
+  }
+
+  void chooseExistingExercise(GroupBlock parent){
+    List<ExerciseBlock> exercises = Provider.of<ExerciseNotifier>(context, listen: false).exercises;
+    if (exercises == null || exercises.isEmpty)
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SingleMessageAlertDialog('Error', 'No exercises added yet.');
+        },
+      );
+    else
+      showDialog(context: context, builder: (BuildContext context) => 
+      SimpleDialog(
+        title: Text('Choose an exercise to add'),
+        children: exercises.map((ExerciseBlock e) => SimpleDialogOption(
+          onPressed: () { 
+            addExercise(e, parent);
+            Navigator.pop(context); 
+          },
+          child: Text(e.name),
+        )).toList()));
   }
 
   Widget getNotesText() {
@@ -140,7 +167,24 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
       updateWorkout();
     };
     var handleAddExercise = (){
-      addNewExercise(block as GroupBlock);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Choose what to add'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () { Navigator.pop(context); chooseExistingExercise(block); },
+                child: const Text('Existing exercise'),
+              ),
+              SimpleDialogOption(
+                onPressed: () { addNewExercise(block); Navigator.pop(context); },
+                child: const Text('New exercise'),
+              ),
+            ],
+          );
+        },
+      );
     };
     var handleRemove = (){
       setState(() {
@@ -260,6 +304,10 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     );
   }
   
+  void addExercise(ExerciseBlock ex, GroupBlock parent){
+    addBlock(parent, ex);
+  }
+  
   void addNewExercise(GroupBlock parent){
     ExerciseBlock block = ExerciseBlock('New exercise', 1, Duration(seconds: 30), Duration(seconds: 90));
     addBlock(parent, block);
@@ -273,7 +321,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   }
 
   void addBlock(GroupBlock parent, Block child) {
-    if (parent.subBlocks.length >= 30) {
+    if (parent != null && parent.subBlocks.length >= 30) {
       showDialog(
         context: context,
         builder: (BuildContext context) {

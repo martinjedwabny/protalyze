@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:protalyze/common/utils/ShareHandler.dart';
 import 'package:protalyze/common/utils/WorkoutFormatter.dart';
 import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
+import 'package:protalyze/provider/ExerciseNotifier.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:protalyze/provider/WorkoutNotifier.dart';
 import 'package:protalyze/config/Themes.dart';
@@ -108,10 +109,13 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
                 value: Provider.of<PastWorkoutNotifier>(this.context), 
                 child: ChangeNotifierProvider<WorkoutNotifier>.value(
                   value: Provider.of<WorkoutNotifier>(this.context), 
-                  child: WorkoutDisplayPage(item.workout)
+                  child: ChangeNotifierProvider<ExerciseNotifier>.value(
+                    value: Provider.of<ExerciseNotifier>(this.context), 
+                    child: WorkoutDisplayPage(item.workout)
+                  ),
                 ),
               ),
-            )
+            ),
           );
         },
         trailing: Wrap(
