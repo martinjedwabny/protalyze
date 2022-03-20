@@ -19,11 +19,11 @@ class CountdownControls extends StatefulWidget {
 
 class _CountdownControlsState extends State<CountdownControls> {
 
-  final Icon backIcon = Icon(Icons.fast_rewind, color: Colors.white, size: 36,);
-  final Icon forwardIcon = Icon(Icons.fast_forward, color: Colors.white, size: 36,);
-  final Icon playIcon = Icon(Icons.play_arrow,color: Colors.white, size: 80,);
-  final Icon pauseIcon = Icon(Icons.pause,color: Colors.white, size: 80,);
-  final Icon doneIcon = Icon(Icons.done,color: Colors.white, size: 80,);
+  final Icon backIcon = Icon(Icons.fast_rewind, color: Themes.normal.colorScheme.primary.withAlpha(150), size: 36,);
+  final Icon forwardIcon = Icon(Icons.fast_forward, color: Themes.normal.colorScheme.primary.withAlpha(150), size: 36,);
+  final Icon playIcon = Icon(Icons.play_arrow,color: Themes.normal.colorScheme.primary.withAlpha(150), size: 80,);
+  final Icon pauseIcon = Icon(Icons.pause,color: Themes.normal.colorScheme.primary.withAlpha(150), size: 80,);
+  final Icon doneIcon = Icon(Icons.done,color: Themes.normal.colorScheme.primary.withAlpha(150), size: 80,);
 
   final double topMargin = 40;
   final double interRowSpacing = 10;

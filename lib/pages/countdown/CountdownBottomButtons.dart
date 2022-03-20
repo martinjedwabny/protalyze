@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:protalyze/config/Themes.dart';
 
 class CountdownBottomButtons extends StatefulWidget {
   final Function totalRemainingTimeString;
@@ -11,6 +12,7 @@ class CountdownBottomButtons extends StatefulWidget {
 }
 
 class _CountdownBottomButtonsState extends State<CountdownBottomButtons> {
+  final Color buttonsColor = Themes.normal.colorScheme.primary;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,24 +25,24 @@ class _CountdownBottomButtonsState extends State<CountdownBottomButtons> {
               onPressed: () {
                 this.widget.handleSaveWorkout();
               },
-              child: Text("Save", style: TextStyle(fontSize: 24.0, color: Colors.white))
+              child: Text("Save", style: TextStyle(fontSize: 24.0, color: buttonsColor))
             ),
             Column(
               children: [
                 SizedBox(
-                  height: 40.0,
+                  height: 42.0,
                   child: 
                     Text(totalRemainingTimeString,
                     style: TextStyle(
                       fontSize: 36.0,
-                      color: Colors.white70,
+                      color: buttonsColor,
                     ),
                   ),
                 ),
                 Text('Total',
                   style: TextStyle(
                     fontSize: 16.0,
-                    color: Colors.white70,
+                    color: buttonsColor,
                   ),
                 ),
               ]
@@ -49,7 +51,7 @@ class _CountdownBottomButtonsState extends State<CountdownBottomButtons> {
               onPressed: () {
                 this.widget.handleExit();
               },
-              child: Text("Exit", style: TextStyle(fontSize: 24.0, color: Colors.white))
+              child: Text("Exit", style: TextStyle(fontSize: 24.0, color: buttonsColor))
             ),
           ],
         ),

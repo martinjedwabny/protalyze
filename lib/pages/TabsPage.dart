@@ -74,7 +74,6 @@ class _TabsPageState extends State<TabsPage> {
         index: _currentIndex,
       ),
       bottomNavigationBar: SalomonBottomBar(
-        // alignment: ,
         margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
         onTap: (index) => setState(() => _currentIndex = index), // new
         currentIndex: _currentIndex, // new

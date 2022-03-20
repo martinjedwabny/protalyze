@@ -1,4 +1,5 @@
 import 'package:protalyze/common/widget/TextInputAlertDialog.dart';
+import 'package:protalyze/config/Palette.dart';
 import 'package:protalyze/pages/countdown/CountdownBottomButtons.dart';
 import 'package:protalyze/pages/countdown/CountdownControls.dart';
 import 'package:protalyze/pages/countdown/CountdownExercisesInfo.dart';
@@ -59,22 +60,28 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     // SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleDark);
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Column(
-          mainAxisSize: MainAxisSize.max,
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            buildCurrentTimeWidget(),
-            buildExercisesWidget(),
-            buildProgressIndicator(),
-            buildCommentsButton(),
-            buildVolumeSlider(),
-            buildBottomButtons(context),
-          ],
-        );
-      }
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        color: Colors.white,
+      ),
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Column(
+            mainAxisSize: MainAxisSize.max,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              buildCurrentTimeWidget(),
+              buildExercisesWidget(),
+              buildProgressIndicator(),
+              buildCommentsButton(),
+              buildVolumeSlider(),
+              buildBottomButtons(context),
+            ],
+          );
+        }
+      ),
     );
   }
 
@@ -168,15 +175,15 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   Widget buildCurrentTimeWidget() {
-    var currentTimeFontSize = 120.0;
+    var currentTimeFontSize = 90.0;
     return Container(
       alignment: Alignment.topCenter,
       child: Text(
         blockRemainingTimeString,
         style: TextStyle(
           fontSize: currentTimeFontSize, 
-          color: Colors.white,
-          height: 0.8)));
+          color: Themes.normal.colorScheme.primary,
+          height: 0.95)));
   }
 
   Widget buildExercisesWidget(){

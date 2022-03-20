@@ -10,7 +10,7 @@ class FloatingScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(90.0),
+        preferredSize: Size.fromHeight(80.0),
         child: Padding(
           padding: EdgeInsets.only(top: 16, bottom: 0, left: 8, right: 16),
           child: this.appBar

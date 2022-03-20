@@ -17,6 +17,10 @@ class CountdownExercisesInfo extends StatefulWidget {
 }
 
 class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
+
+  final Color mainTextColor = Themes.normal.colorScheme.primary;
+  final Color fadedTextColor = Themes.normal.colorScheme.primary.withAlpha(200);
+
   @override
   Widget build(BuildContext context) {
     if (isCountdownFinished()) {
@@ -67,14 +71,14 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
     return Container(child: Text(
         'FINISHED',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 40.0, color: Colors.white),
+        style: TextStyle(fontSize: 40.0, color: mainTextColor),
       ));
   }
 
   Widget afterMessageText() {
     return Text(
             'AFTER',
-            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500, color: Colors.white70),
+            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w500, color: fadedTextColor),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
       );
@@ -87,7 +91,7 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
             style: TextStyle(
               fontSize: 40.0, 
               fontWeight: FontWeight.w300, 
-              color: Colors.white,
+              color: mainTextColor,
               height: 0.8),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
@@ -110,7 +114,7 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
       context: context,
       builder: (BuildContext context) =>
         AlertDialog(
-          title: Text(title, style: TextStyle(color: Colors.white,),),
+          title: Text(title, style: TextStyle(color: mainTextColor,),),
           backgroundColor: Themes.normal.colorScheme.primary,
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -151,7 +155,7 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
                 return Card(
                   margin: EdgeInsets.all(2),
                   color: Colors.transparent,
-                  child: Text(e, style: TextStyle(color: Colors.white70, fontSize: 14), textAlign: TextAlign.center),
+                  child: Text(e, style: TextStyle(color: fadedTextColor, fontSize: 14), textAlign: TextAlign.center),
                 );
               }
               ).toList(),
