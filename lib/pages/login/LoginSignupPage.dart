@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:protalyze/config/Themes.dart';
+import 'package:protalyze/pages/login/PrivacyTermsConditionsCheckbox.dart';
+import 'package:protalyze/pages/login/PrivacyTermsConditionsText.dart';
 import 'package:protalyze/persistance/Authentication.dart';
 import 'package:protalyze/common/widget/SingleMessageAlertDialog.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
   
   bool isLoading = false;
   bool isLoginForm = true;
+  bool isCreateAccountEnabled = false;
   String email = '';
   String password = '';
   final formKey = new GlobalKey<FormState>();
@@ -45,6 +48,7 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
               showLogo(),
               showEmailInput(),
               showPasswordInput(),
+              showPrivacyTermsConditions(),
               showPrimaryButton(),
               showSecondaryButton(),
             ],
@@ -129,7 +133,7 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
 
   Widget showPrimaryButton() {
     return new Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+        padding: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
         child: SizedBox(
           height: 40.0,
           child: ElevatedButton(
@@ -140,9 +144,9 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
               ),
               child: new Text(isLoginForm ? 'Login' : 'Create account',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-              onPressed: (){
+              onPressed: isLoginForm || isCreateAccountEnabled ? (){
                 validateAndSubmit();
-              },
+              } : null,
             ),
         ));
   }
@@ -153,6 +157,16 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
             isLoginForm ? 'Create an account' : 'Have an account? Sign in',
             style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
         onPressed: toggleFormMode);
+  }
+
+  Widget showPrivacyTermsConditions() {
+    return isLoginForm ? 
+      PrivacyTermsConditionsText('By continuing, you agree to our ') : 
+      PrivacyTermsConditionsCheckbox((tosAndPpAgreed) {
+        setState(() {
+          this.isCreateAccountEnabled = tosAndPpAgreed;
+        });
+      });
   }
 
   void toggleFormMode() {
