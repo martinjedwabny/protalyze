@@ -15,21 +15,24 @@ class WorkoutFormatter {
     StringBuffer buf = StringBuffer();
     buf.writeln(workout.name + ':');
     workout.blocks.forEach((block) {
-      buf.writeln(formatBlockToString(block));
+      buf.writeln(formatBlockToString(block, 0));
     });
+    print(buf.toString());
     return buf.toString();
   }
 
-  static String formatBlockToString(Block block) {
+  static String formatBlockToString(Block block, int depth) {
     StringBuffer buf = StringBuffer();
+    String spaces = "  ";
     if (block is GroupBlock) {
-      buf.writeln(block.sets.toString() + 'x (');
+      buf.writeln(spaces*depth + block.sets.toString() + 'x (');
       block.subBlocks.forEach((subBlock) {
-        buf.writeln(formatBlockToString(subBlock));
+        buf.writeln(formatBlockToString(subBlock, depth + 1));
       });
-      buf.writeln(')');
+      buf.write(spaces*depth + ')');
     } else if (block is ExerciseBlock) {
       buf.write(
+        spaces*depth + 
         block.sets.toString() + 'x (' + 
         block.name + ': ' +
         DurationFormatter.formatWithLetters(block.performingTime) + ' work, ' +
