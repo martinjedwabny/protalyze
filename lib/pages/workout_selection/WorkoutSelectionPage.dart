@@ -10,13 +10,11 @@ import 'package:protalyze/config/Themes.dart';
 import 'package:protalyze/pages/workout_selection/WorkoutListItem.dart';
 import 'package:protalyze/common/domain/ExerciseBlock.dart';
 import 'package:protalyze/common/domain/Workout.dart';
-import 'package:protalyze/pages/countdown/CountdownPage.dart';
 import 'package:protalyze/pages/workout_display/WorkoutDisplayPage.dart';
 import 'package:protalyze/common/widget/FloatingScaffold.dart';
 import 'package:protalyze/common/widget/SingleMessageAlertDialog.dart';
 import 'package:protalyze/common/widget/SingleMessageConfirmationDialog.dart';
 import 'package:protalyze/common/widget/SingleMessageScaffold.dart';
-import 'package:protalyze/common/widget/SinglePickerAlertDialog.dart';
 import 'package:protalyze/common/widget/TextInputAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +31,7 @@ class WorkoutSelectionPage extends StatefulWidget {
   _WorkoutSelectionPageState createState() => _WorkoutSelectionPageState();
 }
 
-class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
-    with AutomaticKeepAliveClientMixin {
+class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with AutomaticKeepAliveClientMixin {
   var maxJsonInputLength = 20000;
 
   @override
@@ -42,17 +39,6 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    Widget playButton = FloatingActionButton(
-      heroTag: 'WorkoutPlay',
-      tooltip: 'Play',
-      onPressed: () {
-        playWorkout();
-      },
-      child: Icon(
-        Icons.play_arrow,
-        color: Colors.white,
-      )
-    );
     Widget shareButton = IconButton(icon: Icon(Icons.share, color: Themes.normal.primaryColor,), onPressed: () {
         shareWorkoutButtonHandle();
       },
@@ -90,8 +76,6 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
           ));
         return FloatingScaffoldSection(child: body);
       }),
-      floatingActionButton: Wrap(spacing: 10.0, children: [ playButton, ],
-      ),
     );
   }
 
@@ -137,43 +121,6 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
         ),
       ),
     );
-  }
-
-  void playWorkout(){
-    List<Workout> workouts = Provider.of<WorkoutNotifier>(context, listen: false).workouts;
-    showDialog(
-      context: context,
-      useRootNavigator: false,
-      builder: (BuildContext context) {
-        if (workouts.isEmpty)
-          return SingleMessageAlertDialog(
-              'Error', 'Please add a workout to start one.');
-        return SinglePickerAlertDialog<Workout>(
-            'Start a workout',
-            'Select an option:',
-            Map.fromIterable(workouts, key: (w) => w.name, value: (w) => w),
-            ((Workout w) {
-          goToTimer(w, context);
-        }));
-      });
-  }
-
-  void goToTimer(Workout workout, BuildContext dialogContext) {
-    if (workout.blocks.isEmpty){
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SingleMessageAlertDialog('Error', 'Please add at least one exercise.');
-        },
-      );
-    } else {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => ChangeNotifierProvider<PastWorkoutNotifier>.value(
-          value: Provider.of<PastWorkoutNotifier>(this.context), 
-          child: CountDownPage(workout)
-        ),),
-      );
-    }
   }
 
   void shareWorkoutButtonHandle() {

@@ -1,4 +1,5 @@
 import 'package:protalyze/pages/exercise_repository/ExerciseRepositoryPage.dart';
+import 'package:protalyze/pages/timer_select/TimerSelectPage.dart';
 import 'package:protalyze/provider/ExerciseNotifier.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:protalyze/provider/WorkoutNotifier.dart';
@@ -37,6 +38,13 @@ class _TabsPageState extends State<TabsPage> {
       MultiProvider(
         providers: [
         ChangeNotifierProvider.value(value: this._workoutNotifier),
+        ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
+        ],
+        child: PastWorkoutSelectionPage(this.widget.logoutCallback),
+      ),
+      MultiProvider(
+        providers: [
+        ChangeNotifierProvider.value(value: this._workoutNotifier),
         ChangeNotifierProvider.value(value: this._exerciseNotifier),
         ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
         ],
@@ -51,9 +59,8 @@ class _TabsPageState extends State<TabsPage> {
       MultiProvider(
         providers: [
         ChangeNotifierProvider.value(value: this._workoutNotifier),
-        ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
         ],
-        child: PastWorkoutSelectionPage(this.widget.logoutCallback),
+        child: TimerSelectPage(),
       ),
     ];
     super.initState();
@@ -73,16 +80,20 @@ class _TabsPageState extends State<TabsPage> {
         currentIndex: _currentIndex, // new
         items: [
           new SalomonBottomBarItem(
-            icon: Icon(Icons.timer_outlined),
-            title: Text('Workouts'),
+            icon: Icon(Icons.event_available_outlined),
+            title: Text('Dashboard', ),
           ),
           new SalomonBottomBarItem(
             icon: Icon(Icons.list_alt_rounded),
+            title: Text('Workouts'),
+          ),
+          new SalomonBottomBarItem(
+            icon: Icon(Icons.fitness_center_outlined),
             title: Text('Exercises'),
           ),
           new SalomonBottomBarItem(
-            icon: Icon(Icons.event_available_outlined),
-            title: Text('History', ),
+            icon: Icon(Icons.timer_outlined),
+            title: Text('Timer'),
           ),
         ],
       ),

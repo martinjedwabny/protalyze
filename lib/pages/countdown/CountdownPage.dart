@@ -5,7 +5,6 @@ import 'package:protalyze/pages/countdown/CountdownExercisesInfo.dart';
 import 'package:protalyze/pages/countdown/CountdownProgressIndicator.dart';
 import 'package:protalyze/pages/countdown/CountdownVolumeSlider.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
-import 'package:protalyze/config/Palette.dart';
 import 'package:protalyze/config/Themes.dart';
 import 'package:protalyze/pages/countdown/CountdownElement.dart';
 import 'package:protalyze/common/domain/PastWorkout.dart';
@@ -59,26 +58,23 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleDark);
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Palette.darkGray,
-      body: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                buildCurrentTimeWidget(),
-                buildExercisesWidget(),
-                buildProgressIndicator(),
-                buildCommentsButton(),
-                buildVolumeSlider(),
-                buildBottomButtons(context),
-              ],
-            );
-          }
-      )
+    // SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleDark);
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            buildCurrentTimeWidget(),
+            buildExercisesWidget(),
+            buildProgressIndicator(),
+            buildCommentsButton(),
+            buildVolumeSlider(),
+            buildBottomButtons(context),
+          ],
+        );
+      }
     );
   }
 
@@ -173,19 +169,19 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   Widget buildCurrentTimeWidget() {
     var currentTimeFontSize = 120.0;
-    return SizedBox(height: 140, 
-      child: Container(alignment: Alignment.topCenter,
-        child: Text(blockRemainingTimeString,style: TextStyle(fontSize: currentTimeFontSize, color: Colors.white,))));
+    return Container(
+      alignment: Alignment.topCenter,
+      child: Text(
+        blockRemainingTimeString,
+        style: TextStyle(
+          fontSize: currentTimeFontSize, 
+          color: Colors.white,
+          height: 0.8)));
   }
 
   Widget buildExercisesWidget(){
     return Align(alignment: FractionalOffset.center,
-      child: Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        SizedBox(height: 10),
-        Container(
+      child: Container(
           padding: EdgeInsets.only(left: 70, right: 70),
           child: Container(
             child: CountdownExercisesInfo(
@@ -195,8 +191,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
               this._totalTime),
             )
           ),
-        ],
-      ),
     );
   }
 
@@ -275,7 +269,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   Widget buildCommentsButton() {
     var commentTextAndIcon = Container(
-      padding: EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(vertical: 2),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,

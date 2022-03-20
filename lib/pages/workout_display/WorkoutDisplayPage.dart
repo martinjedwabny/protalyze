@@ -1,6 +1,5 @@
 import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
 import 'package:protalyze/provider/ExerciseNotifier.dart';
-import 'package:protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:protalyze/provider/WorkoutNotifier.dart';
 import 'package:protalyze/config/Themes.dart';
 import 'package:protalyze/pages/workout_display/BlockListItem.dart';
@@ -8,7 +7,6 @@ import 'package:protalyze/common/domain/Block.dart';
 import 'package:protalyze/common/domain/ExerciseBlock.dart';
 import 'package:protalyze/common/domain/GroupBlock.dart';
 import 'package:protalyze/common/domain/Workout.dart';
-import 'package:protalyze/pages/countdown/CountdownPage.dart';
 import 'package:protalyze/pages/exercise_edit/ExerciseEditPage.dart';
 import 'package:protalyze/common/widget/FloatingScaffold.dart';
 import 'package:protalyze/pages/exercise_edit/GroupBlockEditDialog.dart';
@@ -32,14 +30,6 @@ class WorkoutDisplayPage extends StatefulWidget {
 class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   @override
   Widget build(BuildContext context) {
-    Widget playButton = FloatingActionButton(
-      heroTag: 'play',
-      tooltip: 'Start workout',
-      onPressed: () { 
-        goToTimer();
-      },
-      child: Icon(Icons.play_arrow, color: Colors.white,),
-    );
     Widget editButton = IconButton(icon: Icon(Icons.edit, color: Themes.normal.primaryColor,), onPressed: () {
         showEditWorkoutNameDialog();
       },
@@ -61,7 +51,6 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
         actions: this.widget.canEdit ? [editButton, addBlockButton] : null,
       ),
       body: FloatingScaffoldSection(child: getListViewFromWorkout(this.widget.workout)),
-      floatingActionButton: widget.canEdit == false ? null : playButton,
     );
   }
 
@@ -342,24 +331,5 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
   void updateWorkout() {
     Provider.of<WorkoutNotifier>(context, listen: false).updateWorkout(widget.workout);
     setState(() {});
-  }
-
-  void goToTimer() {
-    if (this.widget.workout.blocks.isEmpty){
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SingleMessageAlertDialog('Error', 'Please add at least one exercise.');
-        },
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ChangeNotifierProvider<PastWorkoutNotifier>.value(
-          value: Provider.of<PastWorkoutNotifier>(this.context), 
-          child: CountDownPage(this.widget.workout)
-        ),),
-      );
-    }
   }
 }

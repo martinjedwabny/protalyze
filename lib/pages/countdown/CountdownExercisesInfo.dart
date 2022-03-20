@@ -28,6 +28,7 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
       var nextExercisesTitle = afterMessageText();
       var nextExercisesList = createNextExercisesList();
       return Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
             currentExerciseTextContainer,
             nextExercisesTitle,
@@ -83,7 +84,11 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
     Widget currentExerciseGifButton = createGifButton(currentExerciseString , currentExerciseGif, 30);
     var currentExerciseText = Text(
             currentExerciseString,
-            style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300, color: Colors.white),
+            style: TextStyle(
+              fontSize: 40.0, 
+              fontWeight: FontWeight.w300, 
+              color: Colors.white,
+              height: 0.8),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
       );
@@ -126,7 +131,7 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
         return Container(
             height: 80,
             width: 300,
-            margin: EdgeInsets.only(bottom: 30.0),
+            margin: EdgeInsets.only(bottom: 20.0),
             child: ShaderMask(
               shaderCallback: (Rect rect) {
                 return LinearGradient(

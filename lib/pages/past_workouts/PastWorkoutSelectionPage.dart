@@ -27,8 +27,7 @@ class PastWorkoutSelectionPage extends StatefulWidget {
       _PastWorkoutSelectionPageState();
 }
 
-class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
-    with AutomaticKeepAliveClientMixin {
+class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   @override
@@ -36,7 +35,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
     super.build(context);
     return FloatingScaffold(
       appBar: AppBar(
-        title: Text('History'),
+        title: Text('Dashboard'),
         actions: [
         IconButton(icon: Icon(Icons.add, color: Themes.normal.primaryColor,), onPressed: () {
             addNewPastWorkout();

@@ -10,7 +10,7 @@ import 'package:protalyze/pages/exercise_repository/ExerciseListItem.dart';
 import 'package:protalyze/provider/ExerciseNotifier.dart';
 import 'package:provider/provider.dart';
 
-class ExerciseRepositoryPage extends StatelessWidget {
+class ExerciseRepositoryPage extends StatelessWidget  {
   final VoidCallback logoutCallback;
 
   const ExerciseRepositoryPage(this.logoutCallback);

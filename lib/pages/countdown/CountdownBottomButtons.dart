@@ -15,7 +15,7 @@ class _CountdownBottomButtonsState extends State<CountdownBottomButtons> {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: EdgeInsets.only(left:8.0,right:8.0,bottom:16.0),
+        padding: EdgeInsets.only(left:8.0,right:8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -28,7 +28,7 @@ class _CountdownBottomButtonsState extends State<CountdownBottomButtons> {
             Column(
               children: [
                 SizedBox(
-                  height: 44.0,
+                  height: 40.0,
                   child: 
                     Text(totalRemainingTimeString,
                     style: TextStyle(

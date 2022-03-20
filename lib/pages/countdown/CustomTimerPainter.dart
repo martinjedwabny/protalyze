@@ -30,7 +30,7 @@ class CustomTimerPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
     Paint paintFront = Paint()
-      ..strokeWidth = 20
+      ..strokeWidth = 16
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       ..shader = gradient.createShader(rect);
