@@ -1,5 +1,4 @@
 import 'package:protalyze/common/widget/TextInputAlertDialog.dart';
-import 'package:protalyze/config/Palette.dart';
 import 'package:protalyze/pages/countdown/CountdownBottomButtons.dart';
 import 'package:protalyze/pages/countdown/CountdownControls.dart';
 import 'package:protalyze/pages/countdown/CountdownExercisesInfo.dart';
@@ -59,20 +58,12 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleDark);
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        color: Colors.white,
-      ),
-      child: AnimatedBuilder(
+    return AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
           return Column(
             mainAxisSize: MainAxisSize.max,
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              buildCurrentTimeWidget(),
               buildExercisesWidget(),
               buildProgressIndicator(),
               buildCommentsButton(),
@@ -81,7 +72,6 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             ],
           );
         }
-      ),
     );
   }
 
@@ -174,31 +164,12 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     this._isPause = !this._isPause;
   }
 
-  Widget buildCurrentTimeWidget() {
-    var currentTimeFontSize = 90.0;
-    return Container(
-      alignment: Alignment.topCenter,
-      child: Text(
-        blockRemainingTimeString,
-        style: TextStyle(
-          fontSize: currentTimeFontSize, 
-          color: Themes.normal.colorScheme.primary,
-          height: 0.95)));
-  }
-
   Widget buildExercisesWidget(){
-    return Align(alignment: FractionalOffset.center,
-      child: Container(
-          padding: EdgeInsets.only(left: 70, right: 70),
-          child: Container(
-            child: CountdownExercisesInfo(
-              this._controller, 
-              this._countdownElementList, 
-              () => this._currentCountdownElementIndex, 
-              this._totalTime),
-            )
-          ),
-    );
+    return CountdownExercisesInfo(
+      this._controller, 
+      this._countdownElementList, 
+      () => this._currentCountdownElementIndex, 
+      this._totalTime);
   }
 
   Widget buildProgressIndicator(){

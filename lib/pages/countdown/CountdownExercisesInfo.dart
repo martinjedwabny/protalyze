@@ -20,26 +20,129 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
 
   final Color mainTextColor = Themes.normal.colorScheme.primary;
   final Color fadedTextColor = Themes.normal.colorScheme.primary.withAlpha(200);
+  var timeFontSize = 40.0;
+  var exerciseFontSize = 24.0;
 
   @override
   Widget build(BuildContext context) {
     if (isCountdownFinished()) {
       return finishedMessageText();
     } else {
-      var currentExerciseTextContainer = currentExerciseText();
+      var currentExerciseTextContainer = null;//currentExerciseText();
       if (this.widget._countdownElementList.length == 1)
-        return Column(children: [currentExerciseTextContainer]);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            currentExerciseTextContainer
+          ]
+        );
       var nextExercisesTitle = afterMessageText();
       var nextExercisesList = createNextExercisesList();
-      return Column(
-        mainAxisSize: MainAxisSize.min,
+      // return Column(
+      //   mainAxisSize: MainAxisSize.min,
+      //   children: [
+      //       currentExerciseTextContainer,
+      //       nextExercisesTitle,
+      //       nextExercisesList,
+      //   ]
+      // );
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-            currentExerciseTextContainer,
-            nextExercisesTitle,
-            nextExercisesList,
-        ]
+          Expanded(child: Center(child: buildCurrentExerciseSection())),
+          VerticalDivider(width: 16.0),
+          Expanded(child: Center(child: buildNextExercisesSection())),
+        ],
       );
     }
+  }
+
+  Widget buildCurrentExerciseSection() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Container(
+        padding: EdgeInsets.only(left: 8),
+        child: Text('NOW', style: TextStyle(fontSize: 20.0),),
+      ),
+      Container(
+        height: 40,
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          color: Colors.white,
+        ),
+        child: buildCurrentExerciseWidget(),
+        ),
+        Container(
+          alignment: Alignment.topLeft,
+          padding: EdgeInsets.all(8),
+          child: buildCurrentTimeWidget(),
+        ),
+    ],
+  );
+
+  Widget buildNextExercisesSection() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Container(
+        padding: EdgeInsets.only(left: 8),
+        child: Text('AFTER', style: TextStyle(fontSize: 20.0),),
+      ),
+      Container(
+        height: 40,
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          color: Colors.white,
+        ),
+        child: buildNextExercisesWidget(),
+        ),
+      Container(
+        alignment: Alignment.topRight,
+        padding: EdgeInsets.all(8),
+        child: buildTotalTimeWidget(),
+      ),
+    ],
+  );
+
+  Widget buildCurrentExerciseWidget() {
+    Widget currentExerciseGifButton = createGifButton(currentExerciseString , currentExerciseGif, 24);
+        var currentExerciseText = Text(
+                currentExerciseString,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: exerciseFontSize, 
+                  fontWeight: FontWeight.w300, 
+                  color: mainTextColor,
+                  height: 0.9),
+                overflow: TextOverflow.fade,
+                textAlign: TextAlign.left,
+          );
+          return Row(mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Flexible(child: FittedBox(fit:BoxFit.scaleDown,child: currentExerciseText)),
+                SizedBox.fromSize(size: Size(12, 12),),
+                currentExerciseGifButton,],);
+  }
+
+  Widget buildCurrentTimeWidget() {
+    return Text(
+        blockRemainingTimeString,
+        style: TextStyle(
+          height: 0.95,
+          fontSize: timeFontSize, 
+          color: Themes.normal.colorScheme.primary,)
+    );
+  }
+
+  Widget buildTotalTimeWidget() {
+    return Text(
+        totalRemainingTimeString,
+        style: TextStyle(
+          height: 0.95,
+          fontSize: timeFontSize, 
+          color: Themes.normal.colorScheme.primary,)
+    );
   }
 
   bool isCountdownFinished() {
@@ -84,25 +187,6 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
       );
   }
 
-  Widget currentExerciseText(){
-    Widget currentExerciseGifButton = createGifButton(currentExerciseString , currentExerciseGif, 30);
-    var currentExerciseText = Text(
-            currentExerciseString,
-            style: TextStyle(
-              fontSize: 40.0, 
-              fontWeight: FontWeight.w300, 
-              color: mainTextColor,
-              height: 0.8),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-      );
-      return Row(mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(child: Container(child: currentExerciseText)),
-            SizedBox.fromSize(size: Size(12, 12),),
-            currentExerciseGifButton,],);
-  }
-
   Widget createGifButton(String title, String gifUrl, double size) {
     return gifUrl == null || gifUrl == '' ? SizedBox(width: 1, height: 1) : GestureDetector(
       onTap: () {showGifDialog(title, gifUrl);}, 
@@ -128,6 +212,27 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
           ],
         )
     );
+  }
+
+  Widget buildNextExercisesWidget() {
+    List<String> listElements = this.widget._countdownElementList.sublist(min(this.widget._currentCountdownElementIndex()+1,this.widget._countdownElementList.length)).map((e) => e.name.substring(0, e.name.length < 20 ? e.name.length : 20) + ' (' + DurationFormatter.format(e.totalTime) + ')').toList();
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.zero,
+      physics: ClampingScrollPhysics(),
+      shrinkWrap: true,
+      children: listElements.asMap().entries.map((entry) {
+        String e = entry.value;
+        bool shouldTrailing = entry.key != listElements.length - 1;
+        String text = shouldTrailing ? e + ' | ' : e;
+        return Card(
+          margin: EdgeInsets.all(0),
+          color: Colors.transparent,
+          child: Text(text, style: TextStyle(color: fadedTextColor, fontSize: exerciseFontSize, height: 1), textAlign: TextAlign.center),
+        );
+      }
+      ).toList(),
+  );
   }
 
   Widget createNextExercisesList() {
