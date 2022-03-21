@@ -11,13 +11,15 @@ class CountdownVolumeSlider extends StatefulWidget {
 
 class _CountdownVolumeSliderState extends State<CountdownVolumeSlider> {
   final Color iconColor = Palette.darkGray.withAlpha(200);
+  double volume = 0.5;
   @override
   Widget build(BuildContext context) {
     Widget volumeDownIcon = Icon(Icons.volume_down_outlined, size: 24, color: iconColor, );
     Widget volumeUpIcon = Icon(Icons.volume_up_outlined, size: 24, color: iconColor,);
     Widget volumeSlider = Slider(
-      value: this.widget.initialVolume, 
+      value: volume, 
       onChanged: (double value) {
+        volume = value;
         setState(() {
           this.widget.volumeChangedCallback(value);
         });
