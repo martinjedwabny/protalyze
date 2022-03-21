@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:protalyze/config/Palette.dart';
 import 'package:protalyze/config/Themes.dart';
 import 'package:protalyze/pages/countdown/CustomTimerPainter.dart';
 
@@ -45,7 +46,7 @@ class _CountdownProgressIndicatorState extends State<CountdownProgressIndicator>
             size: Size.infinite,
               painter: CustomTimerPainter(
                 animation: this.widget._controller,
-                backgroundColor: Colors.grey[700],
+                backgroundColor: Palette.orange.withAlpha(150),
                 color1: Themes.normal.colorScheme.secondary,
                 color2: Colors.red,
           ));

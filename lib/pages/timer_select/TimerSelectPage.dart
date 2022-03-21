@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:protalyze/common/domain/PastWorkout.dart';
 import 'package:protalyze/common/domain/Workout.dart';
 import 'package:protalyze/common/widget/FloatingScaffold.dart';
-import 'package:protalyze/common/widget/SinglePickerAlertDialog.dart';
-import 'package:protalyze/config/Palette.dart';
+import 'package:protalyze/common/widget/SingleMessageConfirmationDialog.dart';
+import 'package:protalyze/common/widget/TextInputAlertDialog.dart';
 import 'package:protalyze/pages/countdown/CountdownPage.dart';
+import 'package:protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:protalyze/provider/WorkoutNotifier.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +19,7 @@ class TimerSelectPage extends StatefulWidget {
 class _TimerSelectPageState extends State<TimerSelectPage> with AutomaticKeepAliveClientMixin {
   Workout selectedWorkout;
   Workout currentOption;
+  String _comments = '';
   
   @override
   bool get wantKeepAlive => true;
@@ -28,12 +31,64 @@ class _TimerSelectPageState extends State<TimerSelectPage> with AutomaticKeepAli
     return FloatingScaffold(
       appBar: AppBar(
         title: Text('Timer'),
+        leading: buildBackButton(), 
+        actions: buildActionButtons(),
       ),
       // resizeToAvoidBottomInset: false,
       // backgroundColor: Palette.darkGray,
       body: this.selectedWorkout == null ? 
         buildUnselected() : 
         buildSelected()
+    );
+  }
+
+  Widget buildBackButton() {
+    return this.selectedWorkout != null ? 
+      IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {handleExitButton();},
+      ) : null;
+  }
+
+  List<Widget> buildActionButtons() {
+    return this.selectedWorkout != null ? 
+      [
+        IconButton(
+          icon: Icon(Icons.save_outlined),
+          onPressed: () {handleSaveWorkoutButton(context);},
+        ),
+        IconButton(
+          icon: Icon(Icons.add_comment_outlined),
+          onPressed: () {handleTapComment();},
+        )
+       ] : [];
+  }
+
+
+
+  void handleSaveWorkoutButton(BuildContext context){
+    PastWorkout toSave = PastWorkout(Workout.copy(this.selectedWorkout), DateTime.now(), this._comments);
+    Provider.of<PastWorkoutNotifier>(context, listen: false).addPastWorkout(toSave).then((v) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text('Workout registered!'),
+      ));
+    });
+  }
+
+  void handleTapComment(){
+    showDialog(
+      context: context,
+      builder: (_) {
+        return TextInputAlertDialog('Comments', (String notes) {
+          this._comments = notes;
+        }, 
+        initialValue: this._comments, 
+        inputMaxLength: 2000,
+        nullInput: true,
+        multilineInput: true,);
+      },
     );
   }
 
@@ -85,6 +140,22 @@ class _TimerSelectPageState extends State<TimerSelectPage> with AutomaticKeepAli
 
   Widget buildSelected() {
     return CountDownPage(this.selectedWorkout);
+  }
+
+  void handleExitButton(){
+    showDialog(
+      context: context,
+      builder: (_) {
+        return SingleMessageConfirmationDialog("Exit", "Do you really want to exit?", 
+        (){
+          setState(() {
+            this.selectedWorkout = null;
+            this._comments = '';
+          });
+        }, 
+        (){});
+      },
+    );
   }
 
   Widget buildTitle() {

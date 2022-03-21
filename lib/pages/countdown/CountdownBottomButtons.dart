@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:protalyze/config/Themes.dart';
 
 class CountdownBottomButtons extends StatefulWidget {
-  final Function totalRemainingTimeString;
   final Function handleSaveWorkout;
-  final Function handleExit;
+  final Function handleTapComment;
 
-  const CountdownBottomButtons(this.totalRemainingTimeString, this.handleSaveWorkout, this.handleExit);
+  const CountdownBottomButtons(this.handleSaveWorkout, this.handleTapComment);
   @override
   _CountdownBottomButtonsState createState() => _CountdownBottomButtonsState();
 }
 
 class _CountdownBottomButtonsState extends State<CountdownBottomButtons> {
-  final Color buttonsColor = Themes.normal.colorScheme.primary;
+  final Color buttonsColor = Themes.normal.colorScheme.secondary;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,45 +20,35 @@ class _CountdownBottomButtonsState extends State<CountdownBottomButtons> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            TextButton(
-              onPressed: () {
-                this.widget.handleSaveWorkout();
-              },
-              child: Text("Save", style: TextStyle(fontSize: 24.0, color: buttonsColor))
-            ),
-            Column(
-              children: [
-                SizedBox(
-                  height: 42.0,
-                  child: 
-                    Text(totalRemainingTimeString,
-                    style: TextStyle(
-                      fontSize: 36.0,
-                      color: buttonsColor,
-                    ),
-                  ),
-                ),
-                Text('Total',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: buttonsColor,
-                  ),
-                ),
-              ]
-            ),
-            TextButton(
-              onPressed: () {
-                this.widget.handleExit();
-              },
-              child: Text("Exit", style: TextStyle(fontSize: 24.0, color: buttonsColor))
-            ),
+            buildSaveButton(),
+            buildCommentButton(),
           ],
         ),
       )
     );
   }
 
-  String get totalRemainingTimeString {
-    return this.widget.totalRemainingTimeString();
+  Widget buildSaveButton() {
+    return buildIconButton(Icons.save_alt_outlined, 'Save', () { this.widget.handleSaveWorkout();});
+  }
+
+  Widget buildCommentButton() {
+    return buildIconButton(Icons.add_comment_outlined, 'Comment', () { this.widget.handleTapComment();});
+  }
+  
+  Widget buildIconButton(IconData icon, String text, Function callback) {
+    var commentTextAndIcon = Container(
+      padding: EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: buttonsColor),
+          SizedBox.fromSize(size: Size(12, 12),),
+          Text(text, style: TextStyle(color: buttonsColor, fontSize: 20),),
+        ]));
+    return TextButton(
+        onPressed: () => callback(), 
+        child: commentTextAndIcon);
   }
 }

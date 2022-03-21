@@ -26,11 +26,11 @@ class CustomTimerPainter extends CustomPainter {
     );
     Paint paintBack = Paint()
       ..color = backgroundColor
-      ..strokeWidth = 4
+      ..strokeWidth = 2
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
     Paint paintFront = Paint()
-      ..strokeWidth = 16
+      ..strokeWidth = 20
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       ..shader = gradient.createShader(rect);
@@ -41,6 +41,11 @@ class CustomTimerPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
     double progress = animation.value * 1.5 * pi;
     double start = pi * 0.75 + (1 - animation.value) * 1.5 * pi;
+
+    Path path = Path()..addOval(Rect.fromCircle(center: Offset(size.width / 2, size.height / 2), radius: size.width / 2));
+    canvas.drawShadow(path, Colors.black.withAlpha(120), 16, true);
+    canvas.drawPath(path, Paint()..color = Colors.white.withAlpha(245));
+
     canvas.drawArc(rect, pi * 0.75, pi * 1.5, false, paintBack);
     canvas.drawArc(rect, start, progress, false, paintFront);
     canvas.drawArc(rect, start, 0.005, false, paintPoint);

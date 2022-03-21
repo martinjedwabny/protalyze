@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:protalyze/config/Themes.dart';
+import 'package:protalyze/config/Palette.dart';
 
 class CountdownControls extends StatefulWidget {
   final AnimationController controller;
@@ -19,30 +19,24 @@ class CountdownControls extends StatefulWidget {
 
 class _CountdownControlsState extends State<CountdownControls> {
 
-  final Icon backIcon = Icon(Icons.fast_rewind, color: Themes.normal.colorScheme.primary.withAlpha(150), size: 36,);
-  final Icon forwardIcon = Icon(Icons.fast_forward, color: Themes.normal.colorScheme.primary.withAlpha(150), size: 36,);
-  final Icon playIcon = Icon(Icons.play_arrow,color: Themes.normal.colorScheme.primary.withAlpha(150), size: 80,);
-  final Icon pauseIcon = Icon(Icons.pause,color: Themes.normal.colorScheme.primary.withAlpha(150), size: 80,);
-  final Icon doneIcon = Icon(Icons.done,color: Themes.normal.colorScheme.primary.withAlpha(150), size: 80,);
+  final Icon backIcon = Icon(Icons.fast_rewind, color: Palette.darkGray.withAlpha(200), size: 40,);
+  final Icon forwardIcon = Icon(Icons.fast_forward, color: Palette.darkGray.withAlpha(200), size: 40,);
+  final Icon playIcon = Icon(Icons.play_arrow,color: Palette.darkGray.withAlpha(200), size: 70,);
+  final Icon pauseIcon = Icon(Icons.pause,color: Palette.darkGray.withAlpha(200), size: 70,);
+  final Icon doneIcon = Icon(Icons.done,color: Palette.darkGray.withAlpha(200), size: 50,);
 
-  final double topMargin = 40;
-  final double interRowSpacing = 10;
-  final double heightLimit = 200.0;
+  final textButtonColor = Palette.darkGray.withAlpha(200);
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-      if(constraints.maxHeight > heightLimit) {
-        return buildBigLayoutControls();
-      } else {
-        return buildSmallLayoutControls();
-      }
+      return buildSmallLayoutControls();
     });
   }
 
   Widget backButton() => IconButton(
     padding: EdgeInsets.zero,
-    onPressed: () => this.widget.backwardCallback(), 
+    onPressed: this.widget.countdownFinished() ? null : () => this.widget.backwardCallback(), 
     icon: backIcon,
   );
 
@@ -50,7 +44,7 @@ class _CountdownControlsState extends State<CountdownControls> {
     animation: this.widget.controller,
     builder: (context, child) {
       return TextButton(
-          onPressed: () {
+          onPressed: this.widget.countdownFinished() ? null : () {
             this.widget.playPauseCallback();
             setState(() {});
           },
@@ -60,13 +54,13 @@ class _CountdownControlsState extends State<CountdownControls> {
 
   Widget forwardButton() => IconButton(
     padding: EdgeInsets.zero,
-    onPressed: () => this.widget.forwardCallback(), 
+    onPressed: this.widget.countdownFinished() ? null : () => this.widget.forwardCallback(), 
     icon: forwardIcon,
   );
 
-  Widget minusButton() => buildProgressTextButton('-5s', () => this.widget.minusCallback());
+  Widget minusButton() => buildProgressTextButton('-5s', this.widget.countdownFinished() ? null : () => this.widget.minusCallback());
 
-  Widget plusButton() => buildProgressTextButton('+5s', () => this.widget.plusCallback());
+  Widget plusButton() => buildProgressTextButton('+5s', this.widget.countdownFinished() ? null : () => this.widget.plusCallback());
 
   Widget buildSmallLayoutControls() {
     return Row(
@@ -82,41 +76,10 @@ class _CountdownControlsState extends State<CountdownControls> {
     );
   }
 
-  Widget buildBigLayoutControls() {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(width: 1,height: topMargin,),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            backButton(),
-            playButton(),
-            forwardButton(),
-          ],),
-          SizedBox(width: 1,height: interRowSpacing,),
-          Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min,
-          children: [
-            minusButton(),
-            plusButton(),
-          ],),
-      ]
-      );
-  }
-
   Widget buildProgressTextButton(String text, Function callback){
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        shape: CircleBorder(),
-        backgroundColor: Themes.normal.colorScheme.primary,
-        padding: EdgeInsets.all(14),
-        side: BorderSide(width: 2.0, color: Colors.white),
-      ),
+    return TextButton(
       onPressed: () { callback.call(); }, 
-      child: Text(text, style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),),
+      child: Text(text, style: TextStyle(color: textButtonColor, fontSize: 16, fontWeight: FontWeight.w900),),
     );
   }
 }

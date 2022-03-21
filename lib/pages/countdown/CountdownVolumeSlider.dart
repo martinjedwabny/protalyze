@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:protalyze/config/Palette.dart';
 
 class CountdownVolumeSlider extends StatefulWidget {
   final double initialVolume;
@@ -9,10 +10,11 @@ class CountdownVolumeSlider extends StatefulWidget {
 }
 
 class _CountdownVolumeSliderState extends State<CountdownVolumeSlider> {
+  final Color iconColor = Palette.darkGray.withAlpha(200);
   @override
   Widget build(BuildContext context) {
-    Widget volumeDownIcon = Icon(Icons.volume_down_outlined, size: 24, color: Colors.white70, );
-    Widget volumeUpIcon = Icon(Icons.volume_up_outlined, size: 24, color: Colors.white70,);
+    Widget volumeDownIcon = Icon(Icons.volume_down_outlined, size: 24, color: iconColor, );
+    Widget volumeUpIcon = Icon(Icons.volume_up_outlined, size: 24, color: iconColor,);
     Widget volumeSlider = Slider(
       value: this.widget.initialVolume, 
       onChanged: (double value) {

@@ -59,6 +59,7 @@ class _TabsPageState extends State<TabsPage> {
       MultiProvider(
         providers: [
         ChangeNotifierProvider.value(value: this._workoutNotifier),
+        ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
         ],
         child: TimerSelectPage(),
       ),
