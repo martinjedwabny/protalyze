@@ -244,7 +244,9 @@ class _CountDownPageState extends State<CountDownPage>
   Widget buildCurrentExerciseWidget() {
     if (countdownFinished()) return Text('');
     this.currentExerciseGif =
-        GifHandler.createGifImage(currentExerciseGifUrl, width: 400);
+        currentExerciseGifUrl == null || currentExerciseGifUrl.isEmpty
+            ? null
+            : GifHandler.createGifImage(currentExerciseGifUrl, width: 400);
     Widget currentExerciseGifButton =
         createGifButton(currentExerciseString, this.currentExerciseGif, 24);
     var currentExerciseText = Text(
@@ -266,7 +268,7 @@ class _CountDownPageState extends State<CountDownPage>
             child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                  padding: const EdgeInsets.only(left: 24.0, right: 24.0),
                   child: currentExerciseText,
                 ))),
         SizedBox.fromSize(
