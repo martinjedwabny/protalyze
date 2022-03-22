@@ -18,9 +18,8 @@ class FloatingScaffoldSection extends StatelessWidget {
       padding: padding,
       margin: margin,
       decoration: new BoxDecoration(
-        color: Colors.white,
-        borderRadius: new BorderRadius.all(Radius.circular(16.0))
-      ),
+          color: Colors.white,
+          borderRadius: new BorderRadius.all(Radius.circular(16.0))),
       clipBehavior: Clip.hardEdge,
       child: child,
     );

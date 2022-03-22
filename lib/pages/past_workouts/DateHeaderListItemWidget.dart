@@ -9,8 +9,8 @@ class DateHeaderListItemWidget extends StatelessWidget {
     return Container(
       height: 30,
       color: Colors.grey[200],
-      child: Center(child:
-        Text(
+      child: Center(
+        child: Text(
           DateFormat("EEE, MMM d").format(date),
           style: TextStyle(
             fontSize: 16,

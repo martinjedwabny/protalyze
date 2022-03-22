@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-class SingleMessageConfirmationDialog extends StatelessWidget{
+class SingleMessageConfirmationDialog extends StatelessWidget {
   final String _title, _message;
   final VoidCallback _okEvent, _cancelEvent;
-  SingleMessageConfirmationDialog(this._title, this._message, this._okEvent, this._cancelEvent);
+  SingleMessageConfirmationDialog(
+      this._title, this._message, this._okEvent, this._cancelEvent);
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

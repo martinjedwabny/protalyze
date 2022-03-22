@@ -17,8 +17,9 @@ void main() async {
   runApp(MyApp());
 }
 
-void setupStatusAndNavBarColors(){
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
+void setupStatusAndNavBarColors() {
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top]);
   SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleLight);
 }
 
@@ -29,7 +30,9 @@ class MyApp extends StatelessWidget {
     setupVerticalHorientation();
     return MaterialApp(
       title: 'protalyze',
-      home: RootPage(auth: new Auth(),),
+      home: RootPage(
+        auth: new Auth(),
+      ),
       theme: Themes.normal,
       debugShowCheckedModeBanner: false,
     );
@@ -38,12 +41,12 @@ class MyApp extends StatelessWidget {
   void setupFirestore() async {
     try {
       await FirebaseFirestore.instance.enablePersistence();
-    } catch(e) {
+    } catch (e) {
       print('Non critical error trying to setup Firestore persistance.');
     }
   }
 
-  void setupVerticalHorientation(){
+  void setupVerticalHorientation() {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

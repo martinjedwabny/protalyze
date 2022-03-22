@@ -29,14 +29,43 @@ class StatisticsCalendar extends StatelessWidget {
       ),
       eventLoader: getPastWorkoutForDate,
       calendarBuilders: CalendarBuilders(
-        defaultBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),))),
-        todayBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),style: TextStyle(color: Themes.normal.colorScheme.secondary),),),),
-        disabledBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),style: TextStyle(color: Themes.normal.disabledColor),),),),
-        outsideBuilder: (context, day, focusedDay) => Center(child:Container(height: 110,child:Text(day.day.toString(),style: TextStyle(color: Themes.normal.disabledColor),),),),
-        markerBuilder: (context, day, events) => 
-          Padding(padding: EdgeInsets.only(top: 18, left: 4, right: 4),
-            child: Column(children: getEventMarkers(events)),
+        defaultBuilder: (context, day, focusedDay) => Center(
+            child: Container(
+                height: 110,
+                child: Text(
+                  day.day.toString(),
+                ))),
+        todayBuilder: (context, day, focusedDay) => Center(
+          child: Container(
+            height: 110,
+            child: Text(
+              day.day.toString(),
+              style: TextStyle(color: Themes.normal.colorScheme.secondary),
+            ),
           ),
+        ),
+        disabledBuilder: (context, day, focusedDay) => Center(
+          child: Container(
+            height: 110,
+            child: Text(
+              day.day.toString(),
+              style: TextStyle(color: Themes.normal.disabledColor),
+            ),
+          ),
+        ),
+        outsideBuilder: (context, day, focusedDay) => Center(
+          child: Container(
+            height: 110,
+            child: Text(
+              day.day.toString(),
+              style: TextStyle(color: Themes.normal.disabledColor),
+            ),
+          ),
+        ),
+        markerBuilder: (context, day, events) => Padding(
+          padding: EdgeInsets.only(top: 18, left: 4, right: 4),
+          child: Column(children: getEventMarkers(events)),
+        ),
       ),
     );
   }
@@ -44,7 +73,9 @@ class StatisticsCalendar extends StatelessWidget {
   List<PastWorkout> getPastWorkoutForDate(DateTime day) {
     List<PastWorkout> events = [];
     for (PastWorkout pw in pastWorkouts) {
-      if(pw.dateTime.year==day.year && pw.dateTime.month==day.month && pw.dateTime.day==day.day) {
+      if (pw.dateTime.year == day.year &&
+          pw.dateTime.month == day.month &&
+          pw.dateTime.day == day.day) {
         events.add(pw);
       }
     }
@@ -59,7 +90,9 @@ class StatisticsCalendar extends StatelessWidget {
       ans.add(CalendarLineTag(message: pw.workout.name, index: i));
     }
     if (events.length > maxMarkers) {
-      ans.add(CalendarLineTag(message: '+ ' + (events.length-maxMarkers).toString(), index: maxMarkers));
+      ans.add(CalendarLineTag(
+          message: '+ ' + (events.length - maxMarkers).toString(),
+          index: maxMarkers));
     }
     return ans;
   }

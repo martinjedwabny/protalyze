@@ -17,45 +17,40 @@ class PrivacyTermsConditionsText extends StatelessWidget {
       alignment: Alignment.center,
       padding: EdgeInsets.all(10),
       child: Center(
-      child: Text.rich(
-        TextSpan(
-          text: this.leadingText, style: TextStyle(
-          fontSize: 16
-        ),
-          children: <TextSpan>[
-            TextSpan(
-              text: 'Terms of Service', style: TextStyle(
-              fontSize: 16,
-              decoration: TextDecoration.underline,
-            ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                showDialog(context: context, builder: (context) => 
-                  MarkdownMessageAlertDialog('Terms of Service',tosMessage));
-                }
-            ),
-            TextSpan(
-              text: ' and ', style: TextStyle(
-              fontSize: 16
-            ),
+          child: Text.rich(TextSpan(
+              text: this.leadingText,
+              style: TextStyle(fontSize: 16),
               children: <TextSpan>[
-                TextSpan(
-                  text: 'Privacy Policy', style: TextStyle(
+            TextSpan(
+                text: 'Terms of Service',
+                style: TextStyle(
                   fontSize: 16,
-                  decoration: TextDecoration.underline
+                  decoration: TextDecoration.underline,
                 ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      showDialog(context: context, builder: (context) =>  
-                        MarkdownMessageAlertDialog('Privacy Policy',ppMessage));
-                      }
-                )
-              ]
-            )
-          ]
-        )
-      )
-      ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    showDialog(
+                        context: context,
+                        builder: (context) => MarkdownMessageAlertDialog(
+                            'Terms of Service', tosMessage));
+                  }),
+            TextSpan(
+                text: ' and ',
+                style: TextStyle(fontSize: 16),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: 'Privacy Policy',
+                      style: TextStyle(
+                          fontSize: 16, decoration: TextDecoration.underline),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => MarkdownMessageAlertDialog(
+                                  'Privacy Policy', ppMessage));
+                        })
+                ])
+          ]))),
     );
   }
 }

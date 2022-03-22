@@ -11,10 +11,11 @@ class CalendarLineTag extends StatelessWidget {
   final int index;
 
   static List<Color> options = [
-      Colors.red[700],
-      Colors.blue[700],
-      Colors.orange[700],
-      Colors.green[700],];
+    Colors.red[700],
+    Colors.blue[700],
+    Colors.orange[700],
+    Colors.green[700],
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +24,11 @@ class CalendarLineTag extends StatelessWidget {
       constraints: BoxConstraints.expand(height: 10),
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(horizontal: 2),
-      child: Text(message, 
+      child: Text(
+        message,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(color: Colors.white, fontSize: 8),),
+        style: TextStyle(color: Colors.white, fontSize: 8),
+      ),
     );
   }
 }

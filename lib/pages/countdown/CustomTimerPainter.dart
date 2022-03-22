@@ -42,7 +42,10 @@ class CustomTimerPainter extends CustomPainter {
     double progress = animation.value * 1.5 * pi;
     double start = pi * 0.75 + (1 - animation.value) * 1.5 * pi;
 
-    Path path = Path()..addOval(Rect.fromCircle(center: Offset(size.width / 2, size.height / 2), radius: size.width / 2));
+    Path path = Path()
+      ..addOval(Rect.fromCircle(
+          center: Offset(size.width / 2, size.height / 2),
+          radius: size.width / 2));
     canvas.drawShadow(path, Colors.black.withAlpha(120), 16, true);
     canvas.drawPath(path, Paint()..color = Colors.white.withAlpha(245));
 

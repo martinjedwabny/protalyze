@@ -18,14 +18,15 @@ class _RootPageState extends State<RootPage> {
   @override
   void initState() {
     super.initState();
-      User user = widget.auth.getCurrentUser();
-      setState(() {
-        if (user != null) {
-          userId = user?.uid;
-        }
-        authStatus = user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
-        });
-    }
+    User user = widget.auth.getCurrentUser();
+    setState(() {
+      if (user != null) {
+        userId = user?.uid;
+      }
+      authStatus =
+          user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -10,7 +10,7 @@ import 'package:protalyze/pages/exercise_repository/ExerciseListItem.dart';
 import 'package:protalyze/provider/ExerciseNotifier.dart';
 import 'package:provider/provider.dart';
 
-class ExerciseRepositoryPage extends StatelessWidget  {
+class ExerciseRepositoryPage extends StatelessWidget {
   final VoidCallback logoutCallback;
 
   const ExerciseRepositoryPage(this.logoutCallback);
@@ -23,19 +23,21 @@ class ExerciseRepositoryPage extends StatelessWidget  {
         actions: [
           buildNewExerciseButton(context),
           buildLogoutButton(),
-      ],
+        ],
       ),
       body: Consumer<ExerciseNotifier>(builder: (_, notifier, child) {
         Widget body;
         if (notifier.exercises.isEmpty)
           body = SingleMessageScaffold('No exercises added yet.');
-        else 
-          body = Container(child: ListView.builder(
+        else
+          body = Container(
+              child: ListView.builder(
             controller: ScrollController(),
             padding: EdgeInsets.only(bottom: 80.0),
             itemCount: notifier.exercises.length,
             itemBuilder: (_, index) {
-              ExerciseListItem item = ExerciseListItem(notifier.exercises[index]);
+              ExerciseListItem item =
+                  ExerciseListItem(notifier.exercises[index]);
               return buildCardForItem(item, context);
             },
           ));
@@ -45,14 +47,24 @@ class ExerciseRepositoryPage extends StatelessWidget  {
   }
 
   Widget buildNewExerciseButton(BuildContext context) {
-    return IconButton(icon: Icon(Icons.add, color: Themes.normal.primaryColor,), onPressed: () {
+    return IconButton(
+      icon: Icon(
+        Icons.add,
+        color: Themes.normal.primaryColor,
+      ),
+      onPressed: () {
         addNewExercise(context);
       },
     );
   }
 
   Widget buildLogoutButton() {
-    return IconButton(icon: Icon(Icons.logout, color: Themes.normal.primaryColor,), onPressed: () {
+    return IconButton(
+      icon: Icon(
+        Icons.logout,
+        color: Themes.normal.primaryColor,
+      ),
+      onPressed: () {
         this.logoutCallback();
       },
     );
@@ -66,16 +78,14 @@ class ExerciseRepositoryPage extends StatelessWidget  {
         subtitle: item.buildContent(context),
         onTap: () {
           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ChangeNotifierProvider<ExerciseNotifier>.value(
-                value: Provider.of<ExerciseNotifier>(context), 
-                child: ExerciseEditPage(item.exercise, () {
-                  updateExercise(item.exercise, context);
-                })
-              ),
-            )
-          );
+              context,
+              MaterialPageRoute(
+                builder: (_) => ChangeNotifierProvider<ExerciseNotifier>.value(
+                    value: Provider.of<ExerciseNotifier>(context),
+                    child: ExerciseEditPage(item.exercise, () {
+                      updateExercise(item.exercise, context);
+                    })),
+              ));
         },
         trailing: Wrap(
           children: <Widget>[
@@ -93,20 +103,26 @@ class ExerciseRepositoryPage extends StatelessWidget  {
 
   void removeExercise(exercise, BuildContext context) {
     showDialog(
-      context: context,
-      builder: (_) {
-        return SingleMessageConfirmationDialog("Please confirm", "Do you really want to delete this exercise?", 
-        (){Provider.of<ExerciseNotifier>(context, listen: false).removeExerciseBlock(exercise);}, 
-        (){});
-      });
+        context: context,
+        builder: (_) {
+          return SingleMessageConfirmationDialog(
+              "Please confirm", "Do you really want to delete this exercise?",
+              () {
+            Provider.of<ExerciseNotifier>(context, listen: false)
+                .removeExerciseBlock(exercise);
+          }, () {});
+        });
   }
 
   void updateExercise(ExerciseBlock exercise, BuildContext context) {
-    Provider.of<ExerciseNotifier>(context, listen: false).updateExerciseBlock(exercise);
+    Provider.of<ExerciseNotifier>(context, listen: false)
+        .updateExerciseBlock(exercise);
   }
 
   void addNewExercise(BuildContext context) {
-    ExerciseBlock exercise = ExerciseBlock("New exercise", 1, Duration(seconds: 30), Duration(seconds: 90));
-    Provider.of<ExerciseNotifier>(context, listen: false).addExerciseBlock(exercise);
+    ExerciseBlock exercise = ExerciseBlock(
+        "New exercise", 1, Duration(seconds: 30), Duration(seconds: 90));
+    Provider.of<ExerciseNotifier>(context, listen: false)
+        .addExerciseBlock(exercise);
   }
 }

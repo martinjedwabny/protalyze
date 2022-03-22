@@ -3,24 +3,24 @@ import 'package:protalyze/common/domain/Workout.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class WorkoutDataManager {
-
   static final String usersKey = 'users';
   static final String workoutsKey = 'workouts';
 
   static Future<List<Workout>> getSavedWorkouts() async {
     CollectionReference workoutsCollection = await getWorkoutCollection();
     QuerySnapshot query = await workoutsCollection.get();
-    return query.docs.map((e) { 
+    return query.docs.map((e) {
       Workout workout = Workout.fromJson(e.data());
       workout.documentId = e.id;
       return workout;
     }).toList();
   }
 
-  static Future<CollectionReference> getWorkoutCollection() async{
+  static Future<CollectionReference> getWorkoutCollection() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     User user = auth.currentUser;
-    DocumentReference userDoc = FirebaseFirestore.instance.collection(usersKey).doc(user.uid);
+    DocumentReference userDoc =
+        FirebaseFirestore.instance.collection(usersKey).doc(user.uid);
     CollectionReference workoutsCollection = userDoc.collection(workoutsKey);
     return workoutsCollection;
   }
@@ -33,8 +33,7 @@ class WorkoutDataManager {
   }
 
   static Future<void> updateWorkout(Workout workout) async {
-    if (workout.documentId == null)
-      return;
+    if (workout.documentId == null) return;
     CollectionReference workoutsCollection = await getWorkoutCollection();
     Map<String, dynamic> workoutJson = workout.toJson();
     DocumentReference doc = workoutsCollection.doc(workout.documentId);
@@ -42,8 +41,7 @@ class WorkoutDataManager {
   }
 
   static Future<void> removeWorkout(Workout workout) async {
-    if (workout.documentId == null)
-      return;
+    if (workout.documentId == null) return;
     CollectionReference workoutsCollection = await getWorkoutCollection();
     DocumentReference doc = workoutsCollection.doc(workout.documentId);
     await doc.delete();

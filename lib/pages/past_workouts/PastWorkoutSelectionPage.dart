@@ -27,27 +27,38 @@ class PastWorkoutSelectionPage extends StatefulWidget {
       _PastWorkoutSelectionPageState();
 }
 
-class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> with AutomaticKeepAliveClientMixin {
+class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return FloatingScaffold(
-      appBar: AppBar(
-        title: Text('Dashboard'),
-        actions: [
-        IconButton(icon: Icon(Icons.add, color: Themes.normal.primaryColor,), onPressed: () {
-            addNewPastWorkout();
-          },
+        appBar: AppBar(
+          title: Text('Dashboard'),
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.add,
+                color: Themes.normal.primaryColor,
+              ),
+              onPressed: () {
+                addNewPastWorkout();
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.logout,
+                color: Themes.normal.primaryColor,
+              ),
+              onPressed: () {
+                this.widget.logoutCallback();
+              },
+            ),
+          ],
         ),
-        IconButton(icon: Icon(Icons.logout, color: Themes.normal.primaryColor,), onPressed: () {
-            this.widget.logoutCallback();
-          },
-        ),
-      ],
-      ),
-      body: ListView(
+        body: ListView(
           controller: ScrollController(),
           padding: EdgeInsets.all(8),
           children: [
@@ -58,59 +69,60 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
             createHeader('Latest workouts'),
             buildHistoricalPastWorkouts(),
           ],
-        )
-    );
+        ));
   }
 
   Widget buildHistoricalPastWorkouts() {
-    return FloatingScaffoldSection(
-      child: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
-        return PageableListView(
-        items: createListItems(notifier.pastWorkouts), 
-        perPage: 10, 
+    return FloatingScaffoldSection(child:
+        Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
+      return PageableListView(
+        items: createListItems(notifier.pastWorkouts),
+        perPage: 10,
         messageNoItems: "No workouts added yet.",
         physics: ClampingScrollPhysics(),
-        shrinkWraps: true,);
-      }));
+        shrinkWraps: true,
+      );
+    }));
   }
 
   Widget buildCalendarStatistics() {
     return FloatingScaffoldSection(
-      child: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
-        return StatisticsCalendar(
-            pastWorkouts: notifier.pastWorkouts
-          );
-      }),
-      padding: EdgeInsets.zero, 
-      margin: EdgeInsets.only(bottom: 16)
-    );
+        child:
+            Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
+          return StatisticsCalendar(pastWorkouts: notifier.pastWorkouts);
+        }),
+        padding: EdgeInsets.zero,
+        margin: EdgeInsets.only(bottom: 16));
   }
 
   Widget buildWeekSetsStatistics() {
     return FloatingScaffoldSection(
       child: Center(
-        child: Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
+        child:
+            Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
           return StatisticsBarChart(
             pastWorkouts: notifier.pastWorkouts,
-            messageNoItems: "No workouts added yet.",);
+            messageNoItems: "No workouts added yet.",
+          );
         }),
       ),
       margin: EdgeInsets.only(bottom: 16),
     );
   }
 
-  Widget createHeader(String text){
+  Widget createHeader(String text) {
     return Padding(
-      padding: EdgeInsets.only(bottom:16), 
+      padding: EdgeInsets.only(bottom: 16),
       child: Text(
-        text, 
+        text,
         style: TextStyle(fontSize: 26),
       ),
     );
   }
 
   void addNewPastWorkout() {
-    List<Workout> workouts = Provider.of<WorkoutNotifier>(context, listen: false).workouts;
+    List<Workout> workouts =
+        Provider.of<WorkoutNotifier>(context, listen: false).workouts;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -119,7 +131,6 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
                 'Error', 'Please add a workout before registering them.');
           return PastWorkoutSaveAlertDialog(workouts.asMap(),
               ((Workout selected, DateTime date, String notes) {
-                
             PastWorkout pastWorkout = PastWorkout(selected, date, notes);
             addPastWorkout(pastWorkout);
           }));
@@ -134,15 +145,19 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
     showDialog(
       context: context,
       builder: (_) {
-        return SingleMessageConfirmationDialog("Please confirm", "Do you really want to delete this workout?", 
-        (){Provider.of<PastWorkoutNotifier>(context, listen: false).removePastWorkout(wk);}, 
-        (){});
+        return SingleMessageConfirmationDialog(
+            "Please confirm", "Do you really want to delete this workout?", () {
+          Provider.of<PastWorkoutNotifier>(context, listen: false)
+              .removePastWorkout(wk);
+        }, () {});
       },
     );
   }
 
-  void updatePastWorkout(PastWorkout wk, String text, DateTime date, String notes) {
-    Provider.of<PastWorkoutNotifier>(context, listen: false).updatePastWorkout(wk, name: text, date: date, notes: notes);
+  void updatePastWorkout(
+      PastWorkout wk, String text, DateTime date, String notes) {
+    Provider.of<PastWorkoutNotifier>(context, listen: false)
+        .updatePastWorkout(wk, name: text, date: date, notes: notes);
   }
 
   void openPastWorkoutEditDialog(PastWorkoutListItem item) {
@@ -150,7 +165,10 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
       context: context,
       builder: (BuildContext context) {
         return PastWorkoutEditDialog(
-            'Edit workout', item.pastWorkout.workout.name, item.pastWorkout.dateTime, item.pastWorkout.notes,
+            'Edit workout',
+            item.pastWorkout.workout.name,
+            item.pastWorkout.dateTime,
+            item.pastWorkout.notes,
             (String text, DateTime selectedDate, String notes) {
           updatePastWorkout(item.pastWorkout, text, selectedDate, notes);
         });
@@ -158,20 +176,21 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
     );
   }
 
-  void openPastWorkoutDisplayPage(PastWorkoutListItem item){
-    Navigator.push(context,
+  void openPastWorkoutDisplayPage(PastWorkoutListItem item) {
+    Navigator.push(
+      context,
       MaterialPageRoute(
-        builder: (context) => WorkoutDisplayPage(
-          item.pastWorkout.workout,
-          canEdit: false,
-          workoutNotes: item.pastWorkout.notes,
-        )),
+          builder: (context) => WorkoutDisplayPage(
+                item.pastWorkout.workout,
+                canEdit: false,
+                workoutNotes: item.pastWorkout.notes,
+              )),
     );
   }
 
   List<Widget> createListItems(List<PastWorkout> pastW) {
     List<PastWorkout> orderedPastWorkouts = pastW.toList();
-    orderedPastWorkouts.sort((a, b) => - a.dateTime.compareTo(b.dateTime));
+    orderedPastWorkouts.sort((a, b) => -a.dateTime.compareTo(b.dateTime));
     List<Widget> ans = [];
     for (int i = 0; i < orderedPastWorkouts.length; i++) {
       ans.add(createListItem(orderedPastWorkouts, i));
@@ -184,17 +203,19 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
     DateTime date = orderedPastWorkouts[i].dateTime;
     String dateF = "${date.day}-${date.month}-${date.year}";
     DateTime otherDate = i == 0 ? null : orderedPastWorkouts[i - 1].dateTime;
-    String otherF = i == 0
-        ? null
-        : "${otherDate.day}-${otherDate.month}-${otherDate.year}";
+    String otherF =
+        i == 0 ? null : "${otherDate.day}-${otherDate.month}-${otherDate.year}";
     if (dateF != otherF) {
       columnItems.add(DateHeaderListItemWidget(date));
     }
     PastWorkoutListItem item = PastWorkoutListItem(orderedPastWorkouts[i]);
-    columnItems.add(PastWorkoutListItemWidget(item, 
-      (){ openPastWorkoutDisplayPage(item); }, 
-      (){ openPastWorkoutEditDialog(item); }, 
-      (){ removePastWorkout(item.pastWorkout); }));
+    columnItems.add(PastWorkoutListItemWidget(item, () {
+      openPastWorkoutDisplayPage(item);
+    }, () {
+      openPastWorkoutEditDialog(item);
+    }, () {
+      removePastWorkout(item.pastWorkout);
+    }));
     return Column(
       children: columnItems,
     );

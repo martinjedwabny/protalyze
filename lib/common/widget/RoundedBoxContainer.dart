@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RoundedBoxContainer extends StatelessWidget {
-  const RoundedBoxContainer(this.child, {this.radius = 20.0, this.backgroundColor = Colors.white});
+  const RoundedBoxContainer(this.child,
+      {this.radius = 20.0, this.backgroundColor = Colors.white});
 
   final Widget child;
   final double radius;

@@ -27,13 +27,17 @@ class _PageableListViewState extends State<PageableListView> {
   @override
   Widget build(BuildContext context) {
     if (present == 0)
-      present = min(widget.perPage, widget.items != null ? widget.items.length : 0);
+      present =
+          min(widget.perPage, widget.items != null ? widget.items.length : 0);
     if (widget.items == null || widget.items.isEmpty) {
       return Padding(
-        padding: EdgeInsets.symmetric(vertical:8),
-        child: Text(widget.messageNoItems, 
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          widget.messageNoItems,
           style: Theme.of(context).textTheme.headline6,
-          textAlign: TextAlign.center,),);
+          textAlign: TextAlign.center,
+        ),
+      );
     }
     return ListView.builder(
       shrinkWrap: true,
@@ -47,7 +51,10 @@ class _PageableListViewState extends State<PageableListView> {
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.all(16.0),
               ),
-              child: Text('Show more', style: TextStyle(color: Colors.white, fontSize: 16.0),),
+              child: Text(
+                'Show more',
+                style: TextStyle(color: Colors.white, fontSize: 16.0),
+              ),
               onPressed: () {
                 setState(() {
                   present = min(present + widget.perPage, widget.items.length);
@@ -55,7 +62,7 @@ class _PageableListViewState extends State<PageableListView> {
               },
             ),
           );
-          return widget.items[index];
+        return widget.items[index];
       },
     );
   }

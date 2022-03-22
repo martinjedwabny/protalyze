@@ -14,10 +14,18 @@ class _CountdownVolumeSliderState extends State<CountdownVolumeSlider> {
   double volume = 0.5;
   @override
   Widget build(BuildContext context) {
-    Widget volumeDownIcon = Icon(Icons.volume_down_outlined, size: 24, color: iconColor, );
-    Widget volumeUpIcon = Icon(Icons.volume_up_outlined, size: 24, color: iconColor,);
+    Widget volumeDownIcon = Icon(
+      Icons.volume_down_outlined,
+      size: 24,
+      color: iconColor,
+    );
+    Widget volumeUpIcon = Icon(
+      Icons.volume_up_outlined,
+      size: 24,
+      color: iconColor,
+    );
     Widget volumeSlider = Slider(
-      value: volume, 
+      value: volume,
       onChanged: (double value) {
         volume = value;
         setState(() {
@@ -31,6 +39,7 @@ class _CountdownVolumeSliderState extends State<CountdownVolumeSlider> {
         Padding(padding: EdgeInsets.only(left: 20), child: volumeDownIcon),
         Expanded(child: volumeSlider),
         Padding(padding: EdgeInsets.only(right: 20), child: volumeUpIcon),
-    ],);
+      ],
+    );
   }
 }

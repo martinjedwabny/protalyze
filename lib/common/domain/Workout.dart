@@ -15,28 +15,30 @@ class Workout {
     this.blocks = blocks;
   }
 
-  Workout.copy(Workout other){
+  Workout.copy(Workout other) {
     this.name = other.name;
     this.blocks = other.blocks.map((e) => e.copy()).toList();
   }
 
   Workout.fromJson(Map<String, dynamic> json)
       : name = json['name'],
-        blocks = (jsonDecode(json['exercises']) as List<dynamic>).map((e) => 
-          e['type'] == 'group' ? GroupBlock.fromJson(e) : ExerciseBlock.fromJson(e)).toList();
+        blocks = (jsonDecode(json['exercises']) as List<dynamic>)
+            .map((e) => e['type'] == 'group'
+                ? GroupBlock.fromJson(e)
+                : ExerciseBlock.fromJson(e))
+            .toList();
 
-  Map<String, dynamic> toJson() =>
-    {
-      'name': name,
-      'exercises': jsonEncode(blocks),
-    };
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'exercises': jsonEncode(blocks),
+      };
 
   Map<ExerciseObjective, int> get objectiveCount {
     return generateObjectives(this.blocks);
   }
 
   @override
-  String toString(){
+  String toString() {
     return this.name;
   }
 
@@ -51,9 +53,10 @@ class Workout {
       else if (block is GroupBlock)
         for (ExerciseBlock subBlock in block.subBlocks)
           for (ExerciseObjective o in subBlock.objectives) {
-          if (!res.containsKey(o)) res[o] = 0;
-          res[o] += (block.sets == null ? 1 : block.sets) * (subBlock.sets == null ? 1 : subBlock.sets);
-        }
+            if (!res.containsKey(o)) res[o] = 0;
+            res[o] += (block.sets == null ? 1 : block.sets) *
+                (subBlock.sets == null ? 1 : subBlock.sets);
+          }
     return res;
   }
 }

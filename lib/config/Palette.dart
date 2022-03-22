@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // Color palette for the unthemed pages
-class Palette{
+class Palette {
   static Color darkGray = Color(0xFF2A2D34);
   static Color lightGray = Colors.grey[100];
   static Color orange = Color(0xffee6f57);

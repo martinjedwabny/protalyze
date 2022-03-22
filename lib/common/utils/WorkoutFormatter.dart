@@ -25,19 +25,22 @@ class WorkoutFormatter {
     StringBuffer buf = StringBuffer();
     String spaces = "  ";
     if (block is GroupBlock) {
-      buf.writeln(spaces*depth + block.sets.toString() + 'x (');
+      buf.writeln(spaces * depth + block.sets.toString() + 'x (');
       block.subBlocks.forEach((subBlock) {
         buf.writeln(formatBlockToString(subBlock, depth + 1));
       });
-      buf.write(spaces*depth + ')');
+      buf.write(spaces * depth + ')');
     } else if (block is ExerciseBlock) {
-      buf.write(
-        spaces*depth + 
-        block.sets.toString() + 'x (' + 
-        block.name + ': ' +
-        DurationFormatter.formatWithLetters(block.performingTime) + ' work, ' +
-        DurationFormatter.formatWithLetters(block.restTime) + ' rest' +
-        ')');
+      buf.write(spaces * depth +
+          block.sets.toString() +
+          'x (' +
+          block.name +
+          ': ' +
+          DurationFormatter.formatWithLetters(block.performingTime) +
+          ' work, ' +
+          DurationFormatter.formatWithLetters(block.restTime) +
+          ' rest' +
+          ')');
     }
     return buf.toString();
   }

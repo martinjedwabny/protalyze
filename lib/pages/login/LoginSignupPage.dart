@@ -16,8 +16,7 @@ class LoginSignupPage extends StatefulWidget {
   State<StatefulWidget> createState() => new _LoginSignupPageState();
 }
 
-class _LoginSignupPageState extends State<LoginSignupPage>{
-  
+class _LoginSignupPageState extends State<LoginSignupPage> {
   bool isLoading = false;
   bool isLoginForm = true;
   bool isCreateAccountEnabled = false;
@@ -29,11 +28,11 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
   Widget build(BuildContext context) {
     return new Scaffold(
         body: Stack(
-          children: <Widget>[
-            showForm(),
-            showProgressIndicator(),
-          ],
-        ));
+      children: <Widget>[
+        showForm(),
+        showProgressIndicator(),
+      ],
+    ));
   }
 
   Widget showForm() {
@@ -56,17 +55,15 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
         ));
   }
 
-  Widget showTitle(){
+  Widget showTitle() {
     return Center(
-      child: Text(
+        child: Text(
       'Login or create an account',
       style: TextStyle(
-        color: Themes.normal.primaryColor,
-        fontSize: 40,
-        fontWeight: FontWeight.w700
-      )
-    ,)
-    );
+          color: Themes.normal.primaryColor,
+          fontSize: 40,
+          fontWeight: FontWeight.w700),
+    ));
   }
 
   Widget showProgressIndicator() {
@@ -137,17 +134,19 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
         child: SizedBox(
           height: 40.0,
           child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 5.0,
-                shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(30.0)),
-              ),
-              child: new Text(isLoginForm ? 'Login' : 'Create account',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-              onPressed: isLoginForm || isCreateAccountEnabled ? (){
-                validateAndSubmit();
-              } : null,
+            style: ElevatedButton.styleFrom(
+              elevation: 5.0,
+              shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(30.0)),
             ),
+            child: new Text(isLoginForm ? 'Login' : 'Create account',
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+            onPressed: isLoginForm || isCreateAccountEnabled
+                ? () {
+                    validateAndSubmit();
+                  }
+                : null,
+          ),
         ));
   }
 
@@ -160,13 +159,13 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
   }
 
   Widget showPrivacyTermsConditions() {
-    return isLoginForm ? 
-      PrivacyTermsConditionsText('By continuing, you agree to our ') : 
-      PrivacyTermsConditionsCheckbox((tosAndPpAgreed) {
-        setState(() {
-          this.isCreateAccountEnabled = tosAndPpAgreed;
-        });
-      });
+    return isLoginForm
+        ? PrivacyTermsConditionsText('By continuing, you agree to our ')
+        : PrivacyTermsConditionsCheckbox((tosAndPpAgreed) {
+            setState(() {
+              this.isCreateAccountEnabled = tosAndPpAgreed;
+            });
+          });
   }
 
   void toggleFormMode() {
@@ -179,16 +178,16 @@ class _LoginSignupPageState extends State<LoginSignupPage>{
     formKey.currentState.reset();
   }
 
-void showErrorDialog(String title, message){
-  showDialog(
+  void showErrorDialog(String title, message) {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return SingleMessageAlertDialog(title, message);
       },
-  );
-}
+    );
+  }
 
-void validateAndSubmit() async {
+  void validateAndSubmit() async {
     setState(() {
       isLoading = true;
     });
@@ -202,14 +201,16 @@ void validateAndSubmit() async {
             widget.loginCallback();
           } else {
             widget.auth.sendEmailVerification();
-            showErrorDialog('Verify your email', 'Waiting for email verification');
+            showErrorDialog(
+                'Verify your email', 'Waiting for email verification');
           }
           print('Signed in: $userId');
         } else {
           userId = await widget.auth.signUp(email, password);
           widget.auth.sendEmailVerification();
           isLoginForm = true;
-          showErrorDialog('Verify your email', 'Waiting for email verification');
+          showErrorDialog(
+              'Verify your email', 'Waiting for email verification');
           print('Signed up user: $userId');
         }
         setState(() {
@@ -231,43 +232,52 @@ void validateAndSubmit() async {
     }
   }
 
-  void showWrongPasswordDialog(String title, String text){
-    showDialog(context: context, 
-    builder: (context) => AlertDialog(
-      title: Text(title),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(text),
-          SizedBox(width: 1, height: 20,),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 5.0,
-              shape: new RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(30.0)),
-            ),
-            child: new Text('Reset password',
-              style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-            onPressed: (){
-              resetPassword();
-              Navigator.of(context).pop();
-              showDialog(context: context, builder: (context) =>
-                SingleMessageAlertDialog('Reset password', 'An email has been sent. Please access your mailbox to reset your password.'));
-            },
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          child: Text("Ok"),
-          onPressed: () {Navigator.of(context).pop();},
-        ),
-      ],
-    )
-    );
+  void showWrongPasswordDialog(String title, String text) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(title),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(text),
+                  SizedBox(
+                    width: 1,
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 5.0,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                    ),
+                    child: new Text('Reset password',
+                        style:
+                            new TextStyle(fontSize: 20.0, color: Colors.white)),
+                    onPressed: () {
+                      resetPassword();
+                      Navigator.of(context).pop();
+                      showDialog(
+                          context: context,
+                          builder: (context) => SingleMessageAlertDialog(
+                              'Reset password',
+                              'An email has been sent. Please access your mailbox to reset your password.'));
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ));
   }
 
-  void resetPassword(){
+  void resetPassword() {
     this.widget.auth.resetPassword(email);
   }
 
@@ -279,5 +289,4 @@ void validateAndSubmit() async {
     }
     return false;
   }
-
 }

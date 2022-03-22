@@ -6,7 +6,8 @@ import 'package:protalyze/config/Themes.dart';
 import 'package:protalyze/pages/countdown/CountdownElement.dart';
 
 class CountdownExercisesInfo extends StatefulWidget {
-  const CountdownExercisesInfo(this._controller, this._countdownElementList, this._currentCountdownElementIndex, this._totalTime);
+  const CountdownExercisesInfo(this._controller, this._countdownElementList,
+      this._currentCountdownElementIndex, this._totalTime);
   final AnimationController _controller;
   final List<CountdownElement> _countdownElementList;
   final Function _currentCountdownElementIndex;
@@ -16,7 +17,6 @@ class CountdownExercisesInfo extends StatefulWidget {
 }
 
 class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
-
   final Color mainTextColor = Themes.normal.colorScheme.primary;
   final Color fadedTextColor = Themes.normal.colorScheme.primary.withAlpha(200);
   var titleFontSize = 20.0;
@@ -25,77 +25,93 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
 
   @override
   Widget build(BuildContext context) {
-      return Container(width: double.infinity,child: buildNextExercisesSection());
+    return Container(
+        width: double.infinity, child: buildNextExercisesSection());
   }
 
   Widget buildNextExercisesSection() => Column(
-    mainAxisSize: MainAxisSize.min,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.only(left: 8),
-            child: Text('TOTAL', style: TextStyle(fontSize: titleFontSize),),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 8),
+                child: Text(
+                  'TOTAL',
+                  style: TextStyle(fontSize: titleFontSize),
+                ),
+              ),
+              Container(
+                alignment: Alignment.topRight,
+                padding: EdgeInsets.all(8),
+                child: buildTotalTimeWidget(),
+              ),
+            ],
           ),
           Container(
-            alignment: Alignment.topRight,
+            alignment: Alignment.centerLeft,
+            height: 50,
             padding: EdgeInsets.all(8),
-            child: buildTotalTimeWidget(),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              color: Colors.white,
+            ),
+            child: buildNextExercisesWidget(),
           ),
         ],
-      ),
-      Container(
-        alignment: Alignment.centerLeft,
-        height: 50,
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          color: Colors.white,
-        ),
-        child: buildNextExercisesWidget(),
-        ),
-      
-    ],
-  );
+      );
 
   Widget buildTotalTimeWidget() {
-    return Text(
-        totalRemainingTimeString,
+    return Text(totalRemainingTimeString,
         style: TextStyle(
           height: 0.95,
-          fontSize: timeFontSize, 
-          color: Themes.normal.colorScheme.primary,)
-    );
+          fontSize: timeFontSize,
+          color: Themes.normal.colorScheme.primary,
+        ));
   }
 
   bool isCountdownFinished() {
-    return this.widget._currentCountdownElementIndex() == this.widget._countdownElementList.length;
+    return this.widget._currentCountdownElementIndex() ==
+        this.widget._countdownElementList.length;
   }
 
   String get blockRemainingTimeString {
-    return DurationFormatter.format(this.widget._controller.duration * this.widget._controller.value);
+    return DurationFormatter.format(
+        this.widget._controller.duration * this.widget._controller.value);
   }
 
   String get totalRemainingTimeString {
     if (isCountdownFinished())
       return DurationFormatter.format(this.widget._totalTime);
-    return DurationFormatter.format(this.widget._totalTime - this.widget._controller.duration * (1.0 - this.widget._controller.value));
+    return DurationFormatter.format(this.widget._totalTime -
+        this.widget._controller.duration *
+            (1.0 - this.widget._controller.value));
   }
 
   Widget finishedMessageText() {
-    return Container(child: Text(
-        'FINISHED',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: exerciseFontSize, color: mainTextColor),
-      ));
+    return Container(
+        child: Text(
+      'FINISHED',
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: exerciseFontSize, color: mainTextColor),
+    ));
   }
 
   Widget buildNextExercisesWidget() {
-    List<String> listElements = this.widget._countdownElementList.sublist(min(this.widget._currentCountdownElementIndex()+1,this.widget._countdownElementList.length)).map((e) => e.name.substring(0, e.name.length < 20 ? e.name.length : 20) + ' (' + DurationFormatter.format(e.totalTime) + ')').toList();
-    if (listElements.isEmpty)
-      return finishedMessageText();
+    List<String> listElements = this
+        .widget
+        ._countdownElementList
+        .sublist(min(this.widget._currentCountdownElementIndex() + 1,
+            this.widget._countdownElementList.length))
+        .map((e) =>
+            e.name.substring(0, e.name.length < 20 ? e.name.length : 20) +
+            ' (' +
+            DurationFormatter.format(e.totalTime) +
+            ')')
+        .toList();
+    if (listElements.isEmpty) return finishedMessageText();
     return ListView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.zero,
@@ -108,10 +124,12 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
         return Container(
           margin: EdgeInsets.all(0),
           alignment: Alignment.centerLeft,
-          child: Text(text, style: TextStyle(color: fadedTextColor, fontSize: exerciseFontSize, height: 1), textAlign: TextAlign.center),
+          child: Text(text,
+              style: TextStyle(
+                  color: fadedTextColor, fontSize: exerciseFontSize, height: 1),
+              textAlign: TextAlign.center),
         );
-      }
-      ).toList(),
-  );
+      }).toList(),
+    );
   }
 }

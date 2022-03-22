@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SingleMessageAlertDialog extends StatelessWidget{
+class SingleMessageAlertDialog extends StatelessWidget {
   final String _title, _message;
   SingleMessageAlertDialog(this._title, this._message);
   @override
@@ -11,7 +11,9 @@ class SingleMessageAlertDialog extends StatelessWidget{
       actions: [
         TextButton(
           child: Text("Ok"),
-          onPressed: () {Navigator.of(context).pop();},
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
       ],
     );

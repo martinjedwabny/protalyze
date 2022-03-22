@@ -113,8 +113,10 @@ class SalomonBottomBar extends StatelessWidget {
                                           _selectedColor.withOpacity(0.0),
                                           _selectedColor,
                                           t),
-                                      fontWeight: theme.bottomNavigationBarTheme.selectedLabelStyle.fontWeight,
-                                      fontSize: theme.bottomNavigationBarTheme.selectedLabelStyle.fontSize,
+                                      fontWeight: theme.bottomNavigationBarTheme
+                                          .selectedLabelStyle.fontWeight,
+                                      fontSize: theme.bottomNavigationBarTheme
+                                          .selectedLabelStyle.fontSize,
                                     ),
                                     child: item.title ?? SizedBox.shrink(),
                                   ),

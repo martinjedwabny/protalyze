@@ -12,23 +12,20 @@ class FloatingScaffold extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80.0),
         child: Padding(
-          padding: EdgeInsets.only(top: 16, bottom: 0, left: 8, right: 16),
-          child: this.appBar
-        ),
+            padding: EdgeInsets.only(top: 16, bottom: 0, left: 8, right: 16),
+            child: this.appBar),
       ),
       backgroundColor: Themes.normal.scaffoldBackgroundColor,
       body: Column(
         children: <Widget>[
-            Expanded(
+          Expanded(
               child: Container(
-                margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                child:this.body
-              )
-            )
-          ],
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: this.floatingActionButton,
-      );
+                  margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                  child: this.body))
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: this.floatingActionButton,
+    );
   }
 }

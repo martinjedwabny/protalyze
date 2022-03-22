@@ -24,7 +24,9 @@ class MarkdownMessageAlertDialog extends StatelessWidget {
       actions: [
         TextButton(
           child: Text("Ok"),
-          onPressed: () {Navigator.of(context).pop();},
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
       ],
     );

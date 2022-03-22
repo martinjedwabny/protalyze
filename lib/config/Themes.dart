@@ -4,9 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'Palette.dart';
 
-class Themes{
-
-  static final SystemUiOverlayStyle systemUiOverlayStyleLight = SystemUiOverlayStyle(
+class Themes {
+  static final SystemUiOverlayStyle systemUiOverlayStyleLight =
+      SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent,
     systemNavigationBarDividerColor: Colors.transparent,
     systemNavigationBarIconBrightness: Brightness.dark,
@@ -15,7 +15,8 @@ class Themes{
     statusBarIconBrightness: Brightness.light,
   );
 
-  static final SystemUiOverlayStyle systemUiOverlayStyleDark = SystemUiOverlayStyle(
+  static final SystemUiOverlayStyle systemUiOverlayStyleDark =
+      SystemUiOverlayStyle(
     systemNavigationBarColor: Palette.darkGray,
     systemNavigationBarDividerColor: Palette.darkGray,
     systemNavigationBarIconBrightness: Brightness.light,
@@ -24,21 +25,21 @@ class Themes{
     statusBarIconBrightness: Brightness.light,
   );
 
-  static final ThemeData normal =  ThemeData(
+  static final ThemeData normal = ThemeData(
     colorScheme: ColorScheme(
-      primary: Palette.darkGray, 
-      primaryContainer: Palette.darkGray, 
-      secondary: Palette.orange, 
-      secondaryContainer: Palette.orange, 
-      surface: Palette.lightGray, 
-      background: Colors.white, 
-      error: Colors.red, 
-      onPrimary: Palette.orange, 
-      onSecondary: Palette.lightGray, 
-      onSurface: Palette.darkGray, 
-      onBackground: Palette.darkGray, 
-      onError: Palette.lightGray, 
-      brightness: Brightness.light),
+        primary: Palette.darkGray,
+        primaryContainer: Palette.darkGray,
+        secondary: Palette.orange,
+        secondaryContainer: Palette.orange,
+        surface: Palette.lightGray,
+        background: Colors.white,
+        error: Colors.red,
+        onPrimary: Palette.orange,
+        onSecondary: Palette.lightGray,
+        onSurface: Palette.darkGray,
+        onBackground: Palette.darkGray,
+        onError: Palette.lightGray,
+        brightness: Brightness.light),
     primaryColor: Palette.darkGray,
     disabledColor: Colors.grey,
     scaffoldBackgroundColor: Palette.lightGray,
@@ -59,28 +60,20 @@ class Themes{
       centerTitle: false,
       color: Colors.transparent,
       elevation: 0,
-      iconTheme: IconThemeData(
-        color: Palette.darkGray
-      ),
+      iconTheme: IconThemeData(color: Palette.darkGray),
       titleTextStyle: GoogleFonts.titilliumWebTextTheme().headline6.copyWith(
-          fontSize: 40, 
-          fontWeight: FontWeight.w700, 
-          color: Palette.darkGray
-        ),
+          fontSize: 40, fontWeight: FontWeight.w700, color: Palette.darkGray),
     ),
     textTheme: GoogleFonts.titilliumWebTextTheme(),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      selectedItemColor: Palette.blue,
-      unselectedItemColor: Palette.darkGray,
-      backgroundColor: Colors.transparent,
-      selectedLabelStyle: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w300,
-      )
-    ),
-    buttonBarTheme: ButtonBarThemeData(
-      buttonTextTheme: ButtonTextTheme.accent
-    ),
+        selectedItemColor: Palette.blue,
+        unselectedItemColor: Palette.darkGray,
+        backgroundColor: Colors.transparent,
+        selectedLabelStyle: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w300,
+        )),
+    buttonBarTheme: ButtonBarThemeData(buttonTextTheme: ButtonTextTheme.accent),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       elevation: 0,
       disabledElevation: 0,
@@ -89,20 +82,16 @@ class Themes{
       hoverElevation: 0,
     ),
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        primary: Palette.orange,
-      )
-    ),
+        style: TextButton.styleFrom(
+      primary: Palette.orange,
+    )),
     elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        primary: Palette.orange,
-      )
-    ),
+        style: ElevatedButton.styleFrom(
+      primary: Palette.orange,
+    )),
     outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        primary: Palette.orange,
-      )
-    ),
+        style: OutlinedButton.styleFrom(
+      primary: Palette.orange,
+    )),
   );
-
 }

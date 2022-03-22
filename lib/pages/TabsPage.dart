@@ -15,17 +15,16 @@ class TabsPage extends StatefulWidget {
   final VoidCallback logoutCallback;
 
   TabsPage(this.auth, this.logoutCallback);
-  
+
   @override
   _TabsPageState createState() => _TabsPageState();
 }
 
 class _TabsPageState extends State<TabsPage> {
-  
   final WorkoutNotifier _workoutNotifier = WorkoutNotifier();
   final ExerciseNotifier _exerciseNotifier = ExerciseNotifier();
   final PastWorkoutNotifier _pastWorkoutNotifier = PastWorkoutNotifier();
-  
+
   int _currentIndex = 0;
   List<Widget> _children = [];
 
@@ -37,29 +36,29 @@ class _TabsPageState extends State<TabsPage> {
     this._children = [
       MultiProvider(
         providers: [
-        ChangeNotifierProvider.value(value: this._workoutNotifier),
-        ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
+          ChangeNotifierProvider.value(value: this._workoutNotifier),
+          ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
         ],
         child: PastWorkoutSelectionPage(this.widget.logoutCallback),
       ),
       MultiProvider(
         providers: [
-        ChangeNotifierProvider.value(value: this._workoutNotifier),
-        ChangeNotifierProvider.value(value: this._exerciseNotifier),
-        ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
+          ChangeNotifierProvider.value(value: this._workoutNotifier),
+          ChangeNotifierProvider.value(value: this._exerciseNotifier),
+          ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
         ],
         child: WorkoutSelectionPage(this.widget.logoutCallback),
       ),
       MultiProvider(
         providers: [
-        ChangeNotifierProvider.value(value: this._exerciseNotifier),
+          ChangeNotifierProvider.value(value: this._exerciseNotifier),
         ],
         child: ExerciseRepositoryPage(this.widget.logoutCallback),
       ),
       MultiProvider(
         providers: [
-        ChangeNotifierProvider.value(value: this._workoutNotifier),
-        ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
+          ChangeNotifierProvider.value(value: this._workoutNotifier),
+          ChangeNotifierProvider.value(value: this._pastWorkoutNotifier),
         ],
         child: TimerSelectPage(),
       ),
@@ -81,7 +80,9 @@ class _TabsPageState extends State<TabsPage> {
         items: [
           new SalomonBottomBarItem(
             icon: Icon(Icons.event_available_outlined),
-            title: Text('Dashboard', ),
+            title: Text(
+              'Dashboard',
+            ),
           ),
           new SalomonBottomBarItem(
             icon: Icon(Icons.list_alt_rounded),

@@ -7,11 +7,12 @@ class PrivacyTermsConditionsCheckbox extends StatefulWidget {
   final Function(bool) callback;
 
   @override
-  State<PrivacyTermsConditionsCheckbox> createState() => _PrivacyTermsConditionsCheckboxState();
+  State<PrivacyTermsConditionsCheckbox> createState() =>
+      _PrivacyTermsConditionsCheckboxState();
 }
 
-class _PrivacyTermsConditionsCheckboxState extends State<PrivacyTermsConditionsCheckbox> {
-
+class _PrivacyTermsConditionsCheckboxState
+    extends State<PrivacyTermsConditionsCheckbox> {
   bool agreed = false;
 
   @override

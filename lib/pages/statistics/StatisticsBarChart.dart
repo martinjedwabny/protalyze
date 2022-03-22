@@ -14,10 +14,13 @@ class StatisticsBarChart extends StatelessWidget {
   final List<PastWorkout> pastWorkouts;
   final String messageNoItems;
 
-  Map<ExerciseObjective,int> objectiveCountPerDayBetween(DateTime start, DateTime finish){
-    Map<ExerciseObjective,int> stats = Map();
+  Map<ExerciseObjective, int> objectiveCountPerDayBetween(
+      DateTime start, DateTime finish) {
+    Map<ExerciseObjective, int> stats = Map();
     for (PastWorkout pw in pastWorkouts) {
-      bool isBetweenRange = (pw.dateTime.isAfter(start) || pw.dateTime.isAtSameMomentAs(start)) && (pw.dateTime.isBefore(finish));
+      bool isBetweenRange =
+          (pw.dateTime.isAfter(start) || pw.dateTime.isAtSameMomentAs(start)) &&
+              (pw.dateTime.isBefore(finish));
       if (isBetweenRange) {
         var objectivesCount = pw.workout.objectiveCount;
         if (objectivesCount == null || objectivesCount.isEmpty) continue;
@@ -32,16 +35,25 @@ class StatisticsBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var firstDayOfWeek = DateTime.now().subtract(Duration(days: DateTime.now().weekday));
+    var firstDayOfWeek =
+        DateTime.now().subtract(Duration(days: DateTime.now().weekday));
     var nextWeek = firstDayOfWeek.add(Duration(days: 7));
-    Map<ExerciseObjective,int> stats = objectiveCountPerDayBetween(firstDayOfWeek, nextWeek);
-    double maxY = stats.values.isEmpty ? 1 : stats.values.reduce((value, element) => value > element ? value : element).toDouble();
+    Map<ExerciseObjective, int> stats =
+        objectiveCountPerDayBetween(firstDayOfWeek, nextWeek);
+    double maxY = stats.values.isEmpty
+        ? 1
+        : stats.values
+            .reduce((value, element) => value > element ? value : element)
+            .toDouble();
     if (stats.isEmpty) {
       return Padding(
-        padding: EdgeInsets.symmetric(vertical:8),
-        child: Text(this.messageNoItems, 
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          this.messageNoItems,
           style: Theme.of(context).textTheme.headline6,
-          textAlign: TextAlign.center,),);
+          textAlign: TextAlign.center,
+        ),
+      );
     }
     return Container(
       padding: EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 16),
@@ -69,8 +81,16 @@ class StatisticsBarChart extends StatelessWidget {
             bottomTitles: SideTitles(
               margin: 8,
               showTitles: true,
-              getTextStyles: (context, value) => TextStyle(color: Themes.normal.primaryColor, fontSize: 12),
-              getTitles: (double value) => stats.keys.elementAt(value.toInt()).name.substring(0, stats.keys.elementAt(value.toInt()).name.length < 3 ? stats.keys.elementAt(value.toInt()).name.length : 3),
+              getTextStyles: (context, value) =>
+                  TextStyle(color: Themes.normal.primaryColor, fontSize: 12),
+              getTitles: (double value) => stats.keys
+                  .elementAt(value.toInt())
+                  .name
+                  .substring(
+                      0,
+                      stats.keys.elementAt(value.toInt()).name.length < 3
+                          ? stats.keys.elementAt(value.toInt()).name.length
+                          : 3),
             ),
             leftTitles: SideTitles(
               showTitles: false,
@@ -88,26 +108,29 @@ class StatisticsBarChart extends StatelessWidget {
           borderData: FlBorderData(
             show: false,
           ),
-          barGroups: List<BarChartGroupData>.generate(stats.length, (i) => 
-            BarChartGroupData(
-              x: i,
-              barRods: [
-                BarChartRodData(
-                  y: stats.values.elementAt(i).toDouble(), 
-                  colors: [Themes.normal.colorScheme.secondary, Colors.orangeAccent], 
-                  width: 20,
-                  backDrawRodData: BackgroundBarChartRodData(
-                    show: true,
-                    y: maxY,
-                    colors: [Colors.grey[100],Colors.grey[300]],
-                    gradientFrom: Offset(0, 0),
-                    gradientTo: Offset(0, 6),
-                ),
-                ),
-              ],
-              showingTooltipIndicators: [0],
-            )
-          ),
+          barGroups: List<BarChartGroupData>.generate(
+              stats.length,
+              (i) => BarChartGroupData(
+                    x: i,
+                    barRods: [
+                      BarChartRodData(
+                        y: stats.values.elementAt(i).toDouble(),
+                        colors: [
+                          Themes.normal.colorScheme.secondary,
+                          Colors.orangeAccent
+                        ],
+                        width: 20,
+                        backDrawRodData: BackgroundBarChartRodData(
+                          show: true,
+                          y: maxY,
+                          colors: [Colors.grey[100], Colors.grey[300]],
+                          gradientFrom: Offset(0, 0),
+                          gradientTo: Offset(0, 6),
+                        ),
+                      ),
+                    ],
+                    showingTooltipIndicators: [0],
+                  )),
         ),
       ),
     );

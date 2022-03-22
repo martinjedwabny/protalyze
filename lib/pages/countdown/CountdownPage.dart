@@ -22,8 +22,8 @@ class CountDownPage extends StatefulWidget {
   _CountDownPageState createState() => _CountDownPageState();
 }
 
-class _CountDownPageState extends State<CountDownPage> with TickerProviderStateMixin {
-
+class _CountDownPageState extends State<CountDownPage>
+    with TickerProviderStateMixin {
   // Progress animation
   AnimationController _controller;
   bool _isPause = true;
@@ -34,10 +34,11 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   // Workout state elements
   List<CountdownElement> _countdownElementList;
   int _currentCountdownElementIndex = 0;
-  
+
   // Alert beep sound
   double _currentVolume = 0.5;
-  Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3", volume: _currentVolume * 0.75);
+  Future<AudioPlayer> playBeepSound() async =>
+      await (new AudioCache()).play("beep.mp3", volume: _currentVolume * 0.75);
 
   // UI
   var progressIndicatorHorizontalPadding = 20.0;
@@ -49,7 +50,9 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     super.initState();
     ScreenPersist.enable();
     this._controller = AnimationController(vsync: this, value: 1.0);
-    this._controller.addStatusListener((status) => animationStatusChanged(status));
+    this
+        ._controller
+        .addStatusListener((status) => animationStatusChanged(status));
     this._controller.addListener(() {
       Duration remainingSeconds = _controller.duration * _controller.value;
       if (remainingSeconds.inSeconds == 6)
@@ -73,12 +76,14 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             children: <Widget>[
               buildProgressIndicator(),
               buildExercisesWidget(),
-              SizedBox(width: 1,height: 8,),
+              SizedBox(
+                width: 1,
+                height: 8,
+              ),
               buildControls(),
             ],
           );
-        }
-    );
+        });
   }
 
   @override
@@ -97,14 +102,16 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   bool isCountdownFinished() {
-    return this._currentCountdownElementIndex == this._countdownElementList.length;
+    return this._currentCountdownElementIndex ==
+        this._countdownElementList.length;
   }
 
   void stepToNextExercise({bool forceContinue = false}) {
     if (isCountdownFinished()) {
-      this.widget._saveWorkoutCallback(); 
+      this.widget._saveWorkoutCallback();
     } else {
-      bool shouldContinueAnimation = this._controller.isAnimating || forceContinue;
+      bool shouldContinueAnimation =
+          this._controller.isAnimating || forceContinue;
       this._totalTime -= this._controller.duration;
       this._currentCountdownElementIndex++;
       if (isCountdownFinished()) {
@@ -113,28 +120,32 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
         this._totalTime = Duration.zero;
         this._controller.reverse();
       } else {
-        this._controller.duration = this._countdownElementList[this._currentCountdownElementIndex].totalTime;
+        this._controller.duration = this
+            ._countdownElementList[this._currentCountdownElementIndex]
+            .totalTime;
         this._controller.value = 1.0;
-        if (shouldContinueAnimation)
-          this._controller.reverse();
+        if (shouldContinueAnimation) this._controller.reverse();
       }
     }
   }
 
   void stepToPrevExercise() {
-    if (isCountdownFinished() || this._currentCountdownElementIndex == 0) return;
+    if (isCountdownFinished() || this._currentCountdownElementIndex == 0)
+      return;
     bool shouldContinueAnimation = this._controller.isAnimating;
     this._currentCountdownElementIndex--;
-    this._controller.duration = this._countdownElementList[this._currentCountdownElementIndex].totalTime;
+    this._controller.duration = this
+        ._countdownElementList[this._currentCountdownElementIndex]
+        .totalTime;
     this._controller.value = 1.0;
     this._totalTime += this._controller.duration;
-    if (shouldContinueAnimation)
-      this._controller.reverse();
+    if (shouldContinueAnimation) this._controller.reverse();
   }
 
   void addSeconds(int seconds) {
     bool shouldContinueAnimation = this._controller.isAnimating;
-    int pastRemainingSeconds = (this._controller.duration.inSeconds * this._controller.value).toInt();
+    int pastRemainingSeconds =
+        (this._controller.duration.inSeconds * this._controller.value).toInt();
     int newRemainingSeconds = pastRemainingSeconds + seconds;
     if (newRemainingSeconds <= 0) {
       stepToNextExercise();
@@ -147,29 +158,33 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
       this._controller.duration -= Duration(seconds: -seconds);
       this._totalTime -= Duration(seconds: -seconds);
     }
-    this._controller.value = newRemainingSeconds.toDouble() / this._controller.duration.inSeconds.toDouble();
-    if (shouldContinueAnimation)
-      this._controller.reverse();
+    this._controller.value = newRemainingSeconds.toDouble() /
+        this._controller.duration.inSeconds.toDouble();
+    if (shouldContinueAnimation) this._controller.reverse();
   }
 
-  void initializeCountdownElements(){
+  void initializeCountdownElements() {
     // Set initial duration / prepare time to this._prepareTime seconds
     this._controller.duration = Duration(seconds: this._prepareTime);
-    this._countdownElementList = [new CountdownElement('Prepare', new Duration(seconds: this._prepareTime), '')];
+    this._countdownElementList = [
+      new CountdownElement(
+          'Prepare', new Duration(seconds: this._prepareTime), '')
+    ];
     this._totalTime = Duration(seconds: 0);
     // Add perform and rest times for each block
-    this._countdownElementList += WorkoutToCountdownAdapter.getCountdownElements(this.widget._workout);
-    for (CountdownElement element in this._countdownElementList){
+    this._countdownElementList +=
+        WorkoutToCountdownAdapter.getCountdownElements(this.widget._workout);
+    for (CountdownElement element in this._countdownElementList) {
       this._totalTime += element.totalTime;
     }
     this._currentCountdownElementIndex = 0;
   }
 
-  bool countdownFinished(){
+  bool countdownFinished() {
     return this._totalTime.inSeconds == 0;
   }
 
-  void togglePlayPause(){
+  void togglePlayPause() {
     if (this.countdownFinished()) return;
     if (this._isPause) {
       this._controller.reverse(); //play in reverse mode
@@ -179,113 +194,136 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
     this._isPause = !this._isPause;
   }
 
-  Widget buildExercisesWidget(){
-    return CountdownExercisesInfo(
-      this._controller, 
-      this._countdownElementList, 
-      () => this._currentCountdownElementIndex, 
-      this._totalTime);
+  Widget buildExercisesWidget() {
+    return CountdownExercisesInfo(this._controller, this._countdownElementList,
+        () => this._currentCountdownElementIndex, this._totalTime);
   }
 
-  Widget buildProgressIndicator(){
+  Widget buildProgressIndicator() {
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal:progressIndicatorHorizontalPadding, vertical: 0),
+        padding: EdgeInsets.symmetric(
+            horizontal: progressIndicatorHorizontalPadding, vertical: 0),
         child: Stack(
           children: [
             Positioned.fill(
-              child: Center(
-                child: CountdownProgressIndicator(_controller)
-              ),
+              child: Center(child: CountdownProgressIndicator(_controller)),
             ),
             Center(child: buildCurrentExerciseSection()),
           ],
         ),
-        ),
+      ),
     );
   }
 
   Widget buildCurrentExerciseSection() => Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      buildCurrentTimeWidget(),
-      buildCurrentExerciseWidget(),
-    ],
-  );
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          buildCurrentTimeWidget(),
+          buildCurrentExerciseWidget(),
+        ],
+      );
 
   Widget buildCurrentTimeWidget() {
     return Padding(
-      padding: const EdgeInsets.only(top:20.0),
-      child: Text(
-          blockRemainingTimeString,
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Text(blockRemainingTimeString,
           textAlign: TextAlign.center,
           style: TextStyle(
             height: 0.9,
-            fontSize: currentTimeFontSize, 
-            color: Themes.normal.colorScheme.primary.withAlpha(220),)
-      ),
+            fontSize: currentTimeFontSize,
+            color: Themes.normal.colorScheme.primary.withAlpha(220),
+          )),
     );
   }
 
   Widget buildCurrentExerciseWidget() {
     if (countdownFinished()) return Text('');
-    Widget currentExerciseGifButton = createGifButton(currentExerciseString , currentExerciseGif, 24);
+    Widget currentExerciseGifButton =
+        createGifButton(currentExerciseString, currentExerciseGif, 24);
     var currentExerciseText = Text(
-            currentExerciseString,
-            maxLines: 1,
-            style: TextStyle(
-              fontSize: currentExerciseFontSize, 
-              height: 0.9,
-              color: Palette.darkGray.withAlpha(220),
-              ),
-            overflow: TextOverflow.fade,
-            textAlign: TextAlign.center,
-      );
-      return Row(mainAxisAlignment: MainAxisAlignment.center,
+      currentExerciseString,
+      maxLines: 1,
+      style: TextStyle(
+        fontSize: currentExerciseFontSize,
+        height: 0.9,
+        color: Palette.darkGray.withAlpha(220),
+      ),
+      overflow: TextOverflow.fade,
+      textAlign: TextAlign.center,
+    );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(child: FittedBox(fit:BoxFit.scaleDown,child: currentExerciseText)),
-            SizedBox.fromSize(size: Size(12, 12),),
-            currentExerciseGifButton,],);
+      children: [
+        Flexible(
+            child:
+                FittedBox(fit: BoxFit.scaleDown, child: currentExerciseText)),
+        SizedBox.fromSize(
+          size: Size(12, 12),
+        ),
+        currentExerciseGifButton,
+      ],
+    );
   }
 
   Widget createGifButton(String title, String gifUrl, double size) {
-    return gifUrl == null || gifUrl == '' ? SizedBox(width: 1, height: 1) : GestureDetector(
-      onTap: () {showGifDialog(title, gifUrl);}, 
-      child: Icon(Icons.ondemand_video, size: size, color: Themes.normal.colorScheme.secondary,));
+    return gifUrl == null || gifUrl == ''
+        ? SizedBox(width: 1, height: 1)
+        : GestureDetector(
+            onTap: () {
+              showGifDialog(title, gifUrl);
+            },
+            child: Icon(
+              Icons.ondemand_video,
+              size: size,
+              color: Themes.normal.colorScheme.secondary,
+            ));
   }
 
   void showGifDialog(String title, String gifUrl) {
     showDialog(
-      context: context,
-      builder: (BuildContext context) =>
-        AlertDialog(
-          title: Text(title, style: TextStyle(color: Palette.darkGray,),),
-          backgroundColor: Themes.normal.colorScheme.primary,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[GifHandler.createGifImage(gifUrl, width: 400)],
-          ),
-          actions: [
-            TextButton(
-              child: Text("Ok"),
-              onPressed: () {Navigator.of(context).pop();},
-            ),
-          ],
-        )
-    );
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(
+                title,
+                style: TextStyle(
+                  color: Palette.darkGray,
+                ),
+              ),
+              backgroundColor: Themes.normal.colorScheme.primary,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  GifHandler.createGifImage(gifUrl, width: 400)
+                ],
+              ),
+              actions: [
+                TextButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ));
   }
 
   String get currentExerciseString {
-    if (this._countdownElementList.length == 0 || countdownFinished()) return '';
-    String s = this._countdownElementList[this._currentCountdownElementIndex].name;
+    if (this._countdownElementList.length == 0 || countdownFinished())
+      return '';
+    String s =
+        this._countdownElementList[this._currentCountdownElementIndex].name;
     return s;
   }
 
   String get currentExerciseGif {
-    if (this._countdownElementList.length == 0 || countdownFinished()) return '';
-    return this._countdownElementList[this._currentCountdownElementIndex].gifUrl;
+    if (this._countdownElementList.length == 0 || countdownFinished())
+      return '';
+    return this
+        ._countdownElementList[this._currentCountdownElementIndex]
+        .gifUrl;
   }
 
   Widget buildControls() {
@@ -297,28 +335,29 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
           color: Colors.white,
         ),
-        child: Column(children: [
-          Center(child: CountdownControls(
-            this._controller, 
-            () => stepToPrevExercise(), 
-            () => stepToNextExercise(), 
-            () => togglePlayPause(), 
-            () => addSeconds(-5), 
-            () => addSeconds(5), 
-            () => this.countdownFinished(), 
-            () => this._isPause)
-          ),
-          buildVolumeSlider(),
-          ],),
+        child: Column(
+          children: [
+            Center(
+                child: CountdownControls(
+                    this._controller,
+                    () => stepToPrevExercise(),
+                    () => stepToNextExercise(),
+                    () => togglePlayPause(),
+                    () => addSeconds(-5),
+                    () => addSeconds(5),
+                    () => this.countdownFinished(),
+                    () => this._isPause)),
+            buildVolumeSlider(),
+          ],
         ),
-      );
+      ),
+    );
   }
 
-  Widget buildVolumeSlider(){
-    return CountdownVolumeSlider(
-      this._currentVolume, 
-      (volume) {this._currentVolume = volume;}
-    );
+  Widget buildVolumeSlider() {
+    return CountdownVolumeSlider(this._currentVolume, (volume) {
+      this._currentVolume = volume;
+    });
   }
 
   String get blockRemainingTimeString {
@@ -326,10 +365,8 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   String get totalRemainingTimeString {
-    if (isCountdownFinished())
-      return DurationFormatter.format(this._totalTime);
-    return DurationFormatter.format(this._totalTime - _controller.duration * (1.0 - _controller.value));
+    if (isCountdownFinished()) return DurationFormatter.format(this._totalTime);
+    return DurationFormatter.format(
+        this._totalTime - _controller.duration * (1.0 - _controller.value));
   }
-
 }
-

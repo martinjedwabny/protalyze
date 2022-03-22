@@ -19,11 +19,8 @@ import 'package:protalyze/common/widget/TextInputAlertDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-enum ShareType {
-  exportAsText,
-  exportAsJSON,
-  importAsJSON
-}
+enum ShareType { exportAsText, exportAsJSON, importAsJSON }
+
 class WorkoutSelectionPage extends StatefulWidget {
   final VoidCallback logoutCallback;
   const WorkoutSelectionPage(this.logoutCallback);
@@ -31,7 +28,8 @@ class WorkoutSelectionPage extends StatefulWidget {
   _WorkoutSelectionPageState createState() => _WorkoutSelectionPageState();
 }
 
-class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with AutomaticKeepAliveClientMixin {
+class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
+    with AutomaticKeepAliveClientMixin {
   var maxJsonInputLength = 20000;
 
   @override
@@ -39,15 +37,30 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    Widget shareButton = IconButton(icon: Icon(Icons.share, color: Themes.normal.primaryColor,), onPressed: () {
+    Widget shareButton = IconButton(
+      icon: Icon(
+        Icons.share,
+        color: Themes.normal.primaryColor,
+      ),
+      onPressed: () {
         shareWorkoutButtonHandle();
       },
     );
-    Widget newWorkoutButton = IconButton(icon: Icon(Icons.add, color: Themes.normal.primaryColor,), onPressed: () {
+    Widget newWorkoutButton = IconButton(
+      icon: Icon(
+        Icons.add,
+        color: Themes.normal.primaryColor,
+      ),
+      onPressed: () {
         addNewWorkout();
       },
     );
-    Widget logoutButton = IconButton(icon: Icon(Icons.logout, color: Themes.normal.primaryColor,), onPressed: () {
+    Widget logoutButton = IconButton(
+      icon: Icon(
+        Icons.logout,
+        color: Themes.normal.primaryColor,
+      ),
+      onPressed: () {
         this.widget.logoutCallback();
       },
     );
@@ -58,14 +71,15 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
           newWorkoutButton,
           shareButton,
           logoutButton,
-      ],
+        ],
       ),
       body: Consumer<WorkoutNotifier>(builder: (context, notifier, child) {
         Widget body;
         if (notifier.workouts.isEmpty)
           body = SingleMessageScaffold('No workouts added yet.');
-        else 
-          body = Container(child: ListView.builder(
+        else
+          body = Container(
+              child: ListView.builder(
             controller: ScrollController(),
             padding: EdgeInsets.only(bottom: 80.0),
             itemCount: notifier.workouts.length,
@@ -89,14 +103,14 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ChangeNotifierProvider<PastWorkoutNotifier>.value(
-                value: Provider.of<PastWorkoutNotifier>(this.context), 
+              builder: (context) =>
+                  ChangeNotifierProvider<PastWorkoutNotifier>.value(
+                value: Provider.of<PastWorkoutNotifier>(this.context),
                 child: ChangeNotifierProvider<WorkoutNotifier>.value(
-                  value: Provider.of<WorkoutNotifier>(this.context), 
+                  value: Provider.of<WorkoutNotifier>(this.context),
                   child: ChangeNotifierProvider<ExerciseNotifier>.value(
-                    value: Provider.of<ExerciseNotifier>(this.context), 
-                    child: WorkoutDisplayPage(item.workout)
-                  ),
+                      value: Provider.of<ExerciseNotifier>(this.context),
+                      child: WorkoutDisplayPage(item.workout)),
                 ),
               ),
             ),
@@ -124,60 +138,77 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
   }
 
   void shareWorkoutButtonHandle() {
-    List<Workout> workouts = Provider.of<WorkoutNotifier>(context, listen: false).workouts;
+    List<Workout> workouts =
+        Provider.of<WorkoutNotifier>(context, listen: false).workouts;
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        if (workouts.isEmpty)
-          return SingleMessageAlertDialog('Error', 'Please add a workout before sharing them.');
-        return SimpleDialog(
-          title: const Text('Share workout'),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () { Navigator.pop(context); handleExport(ShareType.exportAsText, workouts); },
-              child: const Text('Export as text'),
-            ),
-            SimpleDialogOption(
-              onPressed: () { Navigator.pop(context); handleExport(ShareType.exportAsJSON, workouts); },
-              child: const Text('Export as JSON'),
-            ),
-            SimpleDialogOption(
-              onPressed: () { Navigator.pop(context); handleImport(); },
-              child: const Text('Import JSON'),
-            ),
-          ],
-        );
-      });
+        context: context,
+        builder: (BuildContext context) {
+          if (workouts.isEmpty)
+            return SingleMessageAlertDialog(
+                'Error', 'Please add a workout before sharing them.');
+          return SimpleDialog(
+            title: const Text('Share workout'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context);
+                  handleExport(ShareType.exportAsText, workouts);
+                },
+                child: const Text('Export as text'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context);
+                  handleExport(ShareType.exportAsJSON, workouts);
+                },
+                child: const Text('Export as JSON'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context);
+                  handleImport();
+                },
+                child: const Text('Import JSON'),
+              ),
+            ],
+          );
+        });
   }
 
-  void handleExport(ShareType type, List<Workout> workouts){
-    showDialog(context: context, builder: (BuildContext context) => 
-      SimpleDialog(
-        title: Text('Choose a workout to export'),
-        children: workouts.map((e) => SimpleDialogOption(
-          onPressed: () { 
-            String toShare = type == ShareType.exportAsText ? WorkoutFormatter.formatWorkoutToString(e) : WorkoutFormatter.formatWorkoutToJson(e);
-            ShareHandler.share(toShare, () => {}, (value) => {});
-            Navigator.pop(context); 
-          },
-          child: Text(e.name),
-        )).toList()));
+  void handleExport(ShareType type, List<Workout> workouts) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => SimpleDialog(
+            title: Text('Choose a workout to export'),
+            children: workouts
+                .map((e) => SimpleDialogOption(
+                      onPressed: () {
+                        String toShare = type == ShareType.exportAsText
+                            ? WorkoutFormatter.formatWorkoutToString(e)
+                            : WorkoutFormatter.formatWorkoutToJson(e);
+                        ShareHandler.share(toShare, () => {}, (value) => {});
+                        Navigator.pop(context);
+                      },
+                      child: Text(e.name),
+                    ))
+                .toList()));
   }
 
-  void handleImport(){
+  void handleImport() {
     showDialog(
-      context: context, 
-      builder: (BuildContext context) => TextInputAlertDialog(
-        'Input JSON', 
-        (input) { 
-          print(input);
-          var decodedJson = jsonDecode(input);
-          print(decodedJson);
-          var oldWorkout = Workout.fromJson(decodedJson);
-          addWorkout(Workout.copy(oldWorkout));
-        },
-        multilineInput: true,
-        inputMaxLength: maxJsonInputLength,));
+        context: context,
+        builder: (BuildContext context) => TextInputAlertDialog(
+              'Input JSON',
+              (input) {
+                print(input);
+                var decodedJson = jsonDecode(input);
+                print(decodedJson);
+                var oldWorkout = Workout.fromJson(decodedJson);
+                addWorkout(Workout.copy(oldWorkout));
+              },
+              multilineInput: true,
+              inputMaxLength: maxJsonInputLength,
+            ));
   }
 
   void addNewWorkout() {
@@ -186,7 +217,8 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
       builder: (_) {
         return TextInputAlertDialog('Enter workout name', (String text) {
           Workout wk = Workout(text, [
-            ExerciseBlock("New exercise", 1, Duration(seconds: 30), Duration(seconds: 90)),
+            ExerciseBlock("New exercise", 1, Duration(seconds: 30),
+                Duration(seconds: 90)),
           ]);
           Provider.of<WorkoutNotifier>(context, listen: false).addWorkout(wk);
         }, initialValue: 'New workout');
@@ -207,9 +239,11 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage> with Automa
     showDialog(
       context: context,
       builder: (_) {
-        return SingleMessageConfirmationDialog("Please confirm", "Do you really want to delete this workout?", 
-        (){Provider.of<WorkoutNotifier>(context, listen: false).removeWorkout(wk);}, 
-        (){});
+        return SingleMessageConfirmationDialog(
+            "Please confirm", "Do you really want to delete this workout?", () {
+          Provider.of<WorkoutNotifier>(context, listen: false)
+              .removeWorkout(wk);
+        }, () {});
       },
     );
   }

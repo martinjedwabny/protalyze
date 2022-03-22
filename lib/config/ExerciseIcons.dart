@@ -11,7 +11,7 @@
 ///      fonts:
 ///       - asset: fonts/MyFlutterApp.ttf
 ///
-/// 
+///
 /// * Font Awesome 5, Copyright (C) 2016 by Dave Gandy
 ///         Author:    Dave Gandy
 ///         License:   SIL (https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt)
@@ -25,5 +25,6 @@ class MyFlutterApp {
   static const _kFontFam = 'MyFlutterApp';
   static const _kFontPkg = null;
 
-  static const IconData dumbbell = IconData(0xf44b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData dumbbell =
+      IconData(0xf44b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

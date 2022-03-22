@@ -12,10 +12,9 @@ class PastWorkout {
         dateTime = DateTime.tryParse(json['dateTime']),
         notes = json['notes'];
 
-  Map<String, dynamic> toJson() =>
-    {
-      'workout': workout.toJson(),
-      'dateTime': dateTime.toIso8601String(),
-      'notes' : notes
-    };
+  Map<String, dynamic> toJson() => {
+        'workout': workout.toJson(),
+        'dateTime': dateTime.toIso8601String(),
+        'notes': notes
+      };
 }

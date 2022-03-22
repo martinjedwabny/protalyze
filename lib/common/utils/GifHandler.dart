@@ -12,7 +12,7 @@ class GifHandler {
       attributionMarkDarkMode: false,
       showPreviewPage: false,
       // lang: GiphyLanguage.english, //Optional - Language for query.
-      // randomID: "abcd", // Optional - An ID/proxy for a specific user. 
+      // randomID: "abcd", // Optional - An ID/proxy for a specific user.
       // searchText :"Search GIPHY",//Optional - AppBar search hint text.
       // tabColor:Colors.teal, // Optional- default accent color.
     );
@@ -22,12 +22,18 @@ class GifHandler {
   static Widget createGifImage(String gifUrl, {double height, double width}) {
     if (height == null)
       return GiphyImage(
-        url: gifUrl, 
+        url: gifUrl,
         width: width,
-        placeholder: CircularProgressIndicator(color: Themes.normal.colorScheme.secondary,),);
+        placeholder: CircularProgressIndicator(
+          color: Themes.normal.colorScheme.secondary,
+        ),
+      );
     return GiphyImage(
-      url: gifUrl, 
-      height: height, 
-      placeholder: CircularProgressIndicator(color: Themes.normal.colorScheme.secondary,),);
+      url: gifUrl,
+      height: height,
+      placeholder: CircularProgressIndicator(
+        color: Themes.normal.colorScheme.secondary,
+      ),
+    );
   }
 }
