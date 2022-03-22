@@ -248,7 +248,7 @@ class _CountDownPageState extends State<CountDownPage>
             ? null
             : GifHandler.createGifImage(currentExerciseGifUrl, width: 400);
     Widget currentExerciseGifButton =
-        createGifButton(currentExerciseString, this.currentExerciseGif, 24);
+        createGifButton(currentExerciseString, this.currentExerciseGif, 20);
     var currentExerciseText = Text(
       currentExerciseString,
       maxLines: 1,
@@ -260,22 +260,32 @@ class _CountDownPageState extends State<CountDownPage>
       overflow: TextOverflow.fade,
       textAlign: TextAlign.center,
     );
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Flexible(
+    if (currentExerciseGifButton == null)
+      return Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+        child: Flexible(
             child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 24.0, right: 24.0),
-                  child: currentExerciseText,
-                ))),
-        SizedBox.fromSize(
-          size: Size(12, 12),
-        ),
-        currentExerciseGifButton,
-      ],
+          fit: BoxFit.scaleDown,
+          child: currentExerciseText,
+        )),
+      );
+    return Padding(
+      padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Flexible(
+              child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: currentExerciseText,
+          )),
+          SizedBox.fromSize(
+            size: Size(12, 12),
+          ),
+          currentExerciseGifButton,
+        ],
+      ),
     );
   }
 

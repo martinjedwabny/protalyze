@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:giphy_picker/giphy_picker.dart';
-import 'package:protalyze/config/Themes.dart';
 
 class GifHandler {
   static const String GIPHY_API_KEY = 'g0zW2U9RG9EYWmAM2TrcNO0k8znneRQe';
@@ -22,18 +21,12 @@ class GifHandler {
   static Widget createGifImage(String gifUrl, {double height, double width}) {
     if (height == null)
       return GiphyImage(
-        url: gifUrl,
-        width: width,
-        placeholder: CircularProgressIndicator(
-          color: Themes.normal.colorScheme.secondary,
-        ),
-      );
+          url: gifUrl,
+          width: width,
+          placeholder: SizedBox(width: 1, height: 1));
     return GiphyImage(
-      url: gifUrl,
-      height: height,
-      placeholder: CircularProgressIndicator(
-        color: Themes.normal.colorScheme.secondary,
-      ),
-    );
+        url: gifUrl,
+        height: height,
+        placeholder: SizedBox(width: 1, height: 1));
   }
 }
