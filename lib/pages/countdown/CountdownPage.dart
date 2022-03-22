@@ -299,15 +299,8 @@ class _CountDownPageState extends State<CountDownPage>
         builder: (BuildContext context) => AlertDialog(
               title: Text(
                 title,
-                style: TextStyle(
-                  color: Palette.darkGray,
-                ),
               ),
-              backgroundColor: Themes.normal.colorScheme.primary,
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[gif],
-              ),
+              content: gif,
               actions: [
                 TextButton(
                   child: Text("Ok"),
