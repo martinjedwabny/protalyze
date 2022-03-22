@@ -19,8 +19,9 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
 
   final Color mainTextColor = Themes.normal.colorScheme.primary;
   final Color fadedTextColor = Themes.normal.colorScheme.primary.withAlpha(200);
+  var titleFontSize = 20.0;
   var timeFontSize = 20.0;
-  var exerciseFontSize = 24.0;
+  var exerciseFontSize = 20.0;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
         children: [
           Container(
             padding: EdgeInsets.only(left: 8),
-            child: Text('TOTAL', style: TextStyle(fontSize: 20.0),),
+            child: Text('TOTAL', style: TextStyle(fontSize: titleFontSize),),
           ),
           Container(
             alignment: Alignment.topRight,

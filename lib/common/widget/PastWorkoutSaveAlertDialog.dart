@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:protalyze/common/domain/Workout.dart';
 
 class PastWorkoutSaveAlertDialog extends StatefulWidget {
-  final Map<String, Workout> options;
-  final void Function(Workout selected, DateTime date, String notes) callback;
+  final Map<int, Workout> options;
+  final void Function(Workout selected, DateTime date, String comments) callback;
   PastWorkoutSaveAlertDialog(this.options, this.callback);
   @override
   _PastWorkoutSaveAlertDialog createState() => _PastWorkoutSaveAlertDialog();
@@ -14,7 +14,7 @@ class PastWorkoutSaveAlertDialog extends StatefulWidget {
 class _PastWorkoutSaveAlertDialog<T> extends State<PastWorkoutSaveAlertDialog> {
   Workout _selectedOption;
   DateTime _selectedDate = DateTime.now();
-  final _notesController = TextEditingController();
+  final _commentsController = TextEditingController();
 
   @override
   void initState() {
@@ -43,10 +43,10 @@ class _PastWorkoutSaveAlertDialog<T> extends State<PastWorkoutSaveAlertDialog> {
         Text('Select an option:'),
         DropdownButton<Workout>(
           value: this._selectedOption,
-          items: widget.options.keys.map((String key) {
+          items: widget.options.keys.map((int key) {
             return DropdownMenuItem<Workout>(
               value: widget.options[key],
-              child: new Text(key),
+              child: new Text(widget.options[key].name),
             );
           }).toList(),
           onChanged: (Workout newValue) {
@@ -60,14 +60,14 @@ class _PastWorkoutSaveAlertDialog<T> extends State<PastWorkoutSaveAlertDialog> {
           onPressed: () => selectDate(context),
           child: Text(DateFormat("MMM d").format(this._selectedDate)),
         ),
-        Text('Notes:'),
+        Text('Comments:'),
         TextField(
           maxLines: null,
           inputFormatters: <TextInputFormatter>[
-            LengthLimitingTextInputFormatter(1000),],
-            controller: _notesController,
+            LengthLimitingTextInputFormatter(2000),],
+            controller: _commentsController,
             decoration: new InputDecoration(
-            hintText: "Enter notes",
+            hintText: "Enter comments",
             ),
           ),
       ]),
@@ -76,7 +76,7 @@ class _PastWorkoutSaveAlertDialog<T> extends State<PastWorkoutSaveAlertDialog> {
           child: Text("Ok"),
           onPressed: () {
             Navigator.of(context).pop();
-            widget.callback(this._selectedOption, this._selectedDate, this._notesController.text);
+            widget.callback(this._selectedOption, this._selectedDate, this._commentsController.text);
           },
         ),
         TextButton(

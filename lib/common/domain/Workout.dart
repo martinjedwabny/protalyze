@@ -35,6 +35,11 @@ class Workout {
     return generateObjectives(this.blocks);
   }
 
+  @override
+  String toString(){
+    return this.name;
+  }
+
   Map<ExerciseObjective, int> generateObjectives(List<Block> blocks) {
     Map<ExerciseObjective, int> res = Map<ExerciseObjective, int>();
     for (Block block in blocks)

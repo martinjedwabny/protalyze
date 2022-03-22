@@ -45,7 +45,8 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget._title),
-      content: Column(mainAxisSize: MainAxisSize.min, children: [
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('Workout name:'),
         TextField(
           inputFormatters: <TextInputFormatter>[
             LengthLimitingTextInputFormatter(20),],
@@ -54,12 +55,14 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
           hintText: "Enter workout name",
           ),
         ),
+        Text('Comments:'),
         TextField(
           inputFormatters: <TextInputFormatter>[
-            LengthLimitingTextInputFormatter(1000),],
+            LengthLimitingTextInputFormatter(2000),],
           controller: _workoutNotesTextController,
+          maxLines: null,
           decoration: new InputDecoration(
-          hintText: "Enter notes",
+          hintText: "Enter comments",
           ),
         ),
         Row(children:[

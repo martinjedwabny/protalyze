@@ -139,7 +139,7 @@ class _TimerSelectPageState extends State<TimerSelectPage> with AutomaticKeepAli
   }
 
   Widget buildSelected() {
-    return CountDownPage(this.selectedWorkout);
+    return CountDownPage(this.selectedWorkout, () => handleSaveWorkoutButton(context));
   }
 
   void handleExitButton(){
@@ -164,17 +164,16 @@ class _TimerSelectPageState extends State<TimerSelectPage> with AutomaticKeepAli
   }
 
   Widget buildWorkoutSelector(List<Workout> workouts) {
-    Map<String, Workout> options = workouts.asMap().map((key, value) => MapEntry(value.name, value));
+    Map<int, Workout> options = workouts.asMap();
     if (this.currentOption == null)
       this.currentOption = options.isEmpty ? null : options[options.keys.first];
     return DropdownButton<Workout>(
       isExpanded: true,
       value: this.currentOption,
-      // dropdownColor: Palette.darkGray,
-      items: options.keys.map((String key) {
+      items: options.keys.map((int key) {
         return DropdownMenuItem<Workout>(
           value: options[key],
-          child: new Text(key,),
+          child: new Text(options[key].name,),
         );
       }).toList(),
       onChanged: (Workout newValue) {

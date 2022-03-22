@@ -117,8 +117,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage> wit
           if (workouts.isEmpty)
             return SingleMessageAlertDialog(
                 'Error', 'Please add a workout before registering them.');
-          return PastWorkoutSaveAlertDialog(
-              Map.fromIterable(workouts, key: (w) => w.name, value: (w) => w),
+          return PastWorkoutSaveAlertDialog(workouts.asMap(),
               ((Workout selected, DateTime date, String notes) {
                 
             PastWorkout pastWorkout = PastWorkout(selected, date, notes);

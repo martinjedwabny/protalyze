@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SinglePickerAlertDialog<T> extends StatefulWidget {
   final String title, inputTitle;
-  final Map<String, T> options;
+  final Map<int, T> options;
   final void Function(T selected) callback;
   SinglePickerAlertDialog(this.title, this.inputTitle, this.options, this.callback);
   @override
@@ -26,10 +26,10 @@ class _SinglePickerAlertDialogState<T> extends State<SinglePickerAlertDialog<T>>
         Text(widget.inputTitle),
         DropdownButton<T>(
           value: this.selectedOption,
-          items: widget.options.keys.map((String key) {
+          items: widget.options.keys.map((int key) {
             return DropdownMenuItem<T>(
               value: widget.options[key],
-              child: new Text(key),
+              child: new Text(widget.options[key].toString()),
             );
           }).toList(),
           onChanged: (T newValue) {

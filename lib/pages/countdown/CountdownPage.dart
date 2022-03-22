@@ -16,22 +16,33 @@ import 'package:flutter/services.dart';
 
 class CountDownPage extends StatefulWidget {
   final Workout _workout;
-  CountDownPage(this._workout);
+  final Function _saveWorkoutCallback;
+  CountDownPage(this._workout, this._saveWorkoutCallback);
   @override
   _CountDownPageState createState() => _CountDownPageState();
 }
 
 class _CountDownPageState extends State<CountDownPage> with TickerProviderStateMixin {
+
+  // Progress animation
   AnimationController _controller;
   bool _isPause = true;
   Duration _totalTime;
-  List<CountdownElement> _countdownElementList;
-  int _currentCountdownElementIndex = 0;
   final int _prepareTime = 10;
   bool _lastSecondsFlag = false;
-  double _currentVolume = 0.5;
 
+  // Workout state elements
+  List<CountdownElement> _countdownElementList;
+  int _currentCountdownElementIndex = 0;
+  
+  // Alert beep sound
+  double _currentVolume = 0.5;
   Future<AudioPlayer> playBeepSound() async => await (new AudioCache()).play("beep.mp3", volume: _currentVolume * 0.75);
+
+  // UI
+  var progressIndicatorHorizontalPadding = 20.0;
+  var currentTimeFontSize = 90.0;
+  var currentExerciseFontSize = 30.0;
 
   @override
   void initState() {
@@ -90,20 +101,23 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   }
 
   void stepToNextExercise({bool forceContinue = false}) {
-    if (isCountdownFinished()) return;
-    bool shouldContinueAnimation = this._controller.isAnimating || forceContinue;
-    this._totalTime -= this._controller.duration;
-    this._currentCountdownElementIndex++;
     if (isCountdownFinished()) {
-      this._controller.duration = Duration.zero;
-      this._controller.value = 1.0;
-      this._totalTime = Duration.zero;
-      this._controller.reverse();
+      this.widget._saveWorkoutCallback(); 
     } else {
-      this._controller.duration = this._countdownElementList[this._currentCountdownElementIndex].totalTime;
-      this._controller.value = 1.0;
-      if (shouldContinueAnimation)
+      bool shouldContinueAnimation = this._controller.isAnimating || forceContinue;
+      this._totalTime -= this._controller.duration;
+      this._currentCountdownElementIndex++;
+      if (isCountdownFinished()) {
+        this._controller.duration = Duration.zero;
+        this._controller.value = 1.0;
+        this._totalTime = Duration.zero;
         this._controller.reverse();
+      } else {
+        this._controller.duration = this._countdownElementList[this._currentCountdownElementIndex].totalTime;
+        this._controller.value = 1.0;
+        if (shouldContinueAnimation)
+          this._controller.reverse();
+      }
     }
   }
 
@@ -176,7 +190,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
   Widget buildProgressIndicator(){
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal:20, vertical: 0),
+        padding: EdgeInsets.symmetric(horizontal:progressIndicatorHorizontalPadding, vertical: 0),
         child: Stack(
           children: [
             Positioned.fill(
@@ -208,8 +222,7 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
           textAlign: TextAlign.center,
           style: TextStyle(
             height: 0.9,
-            fontSize: 90.0, 
-            // fontWeight: FontWeight.w100, 
+            fontSize: currentTimeFontSize, 
             color: Themes.normal.colorScheme.primary.withAlpha(220),)
       ),
     );
@@ -222,9 +235,8 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
             currentExerciseString,
             maxLines: 1,
             style: TextStyle(
-              fontSize: 30.0, 
+              fontSize: currentExerciseFontSize, 
               height: 0.9,
-              // fontWeight: FontWeight.w700, 
               color: Palette.darkGray.withAlpha(220),
               ),
             overflow: TextOverflow.fade,
@@ -278,37 +290,28 @@ class _CountDownPageState extends State<CountDownPage> with TickerProviderStateM
 
   Widget buildControls() {
     return Container(
-      width: double.infinity, 
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.only(left: 8),
-            child: Text('CONTROLS', style: TextStyle(fontSize: 20.0),),
+      width: double.infinity,
+      child: Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          color: Colors.white,
+        ),
+        child: Column(children: [
+          Center(child: CountdownControls(
+            this._controller, 
+            () => stepToPrevExercise(), 
+            () => stepToNextExercise(), 
+            () => togglePlayPause(), 
+            () => addSeconds(-5), 
+            () => addSeconds(5), 
+            () => this.countdownFinished(), 
+            () => this._isPause)
           ),
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              color: Colors.white,
-            ),
-            child: Column(children: [
-              Center(child: CountdownControls(
-                this._controller, 
-                () => stepToPrevExercise(), 
-                () => stepToNextExercise(), 
-                () => togglePlayPause(), 
-                () => addSeconds(-5), 
-                () => addSeconds(5), 
-                () => this.countdownFinished(), 
-                () => this._isPause)
-              ),
-              buildVolumeSlider(),
-              ],),
-            ),
-        ],
-      )
-    );
+          buildVolumeSlider(),
+          ],),
+        ),
+      );
   }
 
   Widget buildVolumeSlider(){
