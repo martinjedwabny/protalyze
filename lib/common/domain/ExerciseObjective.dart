@@ -11,7 +11,8 @@ class ExerciseObjective {
     'Biceps',
     'Triceps',
     'Abs',
-    'Cardio'
+    'Cardio',
+    'Other'
   ];
   @override
   bool operator ==(other) => other is ExerciseObjective && other.name == name;

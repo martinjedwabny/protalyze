@@ -40,6 +40,9 @@ class _CountDownPageState extends State<CountDownPage>
   Future<AudioPlayer> playBeepSound() async =>
       await (new AudioCache()).play("beep.mp3", volume: _currentVolume * 0.75);
 
+  // GIF
+  Widget currentExerciseGif;
+
   // UI
   var progressIndicatorHorizontalPadding = 20.0;
   var currentTimeFontSize = 90.0;
@@ -240,8 +243,10 @@ class _CountDownPageState extends State<CountDownPage>
 
   Widget buildCurrentExerciseWidget() {
     if (countdownFinished()) return Text('');
+    this.currentExerciseGif =
+        GifHandler.createGifImage(currentExerciseGifUrl, width: 400);
     Widget currentExerciseGifButton =
-        createGifButton(currentExerciseString, currentExerciseGif, 24);
+        createGifButton(currentExerciseString, this.currentExerciseGif, 24);
     var currentExerciseText = Text(
       currentExerciseString,
       maxLines: 1,
@@ -258,8 +263,12 @@ class _CountDownPageState extends State<CountDownPage>
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Flexible(
-            child:
-                FittedBox(fit: BoxFit.scaleDown, child: currentExerciseText)),
+            child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                  child: currentExerciseText,
+                ))),
         SizedBox.fromSize(
           size: Size(12, 12),
         ),
@@ -268,12 +277,12 @@ class _CountDownPageState extends State<CountDownPage>
     );
   }
 
-  Widget createGifButton(String title, String gifUrl, double size) {
-    return gifUrl == null || gifUrl == ''
+  Widget createGifButton(String title, Widget gif, double size) {
+    return gif == null
         ? SizedBox(width: 1, height: 1)
         : GestureDetector(
             onTap: () {
-              showGifDialog(title, gifUrl);
+              showGifDialog(title, gif);
             },
             child: Icon(
               Icons.ondemand_video,
@@ -282,7 +291,7 @@ class _CountDownPageState extends State<CountDownPage>
             ));
   }
 
-  void showGifDialog(String title, String gifUrl) {
+  void showGifDialog(String title, Widget gif) {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -295,9 +304,7 @@ class _CountDownPageState extends State<CountDownPage>
               backgroundColor: Themes.normal.colorScheme.primary,
               content: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  GifHandler.createGifImage(gifUrl, width: 400)
-                ],
+                children: <Widget>[gif],
               ),
               actions: [
                 TextButton(
@@ -318,7 +325,7 @@ class _CountDownPageState extends State<CountDownPage>
     return s;
   }
 
-  String get currentExerciseGif {
+  String get currentExerciseGifUrl {
     if (this._countdownElementList.length == 0 || countdownFinished())
       return '';
     return this
