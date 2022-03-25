@@ -27,12 +27,13 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Stack(
-      children: <Widget>[
-        showForm(),
-        showProgressIndicator(),
-      ],
-    ));
+          children: <Widget>[
+            showForm(),
+            showProgressIndicator(),
+          ],
+        ));
   }
 
   Widget showForm() {

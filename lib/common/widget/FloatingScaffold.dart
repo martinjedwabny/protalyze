@@ -15,6 +15,7 @@ class FloatingScaffold extends StatelessWidget {
             padding: EdgeInsets.only(top: 16, bottom: 0, left: 8, right: 16),
             child: this.appBar),
       ),
+      resizeToAvoidBottomInset: false,
       backgroundColor: Themes.normal.scaffoldBackgroundColor,
       body: Column(
         children: <Widget>[

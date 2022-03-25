@@ -28,15 +28,12 @@ class _TimerSelectPageState extends State<TimerSelectPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    // SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleDark);
     return FloatingScaffold(
         appBar: AppBar(
           title: Text('Timer'),
           leading: buildBackButton(),
           actions: buildActionButtons(),
         ),
-        // resizeToAvoidBottomInset: false,
-        // backgroundColor: Palette.darkGray,
         body:
             this.selectedWorkout == null ? buildUnselected() : buildSelected());
   }

@@ -6,11 +6,12 @@ class SingleMessageScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Center(
-      child: Text(
-        message,
-        style: Theme.of(context).textTheme.headline6,
-      ),
-    ));
+          child: Text(
+            message,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+        ));
   }
 }

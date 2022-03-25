@@ -73,6 +73,7 @@ class _TabsPageState extends State<TabsPage> {
         children: _children,
         index: _currentIndex,
       ),
+      resizeToAvoidBottomInset: false,
       bottomNavigationBar: SalomonBottomBar(
         margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
         onTap: (index) => setState(() => _currentIndex = index), // new
