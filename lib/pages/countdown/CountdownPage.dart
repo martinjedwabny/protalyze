@@ -208,11 +208,15 @@ class _CountDownPageState extends State<CountDownPage>
         padding: EdgeInsets.symmetric(
             horizontal: progressIndicatorHorizontalPadding, vertical: 0),
         child: Stack(
+          fit: StackFit.expand,
+          alignment: Alignment.center,
           children: [
             Positioned.fill(
               child: Center(child: CountdownProgressIndicator(_controller)),
             ),
-            Center(child: buildCurrentExerciseSection()),
+            Positioned.fill(
+              child: Center(child: buildCurrentExerciseSection()),
+            ),
           ],
         ),
       ),
@@ -220,6 +224,7 @@ class _CountDownPageState extends State<CountDownPage>
   }
 
   Widget buildCurrentExerciseSection() => Column(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -263,11 +268,7 @@ class _CountDownPageState extends State<CountDownPage>
     if (currentExerciseGifButton == null)
       return Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-        child: Flexible(
-            child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: currentExerciseText,
-        )),
+        child: currentExerciseText,
       );
     return Padding(
       padding: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -275,11 +276,7 @@ class _CountDownPageState extends State<CountDownPage>
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Flexible(
-              child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: currentExerciseText,
-          )),
+          currentExerciseText,
           SizedBox.fromSize(
             size: Size(12, 12),
           ),
