@@ -162,7 +162,6 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
       return SingleMessageScaffold('No exercises added yet.');
     Widget notesText = getNotesText();
     return ListView(
-      padding: EdgeInsets.only(bottom: 80.0),
       children: [notesText] +
           workout.blocks.map((item) => getWidgetFromBlock(null, item)).toList(),
     );
