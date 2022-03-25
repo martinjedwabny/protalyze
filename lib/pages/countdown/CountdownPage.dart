@@ -291,7 +291,7 @@ class _CountDownPageState extends State<CountDownPage>
 
   Widget createGifButton(String title, Widget gif, double size) {
     return gif == null
-        ? SizedBox(width: 1, height: 1)
+        ? null
         : GestureDetector(
             onTap: () {
               showGifDialog(title, gif);
