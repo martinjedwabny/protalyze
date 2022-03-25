@@ -33,7 +33,6 @@ class ExerciseRepositoryPage extends StatelessWidget {
           body = Container(
               child: ListView.builder(
             controller: ScrollController(),
-            padding: EdgeInsets.only(bottom: 80.0),
             itemCount: notifier.exercises.length,
             itemBuilder: (_, index) {
               ExerciseListItem item =

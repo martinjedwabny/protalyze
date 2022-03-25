@@ -17,14 +17,9 @@ class FloatingScaffold extends StatelessWidget {
       ),
       resizeToAvoidBottomInset: false,
       backgroundColor: Themes.normal.scaffoldBackgroundColor,
-      body: Column(
-        children: <Widget>[
-          Expanded(
-              child: Container(
-                  margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                  child: this.body))
-        ],
-      ),
+      body: Container(
+          margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+          child: this.body),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: this.floatingActionButton,
     );

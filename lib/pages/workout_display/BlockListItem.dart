@@ -56,7 +56,11 @@ class ExerciseBlockListItem extends BlockListItem {
         t += block.objectives[i].toString();
         if (i < block.objectives.length - 1) t += ', ';
       }
-      children.add(Text(t));
+      children.add(Text(
+        t,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ));
     }
     return Wrap(
       direction: Axis.vertical,

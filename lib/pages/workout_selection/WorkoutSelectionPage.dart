@@ -81,7 +81,6 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
           body = Container(
               child: ListView.builder(
             controller: ScrollController(),
-            padding: EdgeInsets.only(bottom: 80.0),
             itemCount: notifier.workouts.length,
             itemBuilder: (context, index) {
               WorkoutListItem item = WorkoutListItem(notifier.workouts[index]);

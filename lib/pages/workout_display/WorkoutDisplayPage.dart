@@ -148,7 +148,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
       child: ListTile(
         contentPadding: EdgeInsets.only(left: 12),
         title: Text(
-          'Notes',
+          'Comments',
           style: Theme.of(context).textTheme.headline6,
           overflow: TextOverflow.ellipsis,
         ),
