@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:protalyze/common/utils/ShareHandler.dart';
 import 'package:protalyze/common/utils/WorkoutFormatter.dart';
 import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
+import 'package:protalyze/common/widget/RoundedCardShape.dart';
 import 'package:protalyze/provider/ExerciseNotifier.dart';
 import 'package:protalyze/provider/PastWorkoutNotifier.dart';
 import 'package:protalyze/provider/WorkoutNotifier.dart';
@@ -78,23 +79,24 @@ class _WorkoutSelectionPageState extends State<WorkoutSelectionPage>
         if (notifier.workouts.isEmpty)
           body = SingleMessageScaffold('No workouts added yet.');
         else
-          body = Container(
-              child: ListView.builder(
+          body = ListView.builder(
             controller: ScrollController(),
             itemCount: notifier.workouts.length,
             itemBuilder: (context, index) {
               WorkoutListItem item = WorkoutListItem(notifier.workouts[index]);
               return buildCardForItem(item, context);
             },
-          ));
-        return FloatingScaffoldSection(child: body);
+          );
+        return body;
       }),
     );
   }
 
   Card buildCardForItem(WorkoutListItem item, BuildContext context) {
     return Card(
+      shape: RoundedCardShape.shape,
       child: ListTile(
+        shape: RoundedCardShape.shape,
         contentPadding: EdgeInsets.only(left: 12, right: 2, top: 8, bottom: 8),
         title: item.buildTitle(context),
         subtitle: item.buildContent(context),

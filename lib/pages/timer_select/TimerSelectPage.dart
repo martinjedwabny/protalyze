@@ -108,7 +108,7 @@ class _TimerSelectPageState extends State<TimerSelectPage>
           padding: EdgeInsets.all(20.0),
           decoration: BoxDecoration(
               color: Colors.white.withAlpha(150),
-              borderRadius: BorderRadius.all(Radius.circular(20))),
+              borderRadius: BorderRadius.all(Radius.circular(12.0))),
           width: 300.0,
           child:
               Consumer<WorkoutNotifier>(builder: (context, notifier, widget) {

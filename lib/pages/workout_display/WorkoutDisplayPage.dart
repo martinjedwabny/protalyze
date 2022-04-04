@@ -1,4 +1,5 @@
 import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
+import 'package:protalyze/common/widget/RoundedCardShape.dart';
 import 'package:protalyze/provider/ExerciseNotifier.dart';
 import 'package:protalyze/provider/WorkoutNotifier.dart';
 import 'package:protalyze/config/Themes.dart';
@@ -59,8 +60,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
         ),
         actions: this.widget.canEdit ? [editButton, addBlockButton] : null,
       ),
-      body: FloatingScaffoldSection(
-          child: getListViewFromWorkout(this.widget.workout)),
+      body: getListViewFromWorkout(this.widget.workout),
     );
   }
 
@@ -236,6 +236,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
       VoidCallback handleDown) {
     GroupBlockListItem item = new GroupBlockListItem(block);
     return Card(
+        shape: RoundedCardShape.shape,
         color: Colors.grey[200],
         key: ValueKey(item),
         child: Container(
@@ -243,6 +244,7 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
             child: Column(
               children: [
                 ListTile(
+                  shape: RoundedCardShape.shape,
                   contentPadding: EdgeInsets.only(left: 12, right: 4),
                   title: item.buildTitle(context),
                   onTap: widget.canEdit == false
@@ -318,8 +320,10 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
       VoidCallback handleDown) {
     ExerciseBlockListItem item = new ExerciseBlockListItem(block);
     return Card(
+      shape: RoundedCardShape.shape,
       key: ValueKey(item),
       child: ListTile(
+        shape: RoundedCardShape.shape,
         contentPadding: EdgeInsets.only(left: 12),
         title: item.buildTitle(context),
         subtitle: item.buildContent(context),

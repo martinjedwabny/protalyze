@@ -20,13 +20,15 @@ class CalendarLineTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: options[index % options.length],
       constraints: BoxConstraints.expand(height: 10),
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(horizontal: 2),
+      decoration: BoxDecoration(
+          color: options[index % options.length],
+          borderRadius: BorderRadius.all(Radius.circular(4.0))),
       child: Text(
         message,
-        overflow: TextOverflow.ellipsis,
+        overflow: TextOverflow.clip,
         style: TextStyle(color: Colors.white, fontSize: 8),
       ),
     );

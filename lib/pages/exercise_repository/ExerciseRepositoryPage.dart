@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:protalyze/common/domain/ExerciseBlock.dart';
 import 'package:protalyze/common/widget/FloatingScaffold.dart';
 import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
+import 'package:protalyze/common/widget/RoundedCardShape.dart';
 import 'package:protalyze/common/widget/SingleMessageConfirmationDialog.dart';
 import 'package:protalyze/common/widget/SingleMessageScaffold.dart';
 import 'package:protalyze/config/Themes.dart';
@@ -40,7 +41,7 @@ class ExerciseRepositoryPage extends StatelessWidget {
               return buildCardForItem(item, context);
             },
           ));
-        return FloatingScaffoldSection(child: body);
+        return body;
       }),
     );
   }
@@ -71,7 +72,9 @@ class ExerciseRepositoryPage extends StatelessWidget {
 
   Widget buildCardForItem(item, BuildContext context) {
     return Card(
+      shape: RoundedCardShape.shape,
       child: ListTile(
+        shape: RoundedCardShape.shape,
         contentPadding: EdgeInsets.only(left: 12, right: 2, top: 8, bottom: 8),
         title: item.buildTitle(context),
         subtitle: item.buildContent(context),
