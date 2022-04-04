@@ -1,4 +1,3 @@
-import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
 import 'package:protalyze/common/widget/RoundedCardShape.dart';
 import 'package:protalyze/provider/ExerciseNotifier.dart';
 import 'package:protalyze/provider/WorkoutNotifier.dart';

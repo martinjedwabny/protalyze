@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:protalyze/common/domain/ExerciseBlock.dart';
 import 'package:protalyze/common/widget/FloatingScaffold.dart';
-import 'package:protalyze/common/widget/FloatingScaffoldSection.dart';
 import 'package:protalyze/common/widget/RoundedCardShape.dart';
 import 'package:protalyze/common/widget/SingleMessageConfirmationDialog.dart';
 import 'package:protalyze/common/widget/SingleMessageScaffold.dart';
