@@ -37,15 +37,16 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: EdgeInsets.only(left: 8),
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 8, bottom: 4),
                 child: Text(
                   'TOTAL',
                   style: TextStyle(fontSize: titleFontSize),
                 ),
               ),
               Container(
-                alignment: Alignment.topRight,
-                padding: EdgeInsets.all(8),
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: 8, bottom: 4),
                 child: buildTotalTimeWidget(),
               ),
             ],
@@ -66,7 +67,6 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
   Widget buildTotalTimeWidget() {
     return Text(totalRemainingTimeString,
         style: TextStyle(
-          height: 0.95,
           fontSize: timeFontSize,
           color: Themes.normal.colorScheme.primary,
         ));
