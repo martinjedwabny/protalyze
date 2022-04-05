@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:888722916407:android:596fe8644bc5a5e0062bb2",
         "android_client_info": {
-          "package_name": "com.nnammad.protalyze"
+          "package_name": "com.mdjyapps.protalyze"
         }
       },
       "oauth_client": [
@@ -35,7 +35,7 @@
               "client_id": "888722916407-3n2vb25rm36tv8ug8qdj7i4v72iigoe8.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.nnammad.protalyze"
+                "bundle_id": "com.mdjyapps.protalyze"
               }
             }
           ]
