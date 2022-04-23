@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter_web_frame/flutter_web_frame.dart';
+import 'package:protalyze/common/container/ProtalyzeAppContainer.dart';
 import 'package:protalyze/config/Themes.dart';
 import 'package:protalyze/persistance/Authentication.dart';
 import 'package:protalyze/pages/RootPage.dart';
@@ -16,7 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   setupStatusAndNavBarColors();
-  runApp(MyApp());
+  runApp(ProtalyzeApp());
 }
 
 void setupStatusAndNavBarColors() {
@@ -25,26 +24,14 @@ void setupStatusAndNavBarColors() {
   SystemChrome.setSystemUIOverlayStyle(Themes.systemUiOverlayStyleLight);
 }
 
-class MyApp extends StatelessWidget {
+class ProtalyzeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     setupFirestore();
     setupVerticalHorientation();
-    return FlutterWebFrame(
-      builder: (context) {
-        return MaterialApp(
-          title: 'Protalyze',
-          home: RootPage(
-            auth: new Auth(),
-          ),
-          theme: Themes.normal,
-          debugShowCheckedModeBanner: false,
-        );
-      },
-      maximumSize: Size(475.0, 812.0),
-      enabled: kIsWeb,
-      backgroundColor: Color.fromARGB(255, 235, 235, 235),
-    );
+    return ProtalyzeAppContainer(RootPage(
+      auth: new Auth(),
+    ));
   }
 
   void setupFirestore() async {

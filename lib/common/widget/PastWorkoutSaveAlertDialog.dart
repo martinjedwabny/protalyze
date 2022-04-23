@@ -40,42 +40,44 @@ class _PastWorkoutSaveAlertDialog<T> extends State<PastWorkoutSaveAlertDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Register a workout'),
-      content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Select an option:'),
-            DropdownButton<Workout>(
-              value: this._selectedOption,
-              items: widget.options.keys.map((int key) {
-                return DropdownMenuItem<Workout>(
-                  value: widget.options[key],
-                  child: new Text(widget.options[key].name),
-                );
-              }).toList(),
-              onChanged: (Workout newValue) {
-                setState(() {
-                  this._selectedOption = newValue;
-                });
-              },
-            ),
-            Text('Date:'),
-            TextButton(
-              onPressed: () => selectDate(context),
-              child: Text(DateFormat("MMM d").format(this._selectedDate)),
-            ),
-            Text('Comments:'),
-            TextField(
-              maxLines: null,
-              inputFormatters: <TextInputFormatter>[
-                LengthLimitingTextInputFormatter(2000),
-              ],
-              controller: _commentsController,
-              decoration: new InputDecoration(
-                hintText: "Enter comments",
+      content: SingleChildScrollView(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Select an option:'),
+              DropdownButton<Workout>(
+                value: this._selectedOption,
+                items: widget.options.keys.map((int key) {
+                  return DropdownMenuItem<Workout>(
+                    value: widget.options[key],
+                    child: new Text(widget.options[key].name),
+                  );
+                }).toList(),
+                onChanged: (Workout newValue) {
+                  setState(() {
+                    this._selectedOption = newValue;
+                  });
+                },
               ),
-            ),
-          ]),
+              Text('Date:'),
+              TextButton(
+                onPressed: () => selectDate(context),
+                child: Text(DateFormat("MMM d").format(this._selectedDate)),
+              ),
+              Text('Comments:'),
+              TextField(
+                maxLines: null,
+                inputFormatters: <TextInputFormatter>[
+                  LengthLimitingTextInputFormatter(2000),
+                ],
+                controller: _commentsController,
+                decoration: new InputDecoration(
+                  hintText: "Enter comments",
+                ),
+              ),
+            ]),
+      ),
       actions: [
         TextButton(
           child: Text("Ok"),

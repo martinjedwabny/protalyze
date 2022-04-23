@@ -46,39 +46,41 @@ class _PastWorkoutEditDialogState extends State<PastWorkoutEditDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget._title),
-      content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Workout name:'),
-            TextField(
-              inputFormatters: <TextInputFormatter>[
-                LengthLimitingTextInputFormatter(20),
-              ],
-              controller: _workoutNameTextController,
-              decoration: new InputDecoration(
-                hintText: "Enter workout name",
+      content: SingleChildScrollView(
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Workout name:'),
+              TextField(
+                inputFormatters: <TextInputFormatter>[
+                  LengthLimitingTextInputFormatter(20),
+                ],
+                controller: _workoutNameTextController,
+                decoration: new InputDecoration(
+                  hintText: "Enter workout name",
+                ),
               ),
-            ),
-            Text('Comments:'),
-            TextField(
-              inputFormatters: <TextInputFormatter>[
-                LengthLimitingTextInputFormatter(2000),
-              ],
-              controller: _workoutNotesTextController,
-              maxLines: null,
-              decoration: new InputDecoration(
-                hintText: "Enter comments",
+              Text('Comments:'),
+              TextField(
+                inputFormatters: <TextInputFormatter>[
+                  LengthLimitingTextInputFormatter(2000),
+                ],
+                controller: _workoutNotesTextController,
+                maxLines: null,
+                decoration: new InputDecoration(
+                  hintText: "Enter comments",
+                ),
               ),
-            ),
-            Row(children: [
-              Text("Date: ${this._selectedDate.toLocal()}".split(' ')[0]),
-              TextButton(
-                onPressed: () => selectDate(context),
-                child: Text(DateFormat("MMM d").format(this._selectedDate)),
-              ),
+              Row(children: [
+                Text("Date: ${this._selectedDate.toLocal()}".split(' ')[0]),
+                TextButton(
+                  onPressed: () => selectDate(context),
+                  child: Text(DateFormat("MMM d").format(this._selectedDate)),
+                ),
+              ]),
             ]),
-          ]),
+      ),
       actions: [
         TextButton(
           child: Text("Ok"),

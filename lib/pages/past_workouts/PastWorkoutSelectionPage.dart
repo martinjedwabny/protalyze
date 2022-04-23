@@ -102,7 +102,7 @@ class _PastWorkoutSelectionPageState extends State<PastWorkoutSelectionPage>
             Consumer<PastWorkoutNotifier>(builder: (context, notifier, child) {
           return StatisticsBarChart(
             pastWorkouts: notifier.pastWorkouts,
-            messageNoItems: "No workouts added yet.",
+            messageNoItems: "No sets performed this week.",
           );
         }),
       ),

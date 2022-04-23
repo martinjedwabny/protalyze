@@ -105,11 +105,7 @@ class _CountdownExercisesInfoState extends State<CountdownExercisesInfo> {
         ._countdownElementList
         .sublist(min(this.widget._currentCountdownElementIndex() + 1,
             this.widget._countdownElementList.length))
-        .map((e) =>
-            e.name.substring(0, e.name.length < 20 ? e.name.length : 20) +
-            ' (' +
-            DurationFormatter.format(e.totalTime) +
-            ')')
+        .map((e) => e.name + ' (' + DurationFormatter.format(e.totalTime) + ')')
         .toList();
     if (listElements.isEmpty) return finishedMessageText();
     return ListView(

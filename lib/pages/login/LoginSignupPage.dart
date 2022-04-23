@@ -27,13 +27,12 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        resizeToAvoidBottomInset: false,
         body: Stack(
-          children: <Widget>[
-            showForm(),
-            showProgressIndicator(),
-          ],
-        ));
+      children: <Widget>[
+        showForm(),
+        showProgressIndicator(),
+      ],
+    ));
   }
 
   Widget showForm() {
@@ -200,6 +199,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           bool verified = widget.auth.emailVerified();
           if (userId.length > 0 && userId != null && verified) {
             widget.loginCallback();
+            return;
           } else {
             widget.auth.sendEmailVerification();
             showErrorDialog(

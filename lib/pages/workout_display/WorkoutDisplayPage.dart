@@ -143,8 +143,10 @@ class _WorkoutDisplayPageState extends State<WorkoutDisplayPage> {
     if (this.widget.workoutNotes == null || this.widget.workoutNotes == '')
       return SizedBox(width: 1, height: 1);
     return Card(
+      shape: RoundedCardShape.shape,
       key: ValueKey(this.widget.workoutNotes),
       child: ListTile(
+        shape: RoundedCardShape.shape,
         contentPadding: EdgeInsets.only(left: 12),
         title: Text(
           'Comments',
