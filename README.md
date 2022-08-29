@@ -1,6 +1,6 @@
 # Protalyze
 
-A fast and simple workout app, to create custom timers, log your sessions, track your progress and share your workouts with friends. Built with Flutter and Firebase as its backend.
+A fast and simple mobile (Web and Android) workout app, to create custom timers, log your sessions, track your progress and share your workouts with friends. Built with Flutter and Firebase as its backend.
 
 ## 🚀 Pictures:
 
