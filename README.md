@@ -1,13 +1,26 @@
-# protalyze
+# Protalyze
 
-A workout assistant app built in Flutter.
+A fast and simple workout app, to create custom timers, log your sessions, track your progress and share your workouts with friends. Built with Flutter and Firebase as its backend.
 
-## Features
+## 🚀 Technologies:
+- Dart/Flutter: main programming language/framework.
+- Firebase: authentication and database backend.
+- Provider: state management.
 
-- Create workout plans.
-- Register past workouts.
-- Built-in timer assistance feature.
+## 🚀 Main features:
+- Countdown timer for tracking your exercises and rest times on-the-go, with a very complete and intuitive UI design.
+- Create your own exercises and workouts.
+- Share your workouts with your friends.
+- Log your past workouts.
+- Analyse the sets per muscle groups worked each week.
+- Track your progress.
+- Secure email authentication.
 
-## Run instructions
+## 🚀 Find it in:
+- [Web](https://martinjedwabny.github.io/protalyze/)
+- [Android](https://play.google.com/store/apps/details?id=com.mdjyapps.protalyze)
 
-- Web: flutter run -d chrome
+## For developers
+
+- Web run instructions: 
+  flutter run -d chrome
